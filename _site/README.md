@@ -1,4 +1,4 @@
-# QIoT-Project Website Based on Jekyll
+# QIoT.io Website Based on Jekyll
 
 ## Getting Started
 
