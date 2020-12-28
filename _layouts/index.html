@@ -1,0 +1,20 @@
+---
+layout: default
+---
+
+<div class="wrapper">
+  <div class="home">
+    <h2 class="post-list-heading">Posts</h2>
+    <ul class="post-list">
+      {% for post in site.posts %}
+      <li>
+        <span class="post-meta">{{ post.date | date: "%-d %B %Y" }}</span>
+        <h3>
+          <a class="post-link" href="{{ posts.url }}">{{ posts.title }} </a>
+        </h3>
+      </li>
+      {% endfor %}
+    </ul>
+    <p class="rss-subscribe">subscribe <a href="/feed.xml">via RSS</a></p>
+  </div>
+</div>
