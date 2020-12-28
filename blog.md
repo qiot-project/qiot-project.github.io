@@ -11,7 +11,7 @@ permalink: /blog/
 			<h3>
 				<a class="post-link" href="{{ post.url }}">{{ post.title }} </a>
 			</h3>
-			<p>{{ post.content}}
+			<p>{{ post.content}}</p>
 		</li>
 		{% endfor %}
 	</ul>
