@@ -21,6 +21,6 @@ permalink: /community/
 		The long term goal is to implement new PoCs covering different IoT verticals on the Market using Quarkus, Openshift and other community projects.
 	</p>
 	<p>
-		QIoT is an OPEN community always looking for new members. If you are keen to learn and have fun with us please join our slack channel.
+		QIoT is an OPEN community always looking for new members. If you are keen to learn and have fun with us please join our <a href="http://quarkusforiottechteam.slack.com">slack channel</a>.
 	</p>
 <div>
