@@ -19,7 +19,7 @@
 # in the templates via {{ site.myvariable }}.
 
 title: QIoT project
-email: qiotproject@gmail.com.com
+email: qiotproject@gmail.com
 description: >- # this means to ignore newlines until "baseurl:"
   QIoT: Quarkus and Internet of Things
 baseurl: "" # the subpath of your site, e.g. /blog
