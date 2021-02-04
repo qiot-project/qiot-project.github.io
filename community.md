@@ -3,3 +3,24 @@ layout: page
 title: Community
 permalink: /community/
 ---
+
+<div>
+	<p>
+		The “Quarkus & IoT” (QIoT) community was born in late 2020 from a Red Hat initiative focusing on empowering IoT and Edge computing using Red Hat cloud-native technologies: the QIoT Hackfest.
+	</p>
+	<p>
+		We decided to create this community starting from the project implemented for the QIoT Hackfest and work on its improvements to make it more Edge/Computing compliant.
+	</p>
+	<p>
+		This community is contributed by subject matter experts from several companies, specialized in different areas (cloud-native development, container technology, IoT, security, data analytics) driven by passion and willingness to collaborate on the design and implementation of solutions dedicated to the IoT and edge/computing market.
+	</p>
+	<p>
+		Short term goal of the QIoT community is to have fun and grow together, learning from each other.
+	</p>
+	<p>	 
+		The long term goal is to implement new PoCs covering different IoT verticals on the Market using Quarkus, Openshift and other community projects.
+	</p>
+	<p>
+		QIoT is an OPEN community always looking for new members. If you are keen to learn and have fun with us please join our <a href="http://quarkusforiottechteam.slack.com">slack channel</a>.
+	</p>
+<div>
