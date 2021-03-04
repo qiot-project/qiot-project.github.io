@@ -2,7 +2,7 @@
 layout: post
 title: "Post Title"
 subtitle: "This is the post subtitle."
-date: YYYY-MM-DD HH:MM:SS
+date: 2021-03-03 10:11:12
 background: '/PATH_TO_IMAGE'
 ---
 
