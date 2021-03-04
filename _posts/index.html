@@ -2,7 +2,7 @@
 layout: page
 title: Posts
 background: '/img/bg-post.jpg'
-permalink: /posts/
+permalink: /posts
 ---
 
 {% for post in paginator.posts %}
@@ -17,7 +17,7 @@ permalink: /posts/
     {% endif %}
   </a>
   <p class="post-meta">Posted by
-    {% if post.author %}
+   s {% if post.author %}
     {{ post.author }}
     {% else %}
     {{ site.author }}
