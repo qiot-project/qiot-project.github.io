@@ -32,6 +32,7 @@ remote_theme: StartBootstrap/startbootstrap-clean-blog-jekyll
 error_mode: strict
 markdown: kramdown
 #theme: minima
+theme: jekyll-theme-clean-blog
 plugins:
   - jekyll-feed
   - jekyll-archives
