@@ -1,0 +1,55 @@
+footer_text: "Quarkus is open. All dependencies of this project are available under the <a href='https://www.apache.org/licenses/LICENSE-2.0' target='_blank'>Apache Software License 2.0</a> or compatible license.<br /><br />This website was built with <a href='https://jekyllrb.com/' target='_blank'>Jekyll</a>, is hosted on <a href='https://pages.github.com/' target='_blank'>Github Pages</a> and is completely open source. If you want to make it better, <a href='https://github.com/quarkusio/quarkusio.github.io' target='_blank'>fork the website</a> and show us what you’ve got."
+
+links:
+  - title: Navigation
+    subfolderitems:
+      - page: Home
+        url: /
+      - page: Guides
+        url: /guides
+      - page: Contribute
+        url: /community/#contributing
+      - page: FAQ
+        url: /faq
+      - page: Get Started
+        url: /get-started
+  - title: Contribute
+    subfolderitems:
+      - page: Follow us
+        url: https://twitter.com/quarkusio
+      - page: GitHub
+        url: https://github.com/quarkusio
+      - page: Security&nbsp;policy
+        url: /security
+  - title: Get Help
+    subfolderitems:
+      - page: Forums
+        url: https://groups.google.com/forum/#!forum/quarkus-dev
+      - page: Chatroom
+        url: https://quarkusio.zulipchat.com
+
+more_links:
+  - title: Quarkus is made of community projects
+    subfolderitems:
+      - page: Eclipse Vert.x
+        url: https://vertx.io/
+      - page: Eclipse MicroProfile
+        url: https://microprofile.io
+      - page: Hibernate
+        url: https://hibernate.org
+      - page: Netty
+        url: https://netty.io
+      - page: RESTEasy
+        url: https://resteasy.github.io
+      - page: Apache Camel
+        url: https://camel.apache.org
+      - page: And many more...
+        url: https://code.quarkus.io/
+  #- title: And used in so many more
+  #  subfolderitems:
+  #    - page: Thorntail
+  #      url: https://thorntail.io/
+  #    - page: WildFly
+  #      url: https://wildfly.org/
+  #    - page: Drools
+  #      url: https://www.drools.org/
