@@ -1,0 +1,13 @@
+---
+layout: post
+title: 'Unattended sd-card image builder'
+subtitle: "---"
+date: 2021-03-17
+tags: aarch64 device os image
+category: project
+synopsis: Unattended sd-card image builder
+background: '/assets/images/posts/quarkus-native-on-a-raspberry-pi/hardware.jpg'
+author: alezzandro
+---
+
+##WIP

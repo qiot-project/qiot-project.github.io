@@ -1,14 +1,19 @@
 ---
 layout: page
-title: Blog
-background: '/assets/images/main/blog.jpg'
-permalink: /blog
+title: Projects
+background: '/assets/images/main/datacenterv2.png'
+permalink: /projects
 ---
 
+<div>
+	<p>
+		The Community works on reusable components that can be easily ported through everal usecases and can support other community projects.
+	</p>
+</div>
+
+
 {% for post in site.posts %}
-  {% if post.category == 'blog' %}
-          
-  
+  {% if post.category == 'project' %}
 <article class="post-preview">
   <a href="{{ post.url | prepend: site.baseurl | replace: '//', '/' }}">
     <h2 class="post-title">{{ post.title }}</h2>

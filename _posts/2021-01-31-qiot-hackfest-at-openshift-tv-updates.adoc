@@ -1,0 +1,13 @@
+---
+layout: post
+title: 'QIoT Hackfest @ Openshift tv - updates'
+subtitle: "---"
+date: 2021-01-31
+tags: qiot media openshifttv
+category: blog
+synopsis: QIoT Hackfest at Openshift tv
+background: '/assets/images/posts/quarkus-native-on-a-raspberry-pi/hardware.jpg'
+author: abattagl
+---
+
+video::5l9kHb3qaxY[youtube, width=640, height=480, start=373]

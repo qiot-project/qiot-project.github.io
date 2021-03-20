@@ -1,14 +1,22 @@
 ---
 layout: page
-title: Blog
-background: '/assets/images/main/blog.jpg'
-permalink: /blog
+title: Use Cases
+background: '/assets/images/main/datacenterv2.png'
+permalink: /usecases
 ---
 
+<div>
+	<p>
+		The aim of the ""Quarkus meets IoT” community is to test and try the opensource enterprise products on Edge Computing and IoT use-cases.<br/>
+		We are keen to design, implement and pilot a new usecase every six month.
+		The deliverable will be used at the enterprise level in the QIoT Hackfest by Red Hat and will be completely opensource.
+		This web page lists all the available PoCs and the related documentation. 
+	</p>
+</div>
+
+
 {% for post in site.posts %}
-  {% if post.category == 'blog' %}
-          
-  
+  {% if post.category == 'usecase' %}
 <article class="post-preview">
   <a href="{{ post.url | prepend: site.baseurl | replace: '//', '/' }}">
     <h2 class="post-title">{{ post.title }}</h2>
