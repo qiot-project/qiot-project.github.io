@@ -5,4 +5,5 @@
 /tmp/
 *.bundle
 Gemfile.lock
-
+/vendor
+/.jekyll-cache
