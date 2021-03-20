@@ -1,15 +1,24 @@
 language: ruby
-script: bundle exec rake deploy # execute this script on each commit
-
 rvm:
 - 2.7.2 # version of `ruby'
 
+script: bundle exec rake deploy # execute this script on each commit
+
 deploy:
+  # Use Github pages deploy process
   provider: pages
-  skip_cleanup: true
-  github_token: $GITHUB_TOKEN  # Set in the settings page of your repository, as a secure variable
-  keep_history: true
+  # Keep builded pages
+  skip-cleanup: true
+  # Directory where your generated files are located
+  local_dir: public
+  # Github security/auth token
+  github-token: $GITHUB_TOKEN
+  # Incremental commit to keep old build/files from previous deployments
+  keep-history: true
+  # Git branch on which it should deploy (master, gh-pages, foo...)
+  target_branch: gh-pages
   on:
+    # Which branch on commit/push will trigger deployment
     branch: main
 
 env:
