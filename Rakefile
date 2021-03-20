@@ -1,8 +1,11 @@
-require 'rake-jekyll'
+# Including only the changed build task
+require 'jekyll'
 
-# This task builds the Jekyll site and deploys it to a remote Git repository.
-# It's preconfigured to be used with GitHub and Travis CI.
-# See http://github.com/jirutka/rake-jekyll for more options.
-Rake::Jekyll::GitDeployTask.new(:deploy) do |t|
-    t.committer = 'andreabattaglia <andreabattaglia@users.noreply.github.com>'
+task :build do
+  config = Jekyll.configuration({ 
+    'source' => './', 
+    'destination' => './_site' 
+  })
+  site = Jekyll::Site.new(config)
+  Jekyll::Commands::Build.build site, config
 end
