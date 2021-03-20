@@ -6,7 +6,8 @@ script: bundle exec rake deploy # execute this script on each commit
 
 branches:
   only:
-  - gh-pages # only take into account `jekyll' branch
+  - main
+  - gh-pages
 
 deploy:
   # Use Github pages deploy process
