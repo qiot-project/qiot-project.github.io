@@ -1,3 +1,9 @@
+language: ruby
+script: bundle exec rake deploy # execute this script on each commit
+
+rvm:
+- 2.7.2 # version of `ruby'
+
 deploy:
   provider: pages
   skip_cleanup: true
@@ -5,6 +11,7 @@ deploy:
   keep_history: true
   on:
     branch: main
+
 env:
   global:
     secure: vzc07mARw2VV1KLCK0BBxLW0cxLat9zCNe3utjJ+TH9msAf9d6dJFEgbmhdNBsbdHd46cbcqrcNqJMoCMkUrWDgFTvukadqATb/XMILi6KlzHpQV6JHmCpvHCIabYWGk6V5biLzZzoJUGmzZIPUzPA218m1kTLIJGaiMIkgWEyfRHRFqpteR2E9EfQK8oQUmROyGTy5t5l6ntRBlbhkSDXBS7NAUEUWH8C1NjCfAmbSvmDMTA93SIidfPjA9LOxF664xk3jDXngpZoificcoTCf5sxyGKfRaqOq85mrxVt3KlfuE4KQ8nF8sju4R0Vuqf25EV0Dfv4aI+tkZhjq9J+O+aFc2tY2y0cWbhakyPCYugxf/d3zk8JMP/T4hCOL9nGHtcB/sakovgbSkO2zrtC2XEPOlp6/qc/+D2BzkS9RneRsjZLYvDAZanqCEx6DBLRxyyDyFuyC41IxSVCUD9aJsGmqQHQYoEUhrP1Co4CgrxRsQQeCGHK/4rkBX66PA8E2KpGgTB+9yAJquw69Lx2VBa7J8PSeLuvtl6tYQk3FsSSs8+TOwWqitsQ4DctEk2Qa2nl3uRSOv1Gn1Sx9xQ+Y6btnnX6zdQx+ZPxvK+5eYZixSqraCaCBA1Sv35uxKh+iM49hgRHcAX9F/xCObWWbAszLs6SypOn/Rls+9K3k=
