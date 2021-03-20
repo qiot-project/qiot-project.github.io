@@ -35,7 +35,7 @@ GEM
     ffi (1.15.0)
     forwardable-extended (2.6.0)
     gemoji (3.0.1)
-    github-pages (212)
+    github-pages (213)
       github-pages-health-check (= 1.17.0)
       jekyll (= 3.9.0)
       jekyll-avatar (= 0.7.0)
@@ -51,7 +51,7 @@ GEM
       jekyll-readme-index (= 0.3.0)
       jekyll-redirect-from (= 0.16.0)
       jekyll-relative-links (= 0.6.1)
-      jekyll-remote-theme (= 0.4.2)
+      jekyll-remote-theme (= 0.4.3)
       jekyll-sass-converter (= 1.5.2)
       jekyll-seo-tag (= 2.7.1)
       jekyll-sitemap (= 1.4.0)
@@ -146,7 +146,7 @@ GEM
       jekyll (>= 3.3, < 5.0)
     jekyll-relative-links (0.6.1)
       jekyll (>= 3.3, < 5.0)
-    jekyll-remote-theme (0.4.2)
+    jekyll-remote-theme (0.4.3)
       addressable (~> 2.0)
       jekyll (>= 3.5, < 5.0)
       jekyll-sass-converter (>= 1.0, <= 3.0.0, != 2.0.0)
@@ -230,6 +230,7 @@ GEM
       forwardable-extended (~> 2.6)
     public_suffix (4.0.6)
     racc (1.5.2)
+    rake (13.0.3)
     rb-fsevent (0.10.4)
     rb-inotify (0.10.1)
       ffi (~> 1.0)
@@ -274,6 +275,7 @@ DEPENDENCIES
   jekyll-include-cache
   jekyll-paginate-v2
   jekyll-remote-theme
+  rake
   tzinfo (~> 1.2)
   tzinfo-data
   wdm (~> 0.1.1)
