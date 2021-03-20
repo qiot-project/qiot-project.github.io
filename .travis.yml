@@ -1,6 +1,7 @@
 deploy:
   # Use Github pages deploy process
   provider: pages
+  language: generic
   # Keep builded pages
   skip-cleanup: true
   # Directory where your generated files are located

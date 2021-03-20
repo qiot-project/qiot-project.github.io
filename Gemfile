@@ -14,7 +14,6 @@ source "https://rubygems.org"
 # uncomment the line below. To upgrade, run `bundle update github-pages`.
 gem "github-pages", group: :jekyll_plugins
 gem "jekyll-remote-theme"
-gem "rake"
 # If you have any plugins, put them here!
 group :jekyll_plugins do
   gem "jekyll-include-cache"
