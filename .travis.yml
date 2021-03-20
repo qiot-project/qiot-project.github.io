@@ -2,7 +2,7 @@ language: ruby
 rvm:
 - 2.7.2 # version of `ruby'
 
-script: bundle exec rake build # execute this script on each commit
+script: bundle exec jekyll build # execute this script on each commit
 
 branches:
   only:
