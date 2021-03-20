@@ -1,14 +1,15 @@
 ---
 layout: page
-title: Blog
-background: '/assets/images/main/blog.jpg'
-permalink: /blog
+title: News
+background: '/assets/images/main/announcements.jpg'
+permalink: /announcements
 ---
 
+
+
+
 {% for post in site.posts %}
-  {% if post.category == 'blog' %}
-          
-  
+  {% if post.category == 'announcement' %}
 <article class="post-preview">
   <a href="{{ post.url | prepend: site.baseurl | replace: '//', '/' }}">
     <h2 class="post-title">{{ post.title }}</h2>
@@ -34,13 +35,11 @@ permalink: /blog
 </article>
 
 <hr>
-
   {% endif %}
 {% endfor %}
 
 <!-- Pager -->
 {% if paginator.total_pages > 1 %}
-
 <div class="clearfix">
 
   {% if paginator.previous_page %}

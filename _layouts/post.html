@@ -1,0 +1,90 @@
+---
+layout: default
+---
+
+<!-- Page Header -->
+{% if page.background %}
+<header class="masthead" style="background-image: url('{{ page.background | prepend: site.baseurl | replace: '//', '/' }}')">
+  {% else %}
+  <header class="masthead">
+    {% endif %}
+    <div class="overlay"></div>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+          <div class="post-heading">
+            <h1>{{ page.title }}</h1>
+            {% if page.subtitle %}
+            <h2 class="subheading">{{ page.subtitle }}</h2>
+            {% endif %}
+            <span class="meta">
+            
+            
+			  {% if page.author %}
+			     {% assign author = site.data.authors[page.author] %}
+			        {% if author.emailhash %}
+			            <img class="headshot" src="https://www.gravatar.com/avatar/{{ author.emailhash }}">
+			        {% endif %}
+			            <a href="#">Posted by {{ author.name }}</a>
+			    {% else %}
+			        Posted by {{ site.author }}
+			    {% endif %}
+			    on {{ page.date | date: '%B %d, %Y' }} &middot; {% include read_time.html content=page.content %}
+            
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-md-10 mx-auto">
+
+        {{ content }}
+
+        {% include share-bar.html url=page.url title=page.title %}
+        <hr>
+
+<!--         <div class="clearfix"> -->
+<!--           {% if page.previous.url %} -->
+<!--           <a class="btn btn-primary float-left" href="{{ page.previous.url | prepend: site.baseurl | replace: '//', '/' }}" data-toggle="tooltip" data-placement="top" title="{{ page.previous.title }}">&larr; Previous<span class="d-none d-md-inline"> -->
+<!--               Post</span></a> -->
+<!--           {% endif %} -->
+<!--           {% if page.next.url %} -->
+<!--           <a class="btn btn-primary float-right" href="{{ page.next.url | prepend: site.baseurl | replace: '//', '/' }}" data-toggle="tooltip" data-placement="top" title="{{ page.next.title }}">Next<span class="d-none d-md-inline"> -->
+<!--               Post</span> &rarr;</a> -->
+<!--           {% endif %} -->
+
+	  {% assign category = page.category %}
+	  {% assign posts = site.categories[category] %}
+	  {% for post in posts %}
+	    {% if post.url == page.url %}
+	      {% assign post_index0 = forloop.index0 %}
+	      {% assign post_index1 = forloop.index %}
+	    {% endif %}
+	  {% endfor %}
+	  {% for post in posts %}
+	    {% if post_index0 == forloop.index %}
+	      {% assign next_post = post %}
+	    {% endif %}
+	    {% if post_index1 == forloop.index0 %}
+	      {% assign prev_post = post %}
+	    {% endif %}
+	  {% endfor %}
+
+        <div class="clearfix">
+          {% if prev_post %}
+          <a class="btn btn-primary float-left" href="{{prev_post.url}}" data-toggle="tooltip" data-placement="top" title="{{ prev_post.title }}">&larr; Previous<span class="d-none d-md-inline">
+              Post</span></a>
+          {% endif %}
+          {% if next_post %}
+          <a class="btn btn-primary float-right" href="{{ next_post.url }}" data-toggle="tooltip" data-placement="top" title="{{ next_post.title }}">Next<span class="d-none d-md-inline">
+              Post</span> &rarr;</a>
+          {% endif %}
+        </div>
+
+      </div>
+    </div>
+  </div>
