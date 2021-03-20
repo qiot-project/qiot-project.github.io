@@ -230,7 +230,6 @@ GEM
       forwardable-extended (~> 2.6)
     public_suffix (4.0.6)
     racc (1.5.2)
-    rake (13.0.3)
     rb-fsevent (0.10.4)
     rb-inotify (0.10.1)
       ffi (~> 1.0)
@@ -275,7 +274,6 @@ DEPENDENCIES
   jekyll-include-cache
   jekyll-paginate-v2
   jekyll-remote-theme
-  rake
   tzinfo (~> 1.2)
   tzinfo-data
   wdm (~> 0.1.1)
