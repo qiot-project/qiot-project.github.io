@@ -20,7 +20,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gems-
 
-      - uses: helaili/jekyll-action@2.1.0
+      - uses: helaili/jekyll-action@2.2.0
         with:
           target_branch: 'site'
           token: ${{ secrets.GITHUB_TOKEN }}
