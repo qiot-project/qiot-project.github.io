@@ -18,7 +18,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gems-
 
-      - uses: helaili/jekyll-action@2.0.4
+      - uses: helaili/jekyll-action@2.2.0
         with:
           token: ${{ secrets.GITHUBTOKEN }}
           jekyll_src: 'develop'
