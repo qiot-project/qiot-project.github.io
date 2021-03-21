@@ -6,9 +6,11 @@ on:
       - develop
 jobs:
   deploy:
-    runs-on: ubuntu-16.04
+    runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
+        with:
+          ref: 'develop'
 
       # Use GitHub Actions' cache to shorten build times and decrease load on servers
       - uses: actions/cache@v2
@@ -20,8 +22,7 @@ jobs:
 
       - uses: helaili/jekyll-action@2.1.0
         with:
-          jekyll_src: 'develop'
           target_branch: 'site'
+          token: ${{ secrets.GITHUB_TOKEN }}
         env:
           JEKYLL_DEBUG: true
-          JEKYLL_PAT: ${{ secrets.GITHUBTOKEN }}
