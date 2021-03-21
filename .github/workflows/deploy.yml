@@ -23,6 +23,6 @@ jobs:
           token: ${{ secrets.GITHUBTOKEN }}
           keep_history: true
           jekyll_src: 'develop'
-          target_branch: 'gh-pages2'
+          target_branch: 'site'
         env:
           JEKYLL_DEBUG: true
