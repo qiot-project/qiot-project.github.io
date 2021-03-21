@@ -1,7 +1,7 @@
 ---
 layout: post
 title: 'Welcome'
-subtitle: "---"
+subtitle: "to the QIoT project"
 date: 2020-12-01
 tags: announcement
 category: announcement
@@ -10,4 +10,15 @@ background: '/assets/images/posts/quarkus-native-on-a-raspberry-pi/hardware.jpg'
 author: abattagl
 ---
 
-This is a welcome message #1
+A warm welcome to all the guests of the QIoT project community!
+
+A few months ago, back in November 2020, a small group of redhatters in love with opensource spotted the opportunity to create a forum to discuss about innovation, have fun and tackle technical and business challenges.
+
+We are seing this community growing organically and attracting more and more SMEs bringing new ideas and contribution to out PoCs.
+
+Feel free to have a look, investigate, test and leave a feedback.
+
+We look forward to have you joining the project!
+
+
+_The QIoT team_ 
