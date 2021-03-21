@@ -46,19 +46,19 @@ If for some reason you need to deploy from your local machine, follow these inst
 
 To write a blog:
 
-- create an author entry in [_data/authors.yaml](https://github.com/qiot-project/qiotio.github.io/blob/develop/_data/authors.yaml)
+- create an author entry in [_data/authors.yaml](https://github.com/qiot-project/qiot-project.github.io/blob/develop/_data/authors.yaml)
     - `emailhash` is used to fetch your picture form the Gravatar service
-- create an blog entry under [_posts](https://github.com/qiot-project/qiotio.github.io/tree/develop/_posts)
+- create an blog entry under [_posts](https://github.com/qiot-project/qiot-project.github.io/tree/develop/_posts)
     -the file name is `yyyy-mm-dd-slug.adoc`
+- `category` must be **blog**. Other categories reserved to the project team you want to be aware of:
+  - `announcement` - official project announcements
+  - `project` - QIoT subprojects
+  - `usecase` - Posts documenting the QIoT use-cases
 - `tags` should be used with some care as an archive page is created for of them. Below are some basic rules to try follow:
-  - `qiot-<USE_CASE>-release` used for QIoT release blogs
-  - `announcement` used for general announcement with some impact.
-  - `user-story` used for stories from users/companies adopting Quarkus.
-  - `development-tips` used for blogs with tips to develop using Quarkus or Quarkus itself. 
   - add a tech specific, like `kafka`, if your post has a significant mention/relevance to that technology.
   - tags is space separated list `tags:extension grpc`
   - tags must be in lowercase
-- it's in asciidoc format, there is an example as shown with [2019-06-05-quarkus-and-web-ui-development-mode.adoc](https://github.com/qiot-project/qiotio.github.io/blob/develop/_posts/2019-06-05-quarkus-and-web-ui-development-mode.adoc)
+- it's in asciidoc format, there is an example as shown with [2021-03-17-quarkus-native-on-a-raspberry-pi.adoc](https://github.com/qiot-project/qiot-project.github.io/blob/develop/_posts/2021-03-17-quarkus-native-on-a-raspberry-pi.adoc)
   - Be aware that the `date` attribute in the asciidoc preamble defines when the article will be published. Use a present date while writing your article to test locally, then switch to the actual target date before submitting. 
 - send a pull request against the develop branch and voilà
 
@@ -66,9 +66,21 @@ To write a blog:
 
 Please read [CONTRIBUTING.md](https://github.com/qiot-project/qiotio.github.io/blob/master/CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests to us.
 
-**Important:** the guides are maintained in the main Quarkus repository and pull requests should be submitted there:
-https://github.com/qiot-project/quarkus/tree/master/docs/src/main/asciidoc.
-
 ## License
 
 This website is licensed under the [Creative Commons Attribution 3.0](https://creativecommons.org/licenses/by/3.0/).
+
+## Get in touch with the QIoT Team:
+
+**Website**: qiot-project.github.io
+
+**Email**: qiotproject@google.com
+
+**Mailing** list: qiotproject@googlegroups.com
+
+**Twitter**: @qiotproject
+
+**Slack**: [<img src="https://github.com/qiot-project/qiot-project.github.io/blob/develop/assets/images/main/Slack_RGB-149x61-87ef42a.png">](https://join.slack.com/t/quarkusforiottechteam/shared_invite/zt-nuajdyqf-NfQL0dcfCUjFSgoBNng11A)
+
+**Weekly meeting**: [<img src="https://www.google.com/calendar/images/ext/gc_button1_en.gif">](https://calendar.google.com/event?action=TEMPLATE&amp;tmeid=dmFxMzFlZGkxOHVubDcyYm50bjdrcTJxYThfMjAyMTAzMjVUMTYwMDAwWiBxaW90cHJvamVjdEBt&amp;tmsrc=qiotproject%40gmail.com&amp;scp=ALL)
+
