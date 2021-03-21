@@ -23,5 +23,5 @@ jobs:
           token: ${{ secrets.GITHUBTOKEN }}
           jekyll_src: 'develop'
           target_branch: 'gh-pages2'
-          env:
-            JEKYLL_DEBUG: true
+        env:
+          JEKYLL_DEBUG: true
