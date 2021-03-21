@@ -21,6 +21,7 @@ jobs:
       - uses: helaili/jekyll-action@2.2.0
         with:
           token: ${{ secrets.GITHUBTOKEN }}
+          keep_history: true
           jekyll_src: 'develop'
           target_branch: 'gh-pages2'
         env:
