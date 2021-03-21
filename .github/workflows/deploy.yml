@@ -1,0 +1,25 @@
+on:
+  schedule:
+    - cron: '0 0 * * *'
+  push:
+    branches:
+      - develop
+jobs:
+  deploy:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+
+      # Use GitHub Actions' cache to shorten build times and decrease load on servers
+      - uses: actions/cache@v1
+        with:
+          path: vendor/bundle
+          key: ${{ runner.os }}-gems-${{ hashFiles('**/Gemfile') }}
+          restore-keys: |
+            ${{ runner.os }}-gems-
+
+      - uses: helaili/jekyll-action@2.0.4
+        with:
+          token: ${{ secrets.GITHUBTOKEN }}
+          jekyll_src: 'develop'
+          target_branch: 'gh-pages2'
