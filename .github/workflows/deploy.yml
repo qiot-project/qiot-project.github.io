@@ -24,5 +24,3 @@ jobs:
         with:
           target_branch: 'gh-pages'
           token: ${{ secrets.GITHUB_TOKEN }}
-        env:
-          JEKYLL_DEBUG: true
