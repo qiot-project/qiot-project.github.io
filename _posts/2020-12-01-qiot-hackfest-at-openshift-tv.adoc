@@ -10,4 +10,12 @@ background: '/assets/images/posts/quarkus-native-on-a-raspberry-pi/hardware.jpg'
 author: abattagl
 ---
 
+The *QIoT Community* streams from a business initiative released and ran by Red Hat.
+
+This initiative has been piloted on Sep 2020 for 12 selected teams, each made up of 3-5 people, challenged to implement an Edge Computing solution using _enterprise_ and _opensource_ technologies.
+
+The top 3 teams have been awarded and invited to join us in a discussion hosted by https://www.openshift.com/streaming/twitch[*openshift tv*]
+
+Watch the episode linked below to get an overview of the first draft of the QIoT project and the initial idea behind the QIoT Hackfest event!
+
 video::c7B7EohWYV4[youtube, width=640, height=480]
