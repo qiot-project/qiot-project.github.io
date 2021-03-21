@@ -77,6 +77,26 @@
             </a>
           </li>
           {% endif %}
+          {% if site.google_group %}
+          <li class="list-inline-item">
+            <a href="https://groups.google.com/u/0/g/qiotproject/{{ site.google_group }}">
+              <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-2x"></i>
+                <i class="fab fa-google fa-stack-1x fa-inverse"></i>
+              </span>
+            </a>
+          </li>
+          {% endif %}
+          {% if site.calendar_invite %}
+          <li class="list-inline-item">
+            <a href="{{ site.calendar_invite }}">
+              <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-2x"></i>
+                <i class="fas fa-calendar-plus fa-stack-1x fa-inverse"></i>
+              </span>
+            </a>
+          </li>
+          {% endif %}
         </ul>
         <p class="copyright text-muted"><i class="fab fa-creative-commons"></i><i class="fab fa-creative-commons-by"></i> <a href="https://creativecommons.org/licenses/by/3.0/" target="_blank">CC by 3.0</a> | <a href="https://www.redhat.com/en/about/privacy-policy">Privacy Policy</a> | Copyright &copy; {{ site.author }} {{ 'now' | date: "%Y" }}</p>
       </div>

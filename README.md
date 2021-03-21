@@ -76,7 +76,7 @@ This website is licensed under the [Creative Commons Attribution 3.0](https://cr
 
 **Email**: qiotproject@google.com
 
-**Mailing** list: qiotproject@googlegroups.com
+**Mailing list**: qiotproject@googlegroups.com
 
 **Twitter**: @qiotproject
 
