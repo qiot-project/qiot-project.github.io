@@ -26,6 +26,8 @@ baseurl: "" # the subpath of your site, e.g. /blog
 url: "" # the base hostname & protocol for your site, e.g. http://example.com
 twitter_username: qiotproject
 github_username:  qiot-project
+slack_link: quarkusforiottechteam/shared_invite/zt-nuajdyqf-NfQL0dcfCUjFSgoBNng11A
+
 remote_theme: StartBootstrap/startbootstrap-clean-blog-jekyll
 
 # Build settings
