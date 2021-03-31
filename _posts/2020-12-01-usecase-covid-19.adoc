@@ -340,6 +340,8 @@ Highlights
 * Support for ACME (Let's Encrypt), HashiCorp Vault, Venafi, self signed and internal certificate authorities.
 * Extensible to support custom, internal or otherwise unsupported CAs.
 
+More about out cert-manager implementation https://qiot-project.github.io/blog/qiot-cert-manager/[here]
+
 More about Cert-Manageranager can be found https://cert-manager.io/[here].
 
 
@@ -472,13 +474,41 @@ image::/assets/images/posts/usecase-covid-19/datacenter-v2-telemetry-production.
 
 ### Telemetry validation and enrichment
 
-WIP
+In order to reduce the network traffic and improve the process of transmitting data through the network, the data contained in the telemetry must be reduced to the minimum meaningful information:
+
+* Station ID
+* instant
+* telemetry-specific data
+
+for each and every of those key/value pair we implemented a validator, implicit or esplicit, that checks the data as umarshal-time.
+
+The above is possible using the mashalling/unmarshalling features coming with the java-based json libraries belonging to the Quarkus Universe.
+
+The data contained in the telemetry sent by the edge device are, indeed, not complete/extended enough for a dashboard or analytic process and thus we went for the implementation of a route-like service which validates and enriches the incoming telemetry.
+
+For each and every telemetry belonging to its specific domain, the <<Collector Service>>:
+
+* validates the telemetry unmarshalling the raw string;
+* connects to the <<Station Service>> to gather the data to enrich the data object;
+* marshals the enriched object into a json-based string
+* produces a new message to the internal streaming service;
 
 image::/assets/images/posts/usecase-covid-19/datacenter-v2-telemetry-validation-enrichment.png[width=75%]
 
 ### Scalability of the data-flow
 
-WIP
+The main function of A-MQ streams is to provide to the entire namespace (and, eventually, to other namespaces requesting access to the internal data) a scalable dataflow management system.
+In the diagram snippet below, you can see how scalability works in terms of streaming service and consumers of the telemetry.
+
+It would definitely be easier to develop the connection between datasource and database using plugin, but would definitely cut off most of the enterprise grade features a system must definitely have.
+
+The scalability concept applies to the <<Storer Service>> exactly in the same way it applies to the collectors.
+
+Each storer service is responsible for its specific data and is just one example of subscriber from the platform extensibility perspective.
+
+About the timeseries database, we decided to go for une bucket and two different series, dedicated to each telemetry.
+
+An additional telemetry would require a new series to be created.
 
 image::/assets/images/posts/usecase-covid-19/datacenter-v2-dataflow.png[width=75%]
 
