@@ -1,0 +1,130 @@
+---
+layout: post
+title: 'Quarkus Secure on the Edge'
+subtitle: "---"
+date: 2021-03-17
+tags: security quarkus cert manager kubernetes
+category: blog
+synopsis: Secure your application with Cert Manager
+background: '/assets/images/posts/quarkus-native-on-a-raspberry-pi/hardware.jpg'
+author: mmascia
+---
+
+## Intro
+
+This is the first part around Security on the Edge topics.
+
+When discussing IoT device and edge computing, secure end-to-end device connectivity is critical to consider in this extra layer of complexity.
+How is it possible to automate and securely integrate thousand of devices?
+Quarkus IoT team decided for the certificate management to choose https://cert-manageri.io[cert-manager], which is built on top of Kubernetes to provide 'certificates as services' developers working in Kubernetes cluster.
+
+Here the Cert Managers Highlight:
+
+* Provide easy to use tools to manage certificates.
+* A standardised API for interacting with multiple certificate authorities (CAs).
+* Gives security teams the confidence to allow developers to self-server certificates.
+* Support for ACME (Let's Encrypt), HashiCorp Vault, Venafi, self-signed and internal certificate authorities.
+* Extensible to support custom, internal or otherwise unsupported CAs. 
+
+
+## Architecture Overview
+
+image:/assets/images/posts/qiot-cert-manager/architecture.png[width=100%]
+
+. The device sends a request to Registration Service API. Only devices with the proper Certificate are allowed to send the request.
+. The registration based on the device request payload starts to create the Certificate resource, and it watches the resource for an update.
+. The `cert-manager` operator detects the new Certificate, and it starts the reconciliation process.
+. Based on the `Certificate` and `Issuer` information, the `cert-manager` creates a CSR and requests the Certificate to PKI.
+. The `cert-manager` once get the Certificate it updates the secret with the correct key, Certificate and Certificate authority.
+. Due to the asynchronous mechanism, the registration service will wait until the certificate information is available in the secret resource.
+. The registration sends the device certificate as a response to the device. 
+
+### Issuer
+
+`Issuer, and `ClusterIssuer`, are Kubernetes resources representing certificate authorities (CAs) that can generate signed certificates by honouring certificate signing requests. All certificates require a referenced issuer that is in a ready condition to attempt to keep the request.
+An example of an Issuer type is CA. A simple CA Issuer is as follows:
+
+[source,yaml]
+----
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: qiot-ca-sample
+spec:
+  ca:
+    secretName: qiot-ca
+----
+
+This is a simple `Issuer` that will sign certificates based on a private key. The certificate stored in the secret `ca-key-pair` can then be used to trust newly signed certificates by this `Issuer` in a Public Key Infrastructure (PKI) system.
+
+An `Issuer` is a namespaced resource, and it is not possible to issue certificates from an `Issuer` in a different namespace. It means you will need to create an `Issuer` in each namespace you wish to obtain `Certificate`.
+
+NOTE: Quarkus IoT team decided to use Hashicorp Vault as internal PKI. The next part will explore in details this integration.
+
+### Certificate
+
+`Certificate` that define the desired x509 certificate which will be renewed and kept up to date. A `Certificate` is a namespaced resource that references an `Issuer` or `ClusterIssuer` that determine what will be honouring the certificate request.
+When a `Certificate` is created, a corresponding `CertificateRequest` resource is created by `cert-manager` containing the encoded x509 certificate request.
+Here is one example of a Certificate resource.
+
+[source,yaml]
+----
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: qiot-device-sample
+spec:
+  dnsNames:
+    - mydeviceid.qiot-project.github.io
+    - mydeviceid,qiot-project.svc
+  secretName: qiot-device-sample-cert
+  issuerRef:
+    name: qiot-ca-sample
+----
+
+This `Certificate` will tell `cert-manager` to attempt to use the `Issuer` named `qiot-ca-sample` to obtain a certificate key pair for the `mydeviceid.qiot-project.github.io` and `mydeviceid,qiot-project.svc` domains. If successful, the resulting TLS key and certificate will be stored in secret named `qiot-device-sample-cert`, with key of `tls.key`, and `tls.crt` respectively.
+
+This secret will live in the same namespace as the `Certificate` resource. Additionally, if the Certificate Authority is known, the corresponding CA certificate is stored in secret with key `ca.crt`.
+
+The `dnsNames` field specifies a list of Subject Alternative Names to be associated with the certificate.
+
+The referenced `Issuer` must exist in the same namespace as the `Certificate`. A `Certificate` can alternatively reference a `ClusterIssuer` that is non namespaced and can be referenced from any namespace.
+
+### CertificateRequest
+
+The `CertificateRequest` is a namespaced resource in cert-manager used to request x509 certificates from an `Issuer`. The resource contains a
+base64 encoded string of a PEM encoded certificate request sent to the referenced issuer. 
+A successful issuance will return a signed certificate based on the certificate signing request.
+`CertificateRequest` are typically consumed and managed by controllers or other systems and should not be used by humans - unless specifically needed. A simple `CertificateRequest` looks like the following:
+
+[source,yaml]
+----
+apiVersion: cert-manager.io/v1
+kind: CertificateRequest
+metadata:
+  name: qiot-device-sample-wnjp5
+spec:
+  issuerRef:
+    name: qiot-ca-sample
+  request: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURSBSRVFVRVNULS0tLS0KTUlJQ3ZUQ0NBYVVDQVFBd0xERXFNQ2dHQTFVRUF4TWhiWGxrWlhacFkyVnBaQzV4YVc5MExYQnliMnBsWTNRdQpaMmwwYUhWaUxtbHZNSUlCSWpBTkJna3Foa2lHOXcwQkFRRUZBQU9DQVE4QU1JSUJDZ0tDQVFFQTFCbngyNlUwCk5rUUxrbzZzZlExK1RCUE5Ud0t6NVpSRnhQK1VycTRCL0U4Vm5RNGt3SUhzSXJXMHozRkE3WC9GUTh6ZEtRNjYKMCtyRkFpQ3ROVDllWEZWRVpmVUowNC9Kb21sc3pVV2JDYmhZejcvVGhSTHE0Nm44U0FTclVCaUNDU2JFQTBsOQp1ZFg1ZEFYT3QxVmxZeVdhTTZqMU52QldvbC9xMGZJREhxaVNOZU1lUFB1b0FIcVQrVGRFbzg1dGQ0U2YvN21zCnJlN1gwNHFadWRHQ1hhc0tDMnErZitsYmd2NmNCaDRxZDNsVHZNQ3JYclZuTkpTRElLY2xMYXE2MzV0d1Q2L1IKSFU5TDB3N2hFR1pQQXR1OXJMZnNZOFJPOXJGWnJZZzVPUzVSME40bHFsQlBucStmdFBUMEdaQlBhSysxWDJDaApDejRMVFR1S2ZWaldRUUlEQVFBQm9Fd3dTZ1lKS29aSWh2Y05BUWtPTVQwd096QXNCZ05WSFJFRUpUQWpnaUZ0CmVXUmxkbWxqWldsa0xuRnBiM1F0Y0hKdmFtVmpkQzVuYVhSb2RXSXVhVzh3Q3dZRFZSMFBCQVFEQWdXZ01BMEcKQ1NxR1NJYjNEUUVCQ3dVQUE0SUJBUUF3VERRMUthM2VQanVWL2J3dDM5OVpWK2MrZS9xaTZWMXRpR3JPNVVkbApPZUlmOU1vNEwwM2lHVHB1aHA1UG1CcnY3cjgrM3NGVGxidXBMNFFqRVZXTHliSGRaZGFFK3RuNCtBL2pQQ1lPClZHdno4OHZoRnlPOHNJT0pranVNZjFKcVMyMGlOVG5hdWJjVVJHeEtXTkdGd3dYQ3hHYm5WaW5laVpjc1M2UUwKd2tCbnhLWVZ3QW90bVlZZDFWK1pWN3dFWmpoakRGaXpXTW1tU0lMM0RWelF2VnFIejBGQWIzemkwNVM1YkJhdgoyYkZ2WGRvTXVqVC9KZU1WWlErQ3A1TDRZeHJxTitIOFBMaHlXQWE3aSt6TGN2U2J1OHVHTkxuZGxKeUZKcytwCkdVWWpLaU10QjRiZlBNeXhoQ254bzZoZnNIMGVrTFBxVU5lZEtRb0JKeVBrCi0tLS0tRU5EIENFUlRJRklDQVRFIFJFUVVFU1QtLS0tLQo=
+----
+
+This `CertificateRequest` will make cert-manager attempt to request the `Issuer` `qiot-ca-sample`.
+The resource also exposes the option for stating the certificate as CA, Key Usages, and requested validity duration. 
+Successful issuance of the certificate signing request will cause an update to the resource, setting the status with the signed certificate, the CA of the certificate (if available), and setting the Ready condition to True,  whether the issuance of the certificate signing request was successful or no.
+
+### Registration Service
+
+The Registration Service is the entry point for each device that would like to send the data to our IoT platform.
+
+The purpose is to register (of course) the device to the system with an identification number and provide the correct certificate to communicate with the MQTT Broker.
+
+The Registration API is protected by Mutual TLS, which means that every device comes with a predefined certificate at provisioning time. This integration allows us an extra security layer that only the recognized device can register to the platform.
+
+## What's Next
+
+The next part will look at Hashicorp Vault Integration, our choice for internal PKI Infrastructure.
+
+## Reference
+
+* https://cert-manager.io/
