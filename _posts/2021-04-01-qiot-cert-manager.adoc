@@ -2,7 +2,7 @@
 layout: post
 title: 'Quarkus Secure on the Edge'
 subtitle: "---"
-date: 2021-03-17
+date: 2021-04-01
 tags: security quarkus cert manager kubernetes
 category: blog
 synopsis: Secure your application with Cert Manager
@@ -16,7 +16,7 @@ This is the first part around Security on the Edge topics.
 
 When discussing IoT device and edge computing, secure end-to-end device connectivity is critical to consider in this extra layer of complexity.
 How is it possible to automate and securely integrate thousand of devices?
-Quarkus IoT team decided for the certificate management to choose https://cert-manageri.io[cert-manager], which is built on top of Kubernetes to provide 'certificates as services' developers working in Kubernetes cluster.
+Quarkus IoT team decided for the certificate management to choose https://cert-manager.io[cert-manager], which is built on top of Kubernetes to provide 'certificates as services' developers working in Kubernetes cluster.
 
 Here the Cert Managers Highlight:
 
@@ -33,7 +33,7 @@ image:/assets/images/posts/qiot-cert-manager/architecture.png[width=100%]
 
 . The device sends a request to Registration Service API. Only devices with the proper Certificate are allowed to send the request.
 . The registration based on the device request payload starts to create the Certificate resource, and it watches the resource for an update.
-. The `cert-manager` operator detects the new Certificate, and it starts the reconciliation process.
+. The `cert-manager` operator detects the new `Certificate`, and it starts the reconciliation process.
 . Based on the `Certificate` and `Issuer` information, the `cert-manager` creates a CSR and requests the Certificate to PKI.
 . The `cert-manager` once get the Certificate it updates the secret with the correct key, Certificate and Certificate authority.
 . Due to the asynchronous mechanism, the registration service will wait until the certificate information is available in the secret resource.
@@ -41,7 +41,7 @@ image:/assets/images/posts/qiot-cert-manager/architecture.png[width=100%]
 
 ### Issuer
 
-`Issuer, and `ClusterIssuer`, are Kubernetes resources representing certificate authorities (CAs) that can generate signed certificates by honouring certificate signing requests. All certificates require a referenced issuer that is in a ready condition to attempt to keep the request.
+`Issuer`, and `ClusterIssuer`, are Kubernetes resources representing certificate authorities (CAs) that can generate signed certificates by honouring certificate signing requests. All certificates require a referenced issuer that is in a ready condition to attempt to keep the request.
 An example of an Issuer type is CA. A simple CA Issuer is as follows:
 
 [source,yaml]
@@ -76,7 +76,7 @@ metadata:
 spec:
   dnsNames:
     - mydeviceid.qiot-project.github.io
-    - mydeviceid,qiot-project.svc
+    - mydeviceid.qiot-project.svc
   secretName: qiot-device-sample-cert
   issuerRef:
     name: qiot-ca-sample
