@@ -34,7 +34,7 @@ With some boundaries:
 * *Fork* the https://github.com/qiot-project/qiot-ubi-use-case-proposals[repository] we created to collect all the proposal submissions;
 * Create a *sub-folder under "2021"* and name it with the name of your proposal and place all your submission content there:
 ** Create *README* to argument the followings:
-*** Vertical (e.g.: manifacturing, automotive, telco, healthcare, etc) the use-case falls into;
+*** Vertical (e.g.: manufacturing, automotive, telco, healthcare, etc) the use-case falls into;
 *** Use-case;
 *** Technology stack;
 ** Add everything that could draw a clear and understandable big picture of your proposal.
