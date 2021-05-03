@@ -30,7 +30,7 @@ slack_link: quarkusforiottechteam/shared_invite/zt-nuajdyqf-NfQL0dcfCUjFSgoBNng1
 google_group: qiotproject
 calendar_invite: 'https://calendar.google.com/event?action=TEMPLATE&tmeid=dmFxMzFlZGkxOHVubDcyYm50bjdrcTJxYThfMjAyMTAzMjVUMTYwMDAwWiBxaW90cHJvamVjdEBt&tmsrc=qiotproject%40gmail.com&scp=ALL'
 
-remote_theme: StartBootstrap/startbootstrap-clean-blog-jekyll
+# remote_theme: StartBootstrap/startbootstrap-clean-blog-jekyll
 
 # Build settings
 error_mode: strict
