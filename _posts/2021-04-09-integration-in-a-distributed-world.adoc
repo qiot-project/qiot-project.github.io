@@ -1,0 +1,106 @@
+---
+layout: post
+title: 'Integration in a Distributed World'
+subtitle: "How Red Hat Integration canmake life easier"
+date: 2021-04-09
+category: blog
+synopsis: Integration in a Distributed World
+tags: 
+background: '/assets/images/posts/integration-in-a-distributed-world/background.png'
+author: ecrosbie
+---
+
+:toc:
+
+## What is Integration
+
+```integration (noun) - "the process of bringing together the component sub-systems into one system ```
+
+Integration unlocks the true potential of modern enterprises. Time and time again we see the same stories pop-up,
+the likes of Uber, Air BnB, Amazon, Netflix. How these vastly different businesses used modern technologies and methodologies,
+to massively distrupt their respective markets and outperform and outlast long standing companies.
+We are seeing the value, and almost the neccesity that every company these days, should first and foremost be a "software company".
+
+But being a software company will only get you so far. A company could be highly reliant on outdated, inefficient technology.
+This will enventually become a burden, and the technology will not serve the company, but rather, the company will serve the technology. 
+
+That's not a good position to be in.
+
+So where does Integration come into play?
+
+There are 3 points that are very apt here:
+1. “Agility” is the most important business capability today
+2. Every organization has integration problems to solve
+3. Centralized doesn't scale
+
+
+
+
+## Red Hat Integration
+
+Red Hat have a number of products to solve your Integration problems, but the 3 main pillars, or product types, fall into the categories
+of: Distributed Integration, Containers and APIs
+
+image:/assets/images/posts/integration-in-a-distributed-world/architecture.png[width=100%]
+
+
+### Distributed Integration
+
+In all modern integration architectures we see a shift away from centralized integration. While a centralized integration
+bus has a number of benefits, it is becoming less suitable to modern use cases. 100s of Applications are becomes 10,000s of microservices
+Speed, agility and flexibility are key. With a heavy, cumbersome ESB, maintenance and management can be a headache as the ESB 
+keeps getting larger and more complex with every service or data point that is added. With ESBs we have a smart pipe, with dumb endpoints.
+We need to move towards dumb pipes and smart endpoints.
+
+If we deploy our integration service across a distributed architecture it reduces the likelyhood of it becoming a bottleneck.
+We can scale up and down much easier by adding new deployments or replicas to our services. We also gain added resiliancy
+as a by-product, as (depending on the nature of our deployment), our service can be distributed across multiple clouds, datacenters,
+or geos.
+
+
+### Containers
+
+Containerizing our services allows us massive portability and repeatability across multiple deployment targets. Openshift 
+being Red Hat's Container Platform facilitates the distributed nature of our integration deployment, and any deployment for that matter.
+OCP can be run across mulitple clouds, on RHEL or bare metal servers. And wherever OCP is, our Integration products can be deployed.
+
+image:/assets/images/posts/integration-in-a-distributed-world/distributed-integration.png[width=100%]
+
+### APIs
+
+API based integration is how we move from smart pipes to smart endpoints. We hand off responsibility to each service or data point
+to create and uphold its API contract. This tells us how to interact with the service and what data formats and structures it expects.
+The contracts themselves can be version controlled, allowing backwards compatibility with other older services while also creating and
+exposing new APIs.
+
+Once we have moved heavy business logic and communication contracts out of our integration layer, it can work much faster and more efficiently.
+
+
+## Distributed World
+
+What we see driving more need for a modern integration architecture is the world of IOT. Now instead of 10,000s of microservices we are 
+seeing millions if not billions of connected devices, sensors, services. All collecting and sending data across your architecture.
+And in this case especially 'Centralized Doesn't Scale'. This mantra applies not only to the architecture, but also to the people! 
+
+image:/assets/images/posts/integration-in-a-distributed-world/people.png[width=100%]
+
+While a centralised Integration Team is highly efficient, it may not be agile. And sooner or later it will become a bottleneck.
+
+How can we fix this?
+
+In an ideal world, you can Do-It-Yourself. You don't need to wait for the integration team to build the API or transformation layer that
+you need for your application. You can create it yourself, using Low-Code or No-Code tooling. Having this type of technology available
+will greatly reduce the load on the centralised team, and also increase the agility speed and time-to-market of new applications and services.
+
+
+## Learn more...
+
+While we mainly focus on the 3 main products in our Integration Bundle (Fuse, Openshift and 3scale), there are
+mainy more products to accomplish a miriad of tasks and address specific problems with your integration architecture.
+
+image:/assets/images/posts/integration-in-a-distributed-world/portfolio.png[width=100%]
+
+
+If you would like to learn more about this products or features why not check out our
+coding playground - http://learn.openshift.com[learn.openshift]
+
