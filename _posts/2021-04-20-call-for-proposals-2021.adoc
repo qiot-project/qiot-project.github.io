@@ -1,0 +1,50 @@
+---
+layout: post
+title: 'Call for proposals 2021'
+subtitle: "Submit your proposal for a new use-case"
+date: 2021-04-20
+tags: announcement
+category: announcement
+synopsis: Proposals
+background: '/assets/images/posts/call-for-proposals-2021/background.jpg'
+author: abattagl
+---
+
+Hi everyone!
+
+It's time for the QIoT community to focus on a new Edge Computing use-case.
+
+We are calling you all for proposals as we believe our contribution should meet the expectations and the needs and should help addressing risks and challenges of the Edge Computing ecosystem: Subject Matter Experts, System Integrators, Customers, etc
+
+A new use-case is a great stepping-stone to modernize existing architectures and keep improving the blueprints adhering to the latest specs. To give you a few examples:
+
+* Certificate provisioning and mutual authentication
+* Edge workload distribution
+* Cloud-native events
+* Distributed CI/CD
+* Pipelines and charts
+
+With some boundaries: 
+
+ * [underline]#Container Platform# of choice: *Openshift*
+ * [underline]#Cloud-Native framework# of choice: *Quarkus*
+
+## Proposal submission: How to
+
+* *Fork* the https://github.com/qiot-project/qiot-ubi-use-case-proposals[repository] we created to collect all the proposal submissions;
+* Create a *sub-folder under "2021"* and name it with the name of your proposal and place all your submission content there:
+** Create *README* to argument the followings:
+*** Vertical (e.g.: manufacturing, automotive, telco, healthcare, etc) the use-case falls into;
+*** Use-case;
+*** Technology stack;
+** Add everything that could draw a clear and understandable big picture of your proposal.
+* Submit a PR to get your content merged;
+
+We've set up *GitHub Discussion* on the https://github.com/qiot-project/qiot-ubi-use-case-proposals/discussions[repository] to encourage and support open discussion and debate around the submitted proposals. 
+
+The best proposals will be put to the vote by public survey.
+
+[underline]#*Deadline: May 24th 2021*#
+
+
+_The QIoT team_
