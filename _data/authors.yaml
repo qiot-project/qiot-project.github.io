@@ -12,3 +12,10 @@ mmascia:
   job_title: "Principal Consultant"
   twitter: "eye0fRa"
   bio: "Mattia is a Principal Consultant in Red Hat, with over 13 years of enterprise IT experience, has deep knowledge of open source software in cloud, middleware and integration. He is an OpenShift specialist and technically competent developer who consistently strives for quality in his work, he is also a team player who is always prepared to help and encourage colleagues. In his current role design and implement solutions using cloud technologies, design principles, integration points, and automation methods."
+ecrosbie:
+  name: "Eoin Crosbie"
+  email: "ecrosbie@redhat.com"
+  emailhash: "67908970d2e279b0a7b64c2549c3f9ea"
+  job_title: "EMEA Technical Partner Development Manager"
+  twitter: "Eoin_Crosbie"
+  bio: "I help Red Hat Partners get stuff done with our tech!"
