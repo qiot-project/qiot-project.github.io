@@ -1,0 +1,279 @@
+---
+layout: post
+title: 'Install Single Node Openshift on Intel® 10th gen NUC'
+subtitle: "---"
+date: 2021-09-27
+tags: qiot sno nuc howto
+category: blog
+synopsis: Install Single Node Openshift on Intel® 10th gen NUC
+background: '/assets/images/main/rh-hackfest-banners_3840x2160.png'
+author: mparram
+---
+
+:toc:
+
+.
+
+# Introduction
+
+The next guide will show how to deploy a Single Node Openshift (SNO) to a physical Intel® NUC.
+
+# Prerequisites:
+
+Minimum prerequisites for the installation of single node openshift must be respected so I decided to provision a set of hardware components powerful enough to run services on the platform once it's been installed from both the computational power and the resources availability perspective. 
+
+Let's have a look at what it's needed to install Single Node Openshift on a 10th gen Intel® NUC. 
+
+## Hardware
+
+[cols="1,1"]
+|===
+|Intel NUC model | NUC10i7FNK
+|Memory capacity | 64.00 GiB
+|CPU model name | Intel(R) Core(TM) i7-10710U CPU @ 1.10GHz
+|CPU cores and clock speed | 6 cores (12 with hyper-threaded) at 4,700 MHz
+|CPU architecture | x86_64
+|SSD Disk | Samsung SSD M.2 256GB
+|===
+
+image::/assets/images/posts/usecase-manufacturing/NUC.jpg[width=100%]
+
+## Single Node Openshift (SNO) 4.8+
+
+SNO requires the following minimum host resources: 
+
+
+[cols="1,1"]
+|===
+|# Virtual CPU | 8
+|Virtual RAM | 32 GB
+|Storage | 120 GB 
+|===
+
+## Additional requirements:
+
+In order to go through the installation process, the following additioal components are required:
+
+* And a Red Hat account, with access to https://console.redhat.com/openshift/
+
+* USB flash drive >= 2GB
+
+* DHCP is required like IPI (Installer Provisioned Infrastructure) installations
+
+## Optional requirements
+
+The following are optional requirements, but highly recommended:
+
+* Generated a ssh key to connect to the node from your computer with ssh
+
+Example: 
+
+[source,sh]
+----
+$ ssh-keygen -t ed25519 -N '' -f ~/.ssh/id_rsa 
+
+$ cat ~/.ssh/id_rsa.pub
+ssh-rsa AAAAB3NzaC1yc[...]
+----
+
+# The discovery ISO
+
+Deploying Openshift clusters with a discovery ISO is a functionality in Tech-Preview.
+
+The above taking into consideration that the fully SNO installation is a proof-of-concept without high availability or support.
+
+The use of the discovery ISO will help us especially in this case by not working with VMs.
+
+We will burn it to the USB memory to launch the installation process, without any interaction required until the SNO installation ends.
+
+## Create the ISO
+
+To create the discovery ISO you need to login and access  https://console.redhat.com/openshift/
+
+Once you are there, click on the “Create cluster” button, select *Datacenter*.
+
+Then under Assisted Installer, push the new *Create cluster* button.
+
+image::/assets/images/posts/sno-on-nuc10/img01.png[width=100%]
+
+
+You'll be asked to fill a form with the following info:
+
+* Set the Cluster name and Base domain. 
+* Mark the checkbox to install single node OpenShift (SNO) and accept the warning message.
+* Select the OpenShift version (Tested with OpenShift 4.8+).
+* Edit pull secret (no need to).
+
+image::/assets/images/posts/sno-on-nuc10/img02.png[width=100%]
+
+Click Next to continue to the Host discovery section:
+
+image::/assets/images/posts/sno-on-nuc10/img03.png[width=100%]
+
+Then click on button “Generate Discovery ISO”
+
+Select *Minimal image file*.
+
+Paste your public key (check <<Optional requirements>> section)
+
+In case you need to add a proxy configuration for your setup, this is the time to define it.
+
+image::/assets/images/posts/sno-on-nuc10/img04.png[width=100%]
+
+Click on “Generate Discovery ISO” button, a temporary download link will appear
+
+image::/assets/images/posts/sno-on-nuc10/img05.png[width=100%]
+
+Copy the field “Command to download the ISO” or download to your PC with button “Download Discovery ISO”
+
+image::/assets/images/posts/sno-on-nuc10/img06.png[width=100%]
+
+Once the download of the Discovery ISO is complete, you are ready to burn it to the USB flash drive.
+
+
+## Burn ISO to USB flash drive
+
+Obviously, start by connecting your USB flash drive to your computer.
+
+Fedora / RHEL:
+
+Let’s check the path of the device with “sudo fdisk -l”.
+
+image::/assets/images/posts/sno-on-nuc10/img07.png[width=100%]
+
+You need to identify the path of type /dev/sdN, in my case is /dev/sda if yours takes another path, replace it in the next step.
+
+Let’s burn the ISO to the USB with the command “sudo dd if=discovery_image_sno01.iso of=/dev/sda”
+
+image::/assets/images/posts/sno-on-nuc10/img08.png[width=100%]
+
+# Installation
+
+The whole installation process is performed in several phases. 
+
+Each and every installation phase can be monitored and customized from the https://console.redhat.com/openshift/[remote interface].
+
+This section will guide you through the installation process and will highlight the potential issues and customization you'll be asked to apply to the SNO configuration.
+
+## Start the installation
+
+Plug the USB flash drive to the Intel NUC, don’t forget to connect also the ethernet cable. 
+
+You'll also need to connect a keyboard and a monitor to perform take preliminary actions in order to make the NUC boot from the USB flash drive:
+
+* Power the NUC on;
+* When the NUC logo shows on the screen, Press F10 to access the boot menu;
+** If you are keen to apply persistent changes to the boot menu, press F2 instead and enter the BIOS menu;
+** *Do not apply any changes to the default BIOS performance config*, just set up the Boot section accordingly;
+* Select your USB flash drive from the boot menu to boot from it;
+* Return to the browser at the *Host Discovery* page;
+* After a short time the status of your host will turn into *Ready*.
+
+### The Overview page
+
+image::/assets/images/posts/sno-on-nuc10/img09.png[width=100%]
+
+Click Next to continue to Networking section.
+
+### The Networking page
+
+In the networking section you'll be asked to pick up a subnet in the *Available subnets* section.
+
+image::/assets/images/posts/sno-on-nuc10/img10.png[width=100%]
+
+Also you can modify the cluster and services networks, or change the default CNI from Openshift SDN to OVN-Kubernetes.
+
+It’s also fine to leave as default.
+
+Click on the Next button.
+
+### The Review page
+
+In this page you can review all the info associated to your cluster.
+
+image::/assets/images/posts/sno-on-nuc10/img11.png[width=100%]
+
+### The Installation process page
+
+This page gives you an overview of the overall installation process.
+
+image::/assets/images/posts/sno-on-nuc10/img12.png[width=100%]
+
+The logs of the cluster and node installation can be consulted:
+
+image::/assets/images/posts/sno-on-nuc10/img13.png[width=100%]
+
+Once the installation process reboots, the machine will need to boot from the disk.
+
+In case the machine keeps booting from the USB flash drive. the installer will warn you about it:
+
+image::/assets/images/posts/sno-on-nuc10/boot-from-disk.png[width=100%]
+
+Remove the USB and reboot the Host.
+
+It will take about 30 minutes to the installation process to complete. Duting that timeframe, the process will complete the installation of the SNO on the machine and will perform an update of the current version, up to the latest fix version (e.g.: 4.8.2 -> 4.8.9).
+
+Once the installation process is complete you will obtain the kubeadmin password and the url to login to the console:
+
+image::/assets/images/posts/sno-on-nuc10/img14.png[width=100%]
+
+
+# DNS required configuration
+
+In order to access the SNO Web Console, you need to setup the hostname resolution for the SNO running on the NUC.
+
+Given:
+
+[source,sh]
+----
+XXX.XXX.XXX.XXX = your SNO IP
+----
+
+It's possible to pick up one of the following options:
+
+## External DNS
+
+Use an external DNS server or local configuration to resolve the SNO hostname.
+
+Add the following records to your DNS server (recommended)
+
+[source,sh]
+----
+api.cluster_name.cluster_domain      A	XXX.XXX.XXX.XXX
+*.apps.cluster_name.cluster_domain   A	XXX.XXX.XXX.XXX
+----
+
+Optional:
+
+[source,sh]
+----
+cluster_name.cluster_domain	A	XXX.XXX.XXX.XXX
+----
+
+## Local resolution: 
+
+Update your local /etc/hosts or /etc/resolve.conf files
+
+[source,sh]
+----
+XXX.XXX.XXX.XXX	api.cluster_name.cluster_domain
+XXX.XXX.XXX.XXX	oauth-openshift.apps.cluster_name.cluster_domain
+XXX.XXX.XXX.XXX	console-openshift-console.apps.cluster_name.cluster_domain
+XXX.XXX.XXX.XXX	grafana-openshift-monitoring.apps.cluster_name.cluster_domain
+XXX.XXX.XXX.XXX	thanos-querier-openshift-monitoring.apps.cluster_name.cluster_domain
+XXX.XXX.XXX.XXX	prometheus-k8s-openshift-monitoring.apps.cluster_name.cluster_domain
+XXX.XXX.XXX.XXX	alertmanager-main-openshift-monitoring.apps.cluster_name.cluster_domain
+----
+
+Optional:
+
+[source,sh]
+----
+XXX.XXX.XXX.XXX	cluster_name.cluster_domain
+----
+
+# Start using SNO on Intel® NUC
+
+Then you can access your new Single Node Openshift at the following URL: 
+
+https://console-openshift-console.apps.cluster_name.cluster_domain
