@@ -1,0 +1,256 @@
+---
+layout: post
+title: 'PoC Edge Manufacturing'
+subtitle: "Use-case overview"
+date: 2021-09-20
+category: usecase
+synopsis: PoC Edge Manufacturing
+background: '/assets/images/posts/usecase-manufacturing/hardware_landscape.jpg'
+author: abattagl
+---
+
+:toc:
+
+The team has been listening to the Market needs and investments for quite a few months recently.
+In addition to that, we tried to understand what is the main trend in the innovation space, as well as the latest and greatest in terms of new projects and customer requests.
+
+It came out that the manufacturing vertical is currently most invested vertical and we decided to try to address some common issues and questions regarding the architectural design and the most important collaterals such as security, workload distribution, connectivity and so on so forth.
+
+# Intro
+The main goal is to build an environmental network of machineries producing goods intended for the global market.
+
+The machineries (edge devices) belong to a facility network environment identified as Factory (Edge Server). The factories are managed by the central plant manager, identified as Datacenter.
+
+To be specific, the machineries produce t-shirts.
+
+The item production is based on a *production model* (a.k.a. _Product Line_) and consists of *four production stages*, each and every of subject to validation against a 3rd party entity living on the Factory layer.
+
+If the validation process returns a negative outcome, the item is marked as discarded and it's production process is interrupted.
+
+Each and every stage production and the related validation are documented through telemetry sends to the plant manager.
+
+image::/assets/images/posts/usecase-manufacturing/use-case-overview.png[width=100%]
+
+
+
+
+## Main Diagram
+
+image::/assets/images/posts/usecase-manufacturing/architecture/overview.png[width=100%]
+
+# The Machinery (edge device)
+
+The software running on the edge device has the purpose of emulating a machinery producing T-shirts based on the production model provided by the factory controller.
+
+The business logic of the Machinery has been entirely implemented using cloud-native frameworks and packaged using container technologies.
+
+image::/assets/images/posts/usecase-manufacturing/machinery-marketing.png[width=100%]
+
+## Hardware
+
+The Hardware of choice for the edge device is the Compulab Fitlet2.
+
+image::/assets/images/posts/usecase-manufacturing/fitlet2.jpg[width=100%]
+
+
+The FITLET2-CE3930 is equipped with Intel® Atom X5-E3930 powered by Intel®.
+
+
+[cols="1,1"]
+|===
+|Model | FITLET2-CE3930-P36
+|Fan / Fanless | Fanless
+|CPU | Intel® Atom x5-3930
+|RAM | 1x 2Gb SO-DIMM 204-pin DDR3L Non-ECC DDR3L-1866 (1.35V)
+|Display | Dual head: mini DP 1.2 4K @ 60 Hz; HDMI 1.4 4K @ 30 Hz
+|WIFI | 802.11ac dual antenna + BT 4.2
+|Ethernet | 2 GbE ports on-board
+|USB 2.0 | 4 USB ports on-board: 2x USB 3.0 + 2x USB 2.0
+|Audio | Stereo line out Realtek ALC1150 audio codec
+|Serial Port | RS232 mini-serial
+|BIOS | AMI Aptio V
+|Input voltage range | Up to DC 9V – 36V*
+|Operating system support | all
+|===
+
+image::/assets/images/posts/usecase-manufacturing/fitlet2-block-diagram.png[width=100%]
+
+Additional technical detail can be found at the following link: https://fit-iot.com/web/products/fitlet2/fitlet2-specifications/[link].
+
+## Main Diagram
+
+image::/assets/images/posts/usecase-manufacturing/architecture/edge.png[width=50%]
+
+## Operating System
+
+image::/assets/images/posts/usecase-manufacturing/brand/Logo-Red_Hat-Edge-A-Standard-RGB.png[width=20%]
+
+In an edge computing solution, the operating system is required to be efficient, lightweight and mature.
+The team focused on the most efficient enterprise-grade solution on the marker, which guarantees security, performance, and container-native solutions.
+Below a list of the principal, compulsory features we've been looking for in an operating system:
+
+* Must be fully-fledged 64 bit OS (not just its kernel);
+* Must have a very small memory footprint;
+* Must be immutable or, at least, modular;
+* Must have the ability to run a container engine with the minimum memory footprint, like Podman or CRI-O;
+
+The most suitable and appropriate operating system, also certified on the target hardware is https://www.redhat.com/en/resources/linux-for-edge-datasheet[Red Hat Enterprise Linux for Edge (RHEL for Edge)].
+
+
+## Container technology
+
+image::/assets/images/posts/usecase-manufacturing/brand/podman-logo.png[width=15%]
+
+Podman is a daemonless, open source, Linux-native tool designed to develop, manage, and run Open Container Initiative (OCI) containers and pods. 
+
+It has a similar directory structure to Buildah, Skopeo, and CRI-O. 
+
+Podman doesn't require an active container engine for its commands to work.
+
+Last but not least, Podman is available in the standard rpm library of RHEL, so you get full support on it.
+
+
+## Machinery Service
+
+image::/assets/images/logo/logo-quarkus.png[width=10%]
+
+The Machinery Service is the core service of the edge device and implemented on top of the https://quarkus.io/[Quarkus framework]. The service is compiled in native mode using https://developers.redhat.com/blog/2021/04/14/mandrel-a-specialized-distribution-of-graalvm-for-quarkus[MandrelVM] to run natively into a container (possible on 64bit OS only!)
+
+Moreover, the Machinery Service is designed and implemented to have the smallest memory footprint as possible and perform the transactions with the API exposed by the Factory in the shortest time. The native mode dramatically improves the performance and guarantees the full compatibility with the OCI standards and the Podman engine.
+
+The Machinery Service is responsible for the emulation of a machinery producing T-shirts. The production process goes through four different stages each of the managed by a conveyor belt.
+
+The production stages are enumerated https://raw.githubusercontent.com/qiot-project/qiot-manufacturing-all-domainmodel/main/src/main/java/io/qiot/manufacturing/all/commons/domain/production/ProductionChainStageEnum.java[here] and can be listed as:
+
+* WEAVING
+* COLORING
+* PRINTING
+* PACKAGING
+
+Each and every production stage generates a set of random numbers representing what's been produced and that outcome is added to the Item data object and sent to the <<Production Validator service>> (Factory layer) for validation.
+
+The Machinery service starts the production of a new T-shirt every 2 seconds and the execution of each and stage job takes a random amount of time between 1 and 2 seconds. The team is open to thoughts and suggestions about the opportunity/need to make that timeframe variable for performance testing purposes.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# The Factory (Edge Server)
+
+## Hardware 
+The Edge Server is based on the powerful Intel® NUC 10 Performance kit - NUC10i7FNH.
+
+The Intel® NUC guarantees performance and stability to the container platform designed to control the facility and the machineries.
+
+image::/assets/images/posts/usecase-manufacturing/NUC.jpg[width=100%]
+
+[cols="1,1"]
+|===
+|Product Collection | Intel® NUC Kit with 10th Generation Intel® Core™ Processors
+|Board Number | NUC10i7FNB
+|Board Form Factor | UCFF (4" x 4")
+|Socket | Soldered-down BGA
+|# of Cores | 6
+|# of Threads | 12
+|Processor Base Frequency | 1.10 GHz
+|Max Turbo Frequency | 4.70 GHz
+|RAM | DDR4-2666 1.2V SO-DIMM
+|Internal Drive Form Factor | M.2 and 2.5" Drive
+|SSD | M.2 256Gb
+|Lithography | 14 nm
+|TDP | 14 nm
+|Lithography | 25 W
+|DC Input Voltage Supported | 19 VDC
+|===
+
+Additional technical detail can be found at the following link: https://www.intel.com/content/www/us/en/products/sku/188811/intel-nuc-10-performance-kit-nuc10i7fnh/specifications.html[link].
+
+## Main Diagram
+
+image::/assets/images/posts/usecase-manufacturing/architecture/factory.png[width=100%]
+
+## Platform
+
+image::/assets/images/logo/Logo-Red_Hat-OpenShift-A-Standard-RGB.png[width=20%]
+
+Red Hat has worked a lot to make OpenShift footprint smaller to fit into more constrained environments by putting both control and worker capabilities into a single node.
+
+Thanks to the capabilities and functionalities of Single Node Openshift (SNO) it is now possible to leverage the overall factory management and automation with less reaources and dedicate at scale dedicated business logic to the scale of the production facilities in a secured fashion.
+
+## Software infrastructure components
+
+### Event Broker
+
+image::/assets/images/logo/Logo-Red_Hat-AMQ-A-Standard-RGB.png[width=20%]
+
+A-MQ Broker is a pure-Java multiprotocol message broker. It’s built on an efficient, asynchronous core with a fast native journal for message persistence and the option of shared-nothing state replication for high availability.
+
+* Persistence - A fast, native-IO journal or a JDBC-based store
+* High availability - Shared store or shared-nothing state replication
+* Advanced queueing - Last value queues, message groups, topic hierarchies, and large message support
+* Multiprotocol - AMQP 1.0, MQTT, STOMP, OpenWire, and HornetQ Core
+* Integration - Full integration with Red Hat JBoss EAP
+
+A-MQ Broker is based on the https://activemq.apache.org/artemis/[Apache ActiveMQ Artemis] project.
+
+The broker service exposes the endpoint for the stage production telemetry coming from the machineries running on the edge devices. The endpoint is exposed through the https://activemq.apache.org/components/artemis/documentation/latest/openwire.html[Openwire protocol], protocol of choice for the implementation of transactional asynchronous architectures.
+
+The broker offers dedicated queues for the production telemetry coming from the machineries and creates dedicated queues for the validation response from the validation service. More in detail, the broker service creates one queue for each and every machinery service awaiting for validation responses.
+Technical details about the telemetry and the endpoints to be given in the next chapters.
+
+### SQL Database
+
+image::/assets/images/logo/logo-postgresql.png[width=10%]
+
+PostgreSQL is a powerful, open source object-relational database system with over 30 years of active development that has earned it a strong reputation for reliability, feature robustness, and performance.
+
+The relational database engine is used to store non-timeseries data like:
+
+* Machinery data
+
+More about PostgreSQL can be found https://www.postgresql.org/[here].
+
+### NoSQL Database
+
+image::/assets/images/logo/logo-mongodb.png[width=30%]
+
+MongoDB’s document data model naturally supports JSON and its expressive query language is simple for developers to learn and use. Functionality such as automatic failover, horizontal scaling, and the ability to assign data to a location are built-in.
+
+The nosql database service is helpful when it comes to store, query and retrieve structured data sets like the json version of the https://github.com/qiot-project/qiot-manufacturing-factory-domainmodel/blob/main/src/main/java/io/qiot/manufacturing/factory/commons/domain/productline/ProductLineDTO.java[Product Line] model.
+
