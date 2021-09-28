@@ -33,7 +33,6 @@ image::/assets/images/posts/usecase-manufacturing/use-case-overview.png[width=10
 
 
 
-
 ## Main Diagram
 
 image::/assets/images/posts/usecase-manufacturing/architecture/overview.png[width=100%]
@@ -113,6 +112,8 @@ Last but not least, Podman is available in the standard rpm library of RHEL, so 
 ## Machinery Service
 
 image::/assets/images/logo/logo-quarkus.png[width=10%]
+
+It's implemented on top of the https://quarkus.io/[Quarkus] framework and runs in https://quarkus.io/guides/building-native-image[native mode] on a container environment.
 
 The Machinery Service is the core service of the edge device and implemented on top of the https://quarkus.io/[Quarkus framework]. The service is compiled in native mode using https://developers.redhat.com/blog/2021/04/14/mandrel-a-specialized-distribution-of-graalvm-for-quarkus[MandrelVM] to run natively into a container (possible on 64bit OS only!)
 
@@ -215,7 +216,7 @@ Thanks to the capabilities and functionalities of Single Node Openshift (SNO) it
 
 ## Software infrastructure components
 
-### Event Broker
+### Broker Service
 
 image::/assets/images/logo/Logo-Red_Hat-AMQ-A-Standard-RGB.png[width=20%]
 
@@ -253,4 +254,71 @@ image::/assets/images/logo/logo-mongodb.png[width=30%]
 MongoDB’s document data model naturally supports JSON and its expressive query language is simple for developers to learn and use. Functionality such as automatic failover, horizontal scaling, and the ability to assign data to a location are built-in.
 
 The nosql database service is helpful when it comes to store, query and retrieve structured data sets like the json version of the https://github.com/qiot-project/qiot-manufacturing-factory-domainmodel/blob/main/src/main/java/io/qiot/manufacturing/factory/commons/domain/productline/ProductLineDTO.java[Product Line] model.
+
+
+### Facility Manager
+
+image::/assets/images/logo/logo-quarkus.png[width=10%]
+
+It's implemented on top of the https://quarkus.io/[Quarkus] framework and runs in https://quarkus.io/guides/building-native-image[native mode] on a container environment.
+
+The Facility Manager service is the core service of the factory layer.
+
+It is responsible for the management of the following entities in the facility:
+
+* The factory;
+
+* The machineries;
+
+The machinery service also covers a few operational functionalities like:
+
+* Device subscription (pass-through);
+
+* Certificates distribution (pass-through);
+
+* Factory ID provider for all the services belonging to the same layer.
+
+At bootstrap time, the Facility Manager subscribes to the Central subscription system on the datacenter, providing its identity info (*Serial ID* and *Name*). it will receive, in turn, a unique ID (in a format of a UUID) that each and every service running on the factory layer will use when connecting to the services running on the datacenter.
+
+The response from the Plant Manager Service will also contain the certificates used for mutual authentication against services running on the datacenter.
+
+The specs of the services exposed by the Facility Manager service can be found into the dedicated section
+
+### Product-Line Service
+
+image::/assets/images/logo/logo-quarkus.png[width=10%]
+
+It's implemented on top of the https://quarkus.io/[Quarkus] framework and runs in https://quarkus.io/guides/building-native-image[native mode] on a container environment.
+
+The Product-line Service is responsible for transforming the https://raw.githubusercontent.com/qiot-project/qiot-manufacturing-datacenter-domainmodel/main/src/main/java/io/qiot/manufacturing/datacenter/commons/domain/productline/GlobalProductLineDTO.java[Global Product-line] into a model that supposed to be consumed by the Machineries.
+
+The transformation phase consists of a few simple steps:
+
+* Consumes the latest product line available from the Streaming service running on the Datacenter;
+
+* Applies https://raw.githubusercontent.com/qiot-project/qiot-manufacturing-datacenter-domainmodel/main/src/main/java/io/qiot/manufacturing/datacenter/commons/domain/productline/MarginsDTO.java[Margins] to the basic values contained into the product line data object;
+
+* Stores the https://raw.githubusercontent.com/qiot-project/qiot-manufacturing-factory-domainmodel/main/src/main/java/io/qiot/manufacturing/factory/commons/domain/productline/ProductLineDTO.java[outcome] of the previous phase into the SQL database for future distribution.
+
+The main goal of the above functionality is to create a product line model that, merged with the margins, extends the range of possible values for the emulation (rundom number generators) performed by the <<Machinery Service>>. That, in turn, will generate a certain percentage of values not belonging to the original range of values.
+
+image::/assets/images/posts/usecase-manufacturing/diagrams/validator-productline-diagram.png[width=100%]
+
+
+### Production Validator service
+
+image::/assets/images/logo/logo-quarkus.png[width=10%]
+
+It's implemented on top of the https://quarkus.io/[Quarkus] framework and runs in https://quarkus.io/guides/building-native-image[native mode] on a container environment.
+
+The Validator service is responsible for the validation of the outcome of each and every production stage performed by the <<Machinery Service>>.
+
+It relies on the <<Product-Line Service>> to gather the info related to the Product-line model and communicate asynchronously with the machineries through the <<Broker Service>>.
+
+image::/assets/images/posts/usecase-manufacturing/diagrams/validator-service-diagram.png[width=100%]
+
+
+
+
+
 
