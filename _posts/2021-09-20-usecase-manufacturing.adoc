@@ -109,17 +109,17 @@ Podman doesn't require an active container engine for its commands to work.
 Last but not least, Podman is available in the standard rpm library of RHEL, so you get full support on it.
 
 
-## Machinery Service
+## Machinery service
 
 image::/assets/images/logo/logo-quarkus.png[width=10%]
 
 It's implemented on top of the https://quarkus.io/[Quarkus] framework and runs in https://quarkus.io/guides/building-native-image[native mode] on a container environment.
 
-The Machinery Service is the core service of the edge device and implemented on top of the https://quarkus.io/[Quarkus framework]. The service is compiled in native mode using https://developers.redhat.com/blog/2021/04/14/mandrel-a-specialized-distribution-of-graalvm-for-quarkus[MandrelVM] to run natively into a container (possible on 64bit OS only!)
+The Machinery service is the core service of the edge device and implemented on top of the https://quarkus.io/[Quarkus framework]. The service is compiled in native mode using https://developers.redhat.com/blog/2021/04/14/mandrel-a-specialized-distribution-of-graalvm-for-quarkus[MandrelVM] to run natively into a container (possible on 64bit OS only!)
 
-Moreover, the Machinery Service is designed and implemented to have the smallest memory footprint as possible and perform the transactions with the API exposed by the Factory in the shortest time. The native mode dramatically improves the performance and guarantees the full compatibility with the OCI standards and the Podman engine.
+Moreover, the Machinery service is designed and implemented to have the smallest memory footprint as possible and perform the transactions with the API exposed by the Factory in the shortest time. The native mode dramatically improves the performance and guarantees the full compatibility with the OCI standards and the Podman engine.
 
-The Machinery Service is responsible for the emulation of a machinery producing T-shirts. The production process goes through four different stages each of the managed by a conveyor belt.
+The Machinery service is responsible for the emulation of a machinery producing T-shirts. The production process goes through four different stages each of the managed by a conveyor belt.
 
 The production stages are enumerated https://raw.githubusercontent.com/qiot-project/qiot-manufacturing-all-domainmodel/main/src/main/java/io/qiot/manufacturing/all/commons/domain/production/ProductionChainStageEnum.java[here] and can be listed as:
 
@@ -132,6 +132,7 @@ Each and every production stage generates a set of random numbers representing w
 
 The Machinery service starts the production of a new T-shirt every 2 seconds and the execution of each and stage job takes a random amount of time between 1 and 2 seconds. The team is open to thoughts and suggestions about the opportunity/need to make that timeframe variable for performance testing purposes.
 
+More details can be found in the https://github.com/qiot-project/qiot-manufacturing-edge-machinery[dedicated repository].
 
 
 
@@ -214,9 +215,11 @@ Red Hat has worked a lot to make OpenShift footprint smaller to fit into more co
 
 Thanks to the capabilities and functionalities of Single Node Openshift (SNO) it is now possible to leverage the overall factory management and automation with less reaources and dedicate at scale dedicated business logic to the scale of the production facilities in a secured fashion.
 
+The team is keen to provide a detailed walkthrough about How to install SNO on 10th gen NUC https://qiot-project.github.io/blog/sno-on-nuc10/[here]
+
 ## Software infrastructure components
 
-### Broker Service
+### Broker service
 
 image::/assets/images/logo/Logo-Red_Hat-AMQ-A-Standard-RGB.png[width=20%]
 
@@ -235,7 +238,7 @@ The broker service exposes the endpoint for the stage production telemetry comin
 The broker offers dedicated queues for the production telemetry coming from the machineries and creates dedicated queues for the validation response from the validation service. More in detail, the broker service creates one queue for each and every machinery service awaiting for validation responses.
 Technical details about the telemetry and the endpoints to be given in the next chapters.
 
-### SQL Database
+### SQL Storage
 
 image::/assets/images/logo/logo-postgresql.png[width=10%]
 
@@ -247,7 +250,7 @@ The relational database engine is used to store non-timeseries data like:
 
 More about PostgreSQL can be found https://www.postgresql.org/[here].
 
-### NoSQL Database
+### NoSQL Storage
 
 image::/assets/images/logo/logo-mongodb.png[width=30%]
 
@@ -255,6 +258,8 @@ MongoDB’s document data model naturally supports JSON and its expressive query
 
 The nosql database service is helpful when it comes to store, query and retrieve structured data sets like the json version of the https://github.com/qiot-project/qiot-manufacturing-factory-domainmodel/blob/main/src/main/java/io/qiot/manufacturing/factory/commons/domain/productline/ProductLineDTO.java[Product Line] model.
 
+
+## Business Logic implementation
 
 ### Facility Manager
 
@@ -267,30 +272,30 @@ The Facility Manager service is the core service of the factory layer.
 It is responsible for the management of the following entities in the facility:
 
 * The factory;
-
 * The machineries;
 
 The machinery service also covers a few operational functionalities like:
 
 * Device subscription (pass-through);
-
 * Certificates distribution (pass-through);
-
 * Factory ID provider for all the services belonging to the same layer.
 
 At bootstrap time, the Facility Manager subscribes to the Central subscription system on the datacenter, providing its identity info (*Serial ID* and *Name*). it will receive, in turn, a unique ID (in a format of a UUID) that each and every service running on the factory layer will use when connecting to the services running on the datacenter.
 
-The response from the Plant Manager Service will also contain the certificates used for mutual authentication against services running on the datacenter.
+The response from the Plant Manager service will also contain the certificates used for mutual authentication against services running on the datacenter.
 
-The specs of the services exposed by the Facility Manager service can be found into the dedicated section
+The specs of the services exposed by the Facility Manager service can be found into the dedicated section.
 
-### Product-Line Service
+More details can be found in the https://github.com/qiot-project/qiot-manufacturing-factory-facility-manager[dedicated repository].
+
+
+### Product-Line service
 
 image::/assets/images/logo/logo-quarkus.png[width=10%]
 
 It's implemented on top of the https://quarkus.io/[Quarkus] framework and runs in https://quarkus.io/guides/building-native-image[native mode] on a container environment.
 
-The Product-line Service is responsible for transforming the https://raw.githubusercontent.com/qiot-project/qiot-manufacturing-datacenter-domainmodel/main/src/main/java/io/qiot/manufacturing/datacenter/commons/domain/productline/GlobalProductLineDTO.java[Global Product-line] into a model that supposed to be consumed by the Machineries.
+The Product-line service is responsible for transforming the https://raw.githubusercontent.com/qiot-project/qiot-manufacturing-datacenter-domainmodel/main/src/main/java/io/qiot/manufacturing/datacenter/commons/domain/productline/GlobalProductLineDTO.java[Global Product-line] into a model that supposed to be consumed by the Machineries.
 
 The transformation phase consists of a few simple steps:
 
@@ -300,10 +305,11 @@ The transformation phase consists of a few simple steps:
 
 * Stores the https://raw.githubusercontent.com/qiot-project/qiot-manufacturing-factory-domainmodel/main/src/main/java/io/qiot/manufacturing/factory/commons/domain/productline/ProductLineDTO.java[outcome] of the previous phase into the SQL database for future distribution.
 
-The main goal of the above functionality is to create a product line model that, merged with the margins, extends the range of possible values for the emulation (rundom number generators) performed by the <<Machinery Service>>. That, in turn, will generate a certain percentage of values not belonging to the original range of values.
+The main goal of the above functionality is to create a product line model that, merged with the margins, extends the range of possible values for the emulation (rundom number generators) performed by the <<Machinery service>>. That, in turn, will generate a certain percentage of values not belonging to the original range of values.
 
 image::/assets/images/posts/usecase-manufacturing/diagrams/validator-productline-diagram.png[width=100%]
 
+More details can be found in the https://github.com/qiot-project/qiot-manufacturing-factory-productline[dedicated repository].
 
 ### Production Validator service
 
@@ -311,11 +317,242 @@ image::/assets/images/logo/logo-quarkus.png[width=10%]
 
 It's implemented on top of the https://quarkus.io/[Quarkus] framework and runs in https://quarkus.io/guides/building-native-image[native mode] on a container environment.
 
-The Validator service is responsible for the validation of the outcome of each and every production stage performed by the <<Machinery Service>>.
+The Validator service is responsible for the validation of the outcome of each and every production stage performed by the <<Machinery service>>.
 
-It relies on the <<Product-Line Service>> to gather the info related to the Product-line model and communicate asynchronously with the machineries through the <<Broker Service>>.
+It relies on the <<Product-Line service>> to gather the info related to the Product-line model and communicate asynchronously with the machineries through the <<Broker service>>.
 
 image::/assets/images/posts/usecase-manufacturing/diagrams/validator-service-diagram.png[width=100%]
+
+More details can be found in the https://github.com/qiot-project/qiot-manufacturing-factory-productionvalidator[dedicated repository].
+
+
+
+
+# Datacenter
+
+The Datacenter layer of the Manufacturing use-case has been designed and implemented by the team and is made up of several services and business logic to manage, store, aggregate and retrieve data.
+
+
+
+## Main Diagram
+
+image::/assets/images/posts/usecase-manufacturing/architecture/datacenter.png[width=100%]
+
+
+
+## Platform architecture
+
+The infrastructure of the QIoT project must have flexible imprinting and should be easily scalable both horizontally and vertically.
+
+To fulfill the scalability requirements a Cloud-based platform is needed. 
+
+A graphical representation of the basic Infrastructure Architecture:
+
+image::/assets/images/posts/usecase-covid-19/datacenter-v2-infrastructure.png[width=100%]
+
+Based on the image above, here is the sizing of the infrastructure provisioned for the Openshift Container Platform:
+
+* OCP Control Plane (master nodes)
+** #Servers: 3
+** CPUs: 8
+** RAM: 24G
+* OCP Worker Nodes:
+** #Servers: 3
+** CPUs: 12
+** RAM: 64GB
+
+* Storage Server: provides storage functionality to the infrastructure to store data safely and consistently on the disk. There’s no urgent/compulsory need to add this component to the infrastructure architecture, at least at the early stage of the project, because the basic amount of storage provided by the cloud platform would definitely cover all the needs described.
+** Some additional storage will be needed in case of extended lifetime and participation in the project (i.e. lots more data arriving at the Data Hub). Anyway, just making use of the storage layer from the cloud provider of choice and installing Openshift Container Storage on top of it will guarantee horizontal scalability and data consistency all over the container platform out of the box.
+
+Vertical scalability is guaranteed by the could platform.
+Horizontal scalability is guaranteed by Openshift by using the auto-scaling feature embedded in the container platform.
+
+
+
+### Red Hat Openshift Container Platform
+
+image::/assets/images/logo/Logo-Red_Hat-OpenShift-A-Standard-RGB.png[width=20%]
+
+Red Hat OpenShift is the hybrid cloud platform of open possibility: powerful, so you can build anything and flexible, so it works anywhere.
+
+Adopting the Openshift container platform made us save tons of hors implementing features and behaviors supposed to be home cooked, otherwise:
+
+* Native pipelines using Tekton
+* One-shot installation using Helm charts
+* 2-day operations using Operator Framework
+* Container storage
+* Security and Isolation
+* Automate cluster scalability
+
+More about Openshift Container Platform can be found https://www.openshift.com/learn/developer[here].
+
+## Software infrastructure components
+
+### Stream service
+
+image::/assets/images/logo/logo-strimzi.png[width=20%]
+
+image::/assets/images/logo/logo-kafka.png[width=20%]
+
+In the forecast of the need for receiving/handling a large number of concurrent messages, A-MQ Streams is the component of choice for streaming messages through the integration and the storage layers. 
+
+An internal streaming service guarantees scalability and reliability of the message flow management within the Datacenter business logic.
+
+The Stream service topics serve a variety of functionalities and processes impacting the following workflows:
+
+* *Product-line*: New Global product-line are delivered to the streaming service for asyncronous consumption by the factories. This workflow requires persistence and off-set management, both provided by the A-MQ Streams product;
+* *Telemetry*: A-MQ perfectly fits into the canonical usecase of telemetry stream and management. Compared to the previous use-case implemented by the community, the team decided to go for a more structured and scalable approach based on a could-native product, rather that just relying on a communication protocol like https://mqtt.org/[MQTT protocol].
+
+The implementation choices above make it easy to fine tune the connections, the scalability, the message flow, and retention separately. 
+
+This design makes it a lot easier to decouple the implementation details of the integration services responsible for offloading (consuming messages from) every topic and storing the values into the storage tier, improving horizontal scalability.
+
+More about A-MQ Streams can be found https://developers.redhat.com/blog/2019/06/06/accessing-apache-kafka-in-strimzi-part-1-introduction/[here].
+
+### Timeseries Storage
+
+image::/assets/images/logo/logo-influxdb.png[width=20%]
+
+Timeseries database engines are the technology of choice to store the telemetry coming from the IoT devices in an Edge Computing scenario.
+
+For this use-case the team has picked up Influxdb, as it guarantees scalability, reliability and a level of performances not achievable using other competitors on the market.
+
+Moreover, InfluxDB is the essential time series toolkit — dashboards, queries, tasks and agents all in one place.
+
+As well as for the previous software infrastructure components used to receive and stream data, we have decided to go for a separation by telemetry-time.
+
+The Timeseries Storage hosts the data relative to one telemetry only: 
+
+More about InfluxDB can be found https://www.influxdata.com/products/influxdb/[here].
+
+### SQL Storage
+
+image::/assets/images/logo/logo-postgresql.png[width=10%]
+
+PostgreSQL is a powerful, open source object-relational database system with over 30 years of active development that has earned it a strong reputation for reliability, feature robustness, and performance.
+
+The relational database engine is used to store non-timeseries data like:
+
+* Factory-related data
+* Machinery-related data
+
+More about PostgreSQL can be found https://www.postgresql.org/[here].
+
+### NoSQL Storage
+
+image::/assets/images/logo/logo-mongodb.png[width=30%]
+
+MongoDB’s document data model naturally supports JSON and its expressive query language is simple for developers to learn and use. Functionality such as automatic failover, horizontal scaling, and the ability to assign data to a location are built-in.
+
+The nosql database service is helpful when it comes to store, query and retrieve structured data sets like the json version of the https://raw.githubusercontent.com/qiot-project/qiot-manufacturing-datacenter-domainmodel/main/src/main/java/io/qiot/manufacturing/datacenter/commons/domain/productline/GlobalProductLineDTO.java[Global Product-line] model.
+
+### Cert-manager service
+
+image::/assets/images/logo/logo-cert-manager.png[width=10%]
+
+Cert-manager automates certificate management in cloud native environments and thus helped with the implementation of a dynamic certificate provisioning for edge devices
+
+cert-manager builds on top of Kubernetes, introducing certificate authorities and certificates as first-class resource types in the Kubernetes API.
+
+This makes it possible to provide 'certificates as a service' to developers working within your Kubernetes cluster.
+
+Highlights
+
+* Provide easy to use tools to manage certificates.
+* A standardised API for interacting with multiple certificate authorities (CAs).
+* Gives security teams the confidence to allow developers to self-server certificates.
+* Support for ACME (Let's Encrypt), HashiCorp Vault, Venafi, self signed and internal certificate authorities.
+* Extensible to support custom, internal or otherwise unsupported CAs.
+
+More about out cert-manager implementation https://qiot-project.github.io/blog/qiot-cert-manager/[here]
+
+More about Cert-Manageranager can be found https://cert-manager.io/[here].
+
+
+## Business Logic implementations
+
+The Datacenter business logic is built on top of Quarkus framework. All the services run natively on top of the container technology and benefit from the features from the Serverless architecture.
+
+A separate discussion must be done for the Dashboard, which exposes diagrams based on the telemetry coming from the measurement stations and in implemented on top of RedHat build of Node.js
+
+
+### Registration service
+
+image::/assets/images/logo/logo-quarkus.png[width=10%]
+
+It's implemented on top of the https://quarkus.io/[Quarkus] framework and runs in https://quarkus.io/guides/building-native-image[native mode] on a container environment.
+
+It's responsible for the provisioning and maintainance of the certificates used by services to connect to the other layers of the architecture using the mutual authentication method.
+
+The main goal of the registration service is to implement a façade between the <<Plant Manager service>> and the <<Cert-manager service>>. To achive this goal and to make the access to the service limited, the service is not exposed by the router.
+
+The interaction between the registration service and the Cert-manmager service is supported by the https://developers.redhat.com/articles/2021/07/16/whats-new-fabric8-kubernetes-client-version-550#[fabric8 Kubernetes plugin]
+
+More details can be found in the https://github.com/qiot-project/qiot-manufacturing-datacenter-registration[dedicated repository].
+
+### Plant Manager service
+
+image::/assets/images/logo/logo-quarkus.png[width=10%]
+
+It's implemented on top of the https://quarkus.io/[Quarkus] framework and runs in https://quarkus.io/guides/building-native-image[native mode] on a container environment.
+
+It's responsible for the management of the overall landscape:
+
+* *Factories* subscribe to the plant-manager and obtain a unique UUID and a trust store containing both the certificates for the connection to the datacenter and from the Machineries;
+* *Machineries* subscribe to the facility manager service which, in turn, forwards the request to the plant manager service. They Obtain a unique UUID and a trust store containing the certificates to connect to the services exposed by the Factory layer.
+
+Landscape data are stored in the <<SQL Storage>> to take advantage of the CRUD operations.
+
+Moreover, the service makes use of the 2nd level cache to speed up the read operations.
+
+It exposes a rest API secured with mutual authentication. Details about the exposed endpoints are available in the <<Specs>> section
+
+More details can be found in the https://github.com/qiot-project/qiot-manufacturing-datacenter-plant-manager[dedicated repository].
+
+
+### Global Product-line service
+
+image::/assets/images/logo/logo-quarkus.png[width=10%]
+
+It's implemented on top of the https://quarkus.io/[Quarkus] framework and runs in https://quarkus.io/guides/building-native-image[native mode] on a container environment.
+
+The Global Product-line service is responsible for managing the Product-line models at the central level. The service can either:
+
+* Generate a new random https://raw.githubusercontent.com/qiot-project/qiot-manufacturing-datacenter-domainmodel/main/src/main/java/io/qiot/manufacturing/datacenter/commons/domain/productline/GlobalProductLineDTO.java[Global Product-line];
+* Receive one from the GUI (not yet implemented) through REST API.
+
+The Product-line model is validated and stored into the <<SQL Storage>>.
+
+More details can be found in the https://github.com/qiot-project/qiot-manufacturing-datacenter-productline[dedicated repository].
+
+### Event Collector service
+
+image::/assets/images/logo/logo-quarkus.png[width=10%]
+
+It's implemented on top of the https://quarkus.io/[Quarkus] framework and runs in https://quarkus.io/blog/runtime-performance/[JVM mode] on a container environment.
+
+This service is responsible for consuming the telemetry coming from the <<Stream service>>.The consumed paylod gets calidated, eventually decorated or adapted, and finally stored into the <<Timeseries Storage>>.
+
+The team decided to go for a pure microservice implementation, dedicating one service to each and every telemetry type. Thus, all the services belonging to the event-collector family must extend some common abstract components that can be found into the _Commons_ repositories (https://github.com/qiot-project/qiot-manufacturing-datacenter-utilities/tree/main/src/main/java/io/qiot/manufacturing/datacenter/commons/service/telemetry[qiot-manufacturing-datacenter-utilities]) and must be implemented adhering to the microservices atomicity, scalability and isolation recommended practices. Creating additional serviecs to handle different types of telemetries is left to the audience ;-)
+
+* Thanks to the Commons module it's easy to extend the group of services to make them accept an additional telemetry type;
+* As the frequency of incoming messages per telemetry type can vary, scaling feature affects only one service in the group;
+
+Due to the incompatibility of the https://github.com/influxdata/influxdb-client-java[Java Client for InfluxDB] with Quarkus native mode, the service is compiled using the standard java fast-jar mode.
+
+More details can be found in the https://github.com/qiot-project/qiot-manufacturing-datacenter-event-collector[dedicated repository].
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
