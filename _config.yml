@@ -26,7 +26,7 @@ baseurl: "" # the subpath of your site, e.g. /blog
 url: "" # the base hostname & protocol for your site, e.g. http://example.com
 twitter_username: qiotproject
 github_username:  qiot-project
-slack_link: quarkusforiottechteam/shared_invite/zt-nuajdyqf-NfQL0dcfCUjFSgoBNng11A
+slack_link: https://join.slack.com/t/qiotproject/shared_invite/zt-nuajdyqf-NfQL0dcfCUjFSgoBNng11A
 google_group: qiotproject
 calendar_invite: 'https://calendar.google.com/event?action=TEMPLATE&tmeid=dmFxMzFlZGkxOHVubDcyYm50bjdrcTJxYThfMjAyMTAzMjVUMTYwMDAwWiBxaW90cHJvamVjdEBt&tmsrc=qiotproject%40gmail.com&scp=ALL'
 
