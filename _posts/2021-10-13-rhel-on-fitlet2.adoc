@@ -8,6 +8,7 @@ category: blog
 synopsis: Install RHEL for Edge on Compulab Fitlet2
 background: '/assets/images/main/rh-hackfest-banners_3840x2160.png'
 author: astolzen
+contributors: abattagl
 ---
 
 :toc:

@@ -8,6 +8,7 @@ category: blog
 synopsis: Install Single Node Openshift on Intel® 10th gen NUC
 background: '/assets/images/main/rh-hackfest-banners_3840x2160.png'
 author: mparra
+contributors: abattagl
 ---
 
 :toc:

@@ -32,6 +32,21 @@ layout: default
 			    on {{ page.date | date: '%B %d, %Y' }} &middot; {% include read_time.html content=page.content %}
             
             </span>
+            <br>
+            <span class="meta">
+			  {% if page.contributors %}
+                Contributors:
+                <br>
+                {% assign postcontributors = page.contributors | split: "," %}
+
+                {% for postcontributor in postcontributors %}
+                  {% assign contributordata = site.data.authors[postcontributor] %}
+			      {% if contributordata.emailhash %}
+			        <img class="headshot" src="https://www.gravatar.com/avatar/{{ contributordata.emailhash }}">
+			      {% endif %}
+                {% endfor %}
+			  {% endif %}
+            </span>
           </div>
         </div>
       </div>
