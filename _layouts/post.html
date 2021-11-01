@@ -42,7 +42,7 @@ layout: default
                 {% for postcontributor in postcontributors %}
                   {% assign contributordata = site.data.authors[postcontributor] %}
 			      {% if contributordata.emailhash %}
-			        <img class="headshot" src="https://www.gravatar.com/avatar/{{ contributordata.emailhash }}">
+			        <img class="headshot" alt="{{ contributordata.name }}" src="https://www.gravatar.com/avatar/{{ contributordata.emailhash }}">
 			      {% endif %}
                 {% endfor %}
 			  {% endif %}
