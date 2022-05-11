@@ -1,0 +1,158 @@
+---
+layout: post
+title: 'Setting up NFS as a storage class on SNO'
+subtitle: "---"
+date: 2022-05-10
+tags: qiot sno nuc howto storage nfs
+category: blog
+synopsis: Settng up NFS as a storage class on SNO
+background: '/assets/images/posts/nfs-on-sno/nas_and_nuc.jpg'
+author: gnewson
+---
+
+:toc:
+
+# Summary
+
+This guide will show you how to serve NFS from a home NAS (or other NFS share,
+referenced as a NAS for the rest of the article) to a Single Node OpenShift (SNO) and consume it as a storage class through the https://github.com/container-storage-interface/spec/blob/master/spec.md[CSI] NFS storage driver.
+
+I'm assuming that you have a Single Node OpenShift installed based on
+https://qiot-project.github.io/blog/sno-on-nuc10/[this previous post] and also
+a NAS on the local network.  No assumption is made about the NAS but for the
+purpose of this guide I'll be using NFS served from my Synology NAS.  Other NAS
+appliances should work the same based on the settings in the NAS section.
+
+# Introduction
+
+If you deployed the
+https://github.com/qiot-project/qiot-manufacturing-factory-installer[QIOT
+factory] on SNO on the NUC you'll have seen that the PVs needed to be set up as
+part of the machineconfig. This means that if any more PVs are required the
+machineconfig needs to be updated, causing a restart of OpenShift and a few
+minutes of outage before it comes back up.  
+
+This isn't ideal. What if you want more space than is available on the NUC, which only has 256 GB? What if you want to consume storage dynamically rather than defining the machineconfig up front?  What if this needs to change due to unforseen circumstances?
+
+If, like me, you're running the NUC on a home network and you have a NAS with some spare capacity you might think "maybe I can use some of that storage".  And indeed you can.  The NAS storage can be shared to your SNO and exposed via an NFS storage class.
+
+But wait, NFS shouldn't be used with OpenShift should it?  Well, that isn't always the case and this isn't a production system, so why not. :)
+
+Step forward 
+https://docs.openshift.com/container-platform/4.9/storage/container_storage_interface/persistent-storage-csi.html[Container
+Storage Interface] (CSI). CSI will provide the ability to add NFS as a storage
+type to the SNO and consume it dynamically via a storage class.
+
+# NAS configuration and testing
+
+I have a Synology NAS device and the instructions for setting up an NFS share
+on it are 
+https://kb.synology.com/en-global/DSM/tutorial/How_to_access_files_on_Synology_NAS_within_the_local_network_NFS[here]
+but on the assumption that you will likely have a different type of NAS, or just
+want to export an NFS share from another computer, the
+configuration of my NFS storage in the exports file is as follows:
+
+image::/assets/images/posts/nfs-on-sno/exports.png[width=100%]
+
+While this is maybe not the most secure set up, it allows us to get going relatively
+quickly and easily.  You could set a different squash policy (but be careful if
+you do), set the hostname or encrypt your folder.  
+
+Once your NAS is set up, let's test it out. I'm assuming you'll be testing on a
+linux host so you'll need to install the `nfs-utils` package if on
+CentOS/RedHat/Fedora or `nfs-common` if on Ubuntu.
+
+On the linux host, assuming `/mnt` exists, run `sudo mount -t nfs 192.168.50.195:/volume1/sno_nfs /mnt`
+(drop the sudo if running as root (why are you running as root?)) but feel free
+to mount the NFS share wherever suit you.  Create a file in the mounted folder `touch /mnt/testing`
+and unmount the NFS folder `cd; sudo umount /mnt`.
+
+image::/assets/images/posts/nfs-on-sno/mount_nas.png[width=75%]
+
+By logging in to the NAS via SSH we can check that the file is created.
+
+image::/assets/images/posts/nfs-on-sno/nas_output.png[width=33%]
+
+With NFS on the NAS confirmed as working let's move on to setting up the SNO.
+
+# Configuring the CSI driver on OpenShift
+
+We're setting this up on OpenShift 4.9 running on the NUC.  On a Single Node installation there is no built in support for NFS so we're going to add support via a CSI driver.  This will give us the ability not only to use NFS but to add it as a storage class to give us dynamic storage.
+
+The CSI NFS driver is still beta software but, for the purposes of this test setup, it is stable enough.
+
+The driver can be downloaded from the github repository https://github.com/openshift/csi-driver-nfs.  There are multiple ways to install the driver
+
+* helm
+* directly from the internet
+* from a local clone of the repo.
+
+For this guide we're going with installing from a local copy of the repo, which allows us to look at the code that is being run to see what resources are being created and where.
+
+The procedure is documented as option#2
+https://github.com/openshift/csi-driver-nfs/blob/master/docs/install-csi-driver-master.md[here] but to save having to follow the link...
+
+* in the terminal, log into your OpenShift cluster with a cluster admin user
+** `oc login --token=<token value> --server=https://api.<sno cluster>:6443`
+* clone the repo and change into the directory
+** `git clone https://github.com/kubernetes-csi/csi-driver-nfs.git`
+** `cd csi-driver-nfs`
+* before running the deploy script take a look at it in your favourite editor and then look at the yaml files that get called so you know what's being deployed.
+** `vi ./deploy/install-driver.sh`
+** `vi ./deploy/csi-nfs-conftoller.yaml`
+** ...
+* run the deploy script
+** `./deploy/install-driver.sh master local`
+
+show output file
+
+* check pods and you should find that they are running
+** `oc -n kube-system get pod -o wide -l app=csi-nfs-controller`
+** `oc -n kube-system get pod -o wide -l app=csi-nfs-node`
+
+Once the CSI driver is deployed successfully we need to define our storage
+class.  Note that it is annotated to be the default storage class.  Parameters
+specific to the nfs provisioner are described 
+https://github.com/openshift/csi-driver-nfs/blob/master/docs/driver-parameters.md[here].
+
+
+Create a file storageclass-nfs.yaml
+
+[source,yaml]
+----
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: nfs-csi
+  annotations:
+    storageclass.kubernetes.io/is-default-class: 'true'
+provisioner: nfs.csi.k8s.io
+parameters:
+  server: <NAS IP address>
+  share: <NFS share>
+reclaimPolicy: Delete
+volumeBindingMode: Immediate
+mountOptions:
+  - hard
+  - nfsvers=3
+
+----
+
+Create the resource in OpenShift, `oc create -f storageclass-nfs.yaml` and you
+should get confirmation that it is created.
+
+Now to test it out we'll create a new project and deploy an example app that
+uses persistent storage.  As our nfs-csi class is set as the default storage
+class it should be used.
+
+* `oc new-project nfs-test`
+* `oc new-app openshift/rails-pgsql-persistent`
+
+Eventually `oc status` should show something similar to the below and then you
+are ready to test.
+
+image::/assets/images/posts/nfs-on-sno/deployed_app.png[width=100%]
+
+In your browser navigate to the route shown and you should be greeted with a rails application test page.
+
+*Congratulations!* You now have NFS set up on you SNO!
