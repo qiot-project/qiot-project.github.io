@@ -25,23 +25,23 @@ layout: default
 
   <div class="container">
 
-		<div class="row">
-			<div class="col-lg-16 col-md-10 mx-auto">
-				A warm welcome to all the guests of the QIoT project community! <br />
-				<br /> A few months ago, back in November 2020, a small group of
-				redhatters in love with opensource spotted the opportunity to create
-				a forum to discuss about innovation, have fun and tackle technical
-				and business challenges. <br /> <br /> We are seing this community
-				growing organically and attracting more and more SMEs bringing new
-				ideas and contribution to out PoCs. <br /> Feel free to have a look,
-				investigate, test and leave a feedback. <br /> <br /> We look
-				forward to have you joining the project! <br />
-				<br /> <em>The QIoT team</em>
-				<hr>
-			</div>
-		</div>
+    <div class="row">
+      <div class="col-lg-16 col-md-10 mx-auto" align="justify"><h1>A warm welcome to all the guests of the QIoT project community!</h1> <br>The QIoT project has been kicked off in November 2020 by a small group of redhatters in love with open source to consolidate the outcome of the technical activities behind a business initiative called <a href="https://www.redhat.com/en/events/hackfest">Red Hat Hackfest</a>. <br> <br>The Project and the Community have grown overtime and now serve technical people around the world with tools, ideas and the opportunity to discuss about innovation, have fun and tackle technical and business challenges. <br>
+        <br>The QIoT Community members offer a voluntary contribution, joining an environment where they can discuss, learn, and share competences and ideas with a large audience of business and technical individuals.<br> Our esteemed members, moreover, belong to several areas such as Red Hat, the Red Hat Partner Ecosystem, and the Upstream communities.<br> <br>The primary mission of the QIoT Community is to implement PoCs and MVPs that help addressing the technical challenges of complex solutions.<br>The above-mentioned projects, as outcome of the commitment, effort, and engagement of the community members, must respect the following criteria:<br>
+        <ul>
+          <li>Must be build on top of a modern, distributed architecture;</li>
+          <li>Must be built using an enterprise technology stack; <b>*</b></li>
+          <li>Must adhere to the 80% solution recommended practice; <b>**</b>
+          </li>
+          <li>Must be composite of connected, reusable, and independent modules;</li>
+        </ul>
+        <br> Additionally, each and every and that could be safely and easily used as a baseline for the implementation of customer projects.<br> <br /> Feel free to have a look, investigate, test and leave a feedback. <br>The community admins have implemented and made available to you several tools to meet virtually such as a Slack workspace, a public mailing list.<br>We also meet virtually once per week on google meet.<br>All the above mentioned information can be found on the footer of each and every page of our blog.<br>
+        <br>For additional information about the community, please navigate the dedicated &quot;community section (last tab of our blog header).<br /> We look forward to have you joining the project! <br /> <br /> <em>The QIoT admin team</em>
+        <hr>
+      </div>
+    </div>
 
-		<div class="row">
+    <div class="row">
       <div class="col-lg-16 col-md-10 mx-auto">
 
         {{ content }}
@@ -49,33 +49,21 @@ layout: default
         <h1 class="post-title">Latest Articles</h1>
 
         <!-- Home Post List -->
-{% for post in site.posts limit : 3 %}
-	<article class="post-preview">
-	  <a href="{{ post.url | prepend: site.baseurl | replace: '//', '/' }}">
-	    <h2 class="post-title">{{ post.title }}</h2>
-	    {% if post.subtitle %}
-	    <h3 class="post-subtitle">{{ post.subtitle }}</h3>
-	    {% else %}
-	    <h3 class="post-subtitle">{{ post.excerpt | strip_html | truncatewords: 15 }}</h3>
-	    {% endif %}
-	  </a>
-	  <p class="post-meta">
-	  {% if post.author %}
-	     {% assign author = site.data.authors[post.author] %}
-	        {% if author.emailhash %}
-	            <img class="headshot" src="https://www.gravatar.com/avatar/{{ author.emailhash }}">
-	        {% endif %}
-	            Posted by {{ author.name }}
-	    {% else %}
-	        {{ site.author }}
-	    {% endif %}
-	    on {{ post.date | date: '%B %d, %Y' }} &middot; {% include read_time.html content=post.content %}
-	  </p>
-        <p>{% include share-bar-small.html url=post.url title=post.title %}</p>
-	</article>
+        {% for post in site.posts limit : 3 %}
+        <article class="post-preview">
+          <a href="{{ post.url | prepend: site.baseurl | replace: '//', '/' }}">
+            <h2 class="post-title">{{ post.title }}</h2> {% if post.subtitle %}
+            <h3 class="post-subtitle">{{ post.subtitle }}</h3> {% else %}
+            <h3 class="post-subtitle">{{ post.excerpt | strip_html | truncatewords: 15 }}</h3> {% endif %}
+          </a>
+          <p class="post-meta">
+            {% if post.author %} {% assign author = site.data.authors[post.author] %} {% if author.emailhash %} <img class="headshot" src="https://www.gravatar.com/avatar/{{ author.emailhash }}"> {% endif %} Posted by {{ author.name }} {% else %} {{ site.author }} {% endif %} on {{ post.date | date: '%B %d, %Y' }} &middot; {% include read_time.html content=post.content %}
+          </p>
+          <p>{% include share-bar-small.html url=post.url title=post.title %}</p>
+        </article>
 
-<hr>
-{% endfor %}
+        <hr>
+        {% endfor %}
 
         <!-- Pager -->
         <div class="clearfix">
