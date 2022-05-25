@@ -29,6 +29,8 @@ github_username:  qiot-project
 slack_link: https://join.slack.com/t/qiotproject/shared_invite/zt-nuajdyqf-NfQL0dcfCUjFSgoBNng11A
 google_group: qiotproject
 calendar_invite: 'https://calendar.google.com/event?action=TEMPLATE&tmeid=dmFxMzFlZGkxOHVubDcyYm50bjdrcTJxYThfMjAyMTAzMjVUMTYwMDAwWiBxaW90cHJvamVjdEBt&tmsrc=qiotproject%40gmail.com&scp=ALL'
+# Google Analytics
+google_analytics: G-SK96X617FT
 
 # remote_theme: StartBootstrap/startbootstrap-clean-blog-jekyll
 
