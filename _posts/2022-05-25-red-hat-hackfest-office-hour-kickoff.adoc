@@ -1,0 +1,26 @@
+---
+layout: post
+title: 'Red Hat Hackfest Office Hour - Kick off session!'
+subtitle: "---"
+date: 2022-05-25
+tags: qiot media openshifttv
+category: blog
+synopsis: Red Hat Hackfest Office hour
+background: '/assets/images/main/rh-hackfest-banners_1200x675-tw-winner.png'
+author: abattagl
+---
+
+Today the Red Hat Hackfest team has kicked off the brand new Red Hat Hackfest Office Hour series hosted by our friends from https://www.youtube.com/user/rhopenshift[*Openshift tv*]! 
+
+This is the first event of a series, so we have been supported by the Openshift Coffee Break crew (our big thanks go to Natale, Fabio and Andrea for this co-hosting opportunity).
+
+The Red Hat Hackfest Office Hour aims to share with the audience news and info around the collaboration between the Red Hat Partner Ecosystem and the Red Hat Hackfest team from both the business and the technical standpoint.
+
+
+To achive our goal, we'll receive the contribution of several Subject Matter Expert joining us on each and every episode.
+
+Enjoy the episode linked below and feel free to join us to discuss further!
+
+The content presented during the session can be downloaded in PDF format from this https://github.com/qiot-project/hackfest-office-hour/tree/main/2022-05-25%20-%20Session%20%231[*link*].
+
+video::BR62uwtcFDY[youtube, width=640, height=480]
