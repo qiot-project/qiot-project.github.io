@@ -2,32 +2,35 @@
 
 ## Getting Started
 
-These instructions will get you a copy of the Quarkus.io website up and running on your local machine for development and testing purposes.
+These instructions will get you a copy of the qiot-project.github.io website up and running on your local machine for development and testing purposes.
 
 ### Installation
 [Jekyll static site generator docs](https://jekyllrb.com/docs/).
 
-1. Install a full [Ruby development environment](https://jekyllrb.com/docs/installation/)
-2. Install [bundler](https://jekyllrb.com/docs/ruby-101/#bundler)  [gems](https://jekyllrb.com/docs/ruby-101/#gems) 
-  
-        gem install bundler
+1. Fork the [project repository](https://github.com/qiot-project/qiot-project.github.io), then clone your fork:
 
-3. Fork the [project repository](https://github.com/qiot-project/qiotio.github.io), then clone your fork.
-  
+  ```sh
         git clone git@github.com:YOUR_USER_NAME/qiotio.github.io.git
+```
+2. Change into the project directory:
 
-4. Change into the project directory:
-  
-        cd qiotio.github.io
+  ```sh
+        cd qiot-project.github.io
+```
+3a. Pull and Run the [containerized version](https://hub.docker.com/r/jekyll/jekyll/) of the ruby bundler and jekyll runtime to install the required gems locally and run the jekyll server, using the [docker-compose file](https://raw.githubusercontent.com/qiot-project/qiot-project.github.io/develop/docker-compose.yaml) provided by the community: 
 
-5. Use bundler to fetch all required gems in their respective versions
+```sh
+        docker-compose up
+```
+3b. Pull and Run the jekyll container manually:
 
-        bundle install
-
-6. Build the site and make it available on a local server
-  
-        bundle exec jekyll serve
-        
+```sh
+        docker run --rm \
+                --volume="$PWD:/srv/jekyll:Z" \
+                --publish [::1]:4000:4000 \
+                jekyll/jekyll \
+                jekyll serve
+```   
 7. Now browse to http://localhost:4000
 
 > If you encounter any unexpected errors during the above, please refer to the [troubleshooting](https://jekyllrb.com/docs/troubleshooting/#configuration-problems) page or the [requirements](https://jekyllrb.com/docs/installation/#requirements) page, as you might be missing development headers or other prerequisites.
