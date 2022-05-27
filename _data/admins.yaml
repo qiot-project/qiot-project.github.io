@@ -1,12 +1,3 @@
-abattagl:
-  name: "Andrea Battaglia"
-  email: "abattagl@redhat.com"
-  emailhash: "58d8a28d588d957040fd5288cc208a41"
-  job_title: "EMEA Technical Partner Development Manager @ Red Hat"
-  twitter: "mrlition"
-  github: "andreabattaglia"
-  linkedin: "abattagl"
-  bio: "Italian, living in Southern Italy. As former technical head of Red Hat services for App Modernization in EMEA, currently train partners in DX approach and Cloud-Native Development. Passionate for technology, believes Quarkus is the technology of the future."  
 mmascia:
   name: "Mattia Mascia"
   email: "mmascia@redhat.com"
@@ -16,19 +7,12 @@ mmascia:
   github: "eye0fra"
   linkedin: "mattiamascia"
   bio: "Mattia is a Principal Consultant in Red Hat, with over 13 years of enterprise IT experience, has deep knowledge of open source software in cloud, middleware and integration. He is an OpenShift specialist and technically competent developer who consistently strives for quality in his work, he is also a team player who is always prepared to help and encourage colleagues. In his current role design and implement solutions using cloud technologies, design principles, integration points, and automation methods."
-ecrosbie:
-  name: "Eoin Crosbie"
-  email: "ecrosbie@redhat.com"
-  emailhash: "67908970d2e279b0a7b64c2549c3f9ea"
-  job_title: "EMEA Technical Partner Development Manager"
-  twitter: "Eoin_Crosbie"
-  github: "Crosbie"
-  bio: "I help Red Hat Partners get stuff done with our tech!"
 mparra:
   name: "Mario Parra"
   email: "mparra@redhat.com"
   emailhash: "ea9a710282723ab8f6dc9c98014f6485"
   job_title: "Senior Cloud Consultant @ Red Hat Iberia"
+  twitter: 
   github: "mparram"
   linkedin: "marioparram"
   bio: "I help Red Hat Partners get stuff done with our tech!"
@@ -40,14 +24,6 @@ astolzen:
   twitter: "myandi"
   github: "astolzen"
   linkedin: "andreas-stolzenberger-5185338"
-  bio: ""
-mkoch:
-  name: "Markus Koch"
-  email: "mkoch@redhat.com"
-  emailhash: "2b63e01ac2adce629901592f63f52427"
-  job_title: "EMEA Technical Partner Development Manager @ Red Hat"
-  twitter: ""
-  github: ""
   bio: "-"
 gnewson:
   name: "Geoff Newson"

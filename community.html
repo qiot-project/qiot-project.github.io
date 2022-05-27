@@ -19,7 +19,42 @@ permalink: /community
       </li>
       <li>Must be composite of connected, reusable, and independent modules;</li>
     </ul>
-    <br> Additionally, each and every outcome/deliverable can be safely and easily used as a baseline for the implementation of customer projects.<br> <br><h1>How do we build solutions</h1>Working on complex projects requires the commitment of several individuals  and quite a broad skillset.<br>And that complexity stands in the compulsory requirement for distributed architectures and security. That's where skillset and expertise come into place.<br>While talking about  distributed workload or architecture could be the easy part, design and implementation try hard the scalability of an enterprise project.<br><br>To make sure the community members always stay on top of their skills and are capable of delivering stable and reusable outcome, we have decided to  compose the &quot;default&quot; technology stack with the latest and greatest from the enterprise portfolio of several software vendors of the IT industry.<br><br>We have also done quite a hard work to identify the common approaches, standards and recommended practices and define the community criteria for our deliverables.<br>The above leads to the need to follow the golden rule of the &quot;80% solution&quot; and make sure that the generic architectural design fits into a business and technical value proposition after we tailor it deployoing applications (business logic) for a specific vertical / use case / business motion:<br><br><img src="{{site.baseurl}}/assets/images/community/howto-distributed-architectures-vertical.png" width="800"><br> <br> <img src="{{site.baseurl}}/assets/images/community/howto-distributed-architectures-landscape.png" width="800"><br> <br><h1>Join us!</h1> Feel free to have a look, investigate, test and leave a feedback. <br><br /> We look forward to
-    have you joining the project! <br /> <br /> <em>The QIoT admin team</em>
+    <br> Additionally, each and every outcome/deliverable can be safely and easily used as a baseline for the implementation of customer projects.<br>
+    <br>
+    <h1>How do we build solutions</h1>
+    Working on complex projects requires the commitment of several individuals  and quite a broad skillset.<br>
+    And that complexity stands in the compulsory requirement for distributed architectures and security. That's where skillset and expertise come into place.<br>
+    While talking about  distributed workload or architecture could be the easy part, design and implementation try hard the scalability of an enterprise project.<br>
+    <br>
+    To make sure the community members always stay on top of their skills and are capable of delivering stable and reusable outcome, we have decided to  compose the &quot;default&quot; technology stack with the latest and greatest from the enterprise portfolio of several software vendors of the IT industry.<br>
+    <br>
+    We have also done quite a hard work to identify the common approaches, standards and recommended practices and define the community criteria for our deliverables.<br>
+    The above leads to the need to follow the golden rule of the &quot;80% solution&quot; and make sure that the generic architectural design fits into a business and technical value proposition after we tailor it deployoing applications (business logic) for a specific vertical / use case / business motion:<br>
+    <br>
+    <img src="{{site.baseurl}}/assets/images/community/howto-distributed-architectures-vertical.png" width="800"><br>
+     <br> 
+     <img src="{{site.baseurl}}/assets/images/community/howto-distributed-architectures-landscape.png" width="800"><br>
+     <br>
+     <br>
+   <h1>Get in touch</h1>
+    <br>
+    The QIoT Community admins are active on the github workspace as well as in the social media. <br>
+    Our contacts are available in the sections below: <br> <br>
+    <h2>Our leader</h2>
+    {% for leader_hash in site.data.leaders %}
+    	{% assign leader = leader_hash[1] %}
+      {% include printperson.html name=leader.name emailhash=leader.emailhash email=leader.email twitter=leader.twitter linkedin=leader.linkedin github=leader.github %}
+	{% endfor %}
+    <h2>Our admins</h2>
+    {% for admin_hash in site.data.admins %}
+    	{% assign admin = admin_hash[1] %}
+      {% include printperson.html name=admin.name emailhash=admin.emailhash email=admin.email twitter=admin.twitter linkedin=admin.linkedin github=admin.github %}
+	{% endfor %}
+  <h1>Join the QIoT Community!</h1> 
+  Feel free to have a look, investigate, test and leave a feedback.<br>
+  <br> 
+  We look forward to working with you!<br>
+  <br> 
+  <em>The QIoT admin team</em><br>
   </div>
 </div>

@@ -1,0 +1,54 @@
+    <p>
+      <table>
+        <tr>
+          <td rowspan="2"><img class="headshot" alt="{{ include.name }}" src="https://www.gravatar.com/avatar/{{ include.emailhash }}"></td>
+          <td><b>  {{ include.name }}</b></td>
+        </tr>
+        <tr>
+          <td>
+            <ul class="list-inline text-center">
+              {% if include.email %}
+              <li class="list-inline-item">
+                <a href="mailto:{{ include.email | encode_email }}">
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="far fa-envelope fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              {% endif %}
+              {% if include.twitter %}
+              <li class="list-inline-item">
+                <a href="https://twitter.com/{{ include.twitter }}">
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-twitter fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              {% endif %}
+              {% if include.linkedin %}
+              <li class="list-inline-item">
+                <a href="https://www.linkedin.com/in/{{ include.linkedin }}">
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-linkedin fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              {% endif %}
+              {% if include.github %}
+              <li class="list-inline-item">
+                <a href="https://github.com/{{ include.github }}">
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              {% endif %}
+            </ul>
+          </td>
+        </tr>
+      </table>
+    </p>
