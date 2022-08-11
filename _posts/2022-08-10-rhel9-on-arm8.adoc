@@ -1,0 +1,192 @@
+---
+layout: post
+title: 'Install RHEL for Edge 9 on ARMv8'
+subtitle: "---"
+date: 2022-08-10
+tags: qiot RHEL4Edge rpi rpi4 howto arm8
+category: blog
+synopsis: Install RHEL for Edge 9 on ARMv8
+background: '/assets/images/main/rh-hackfest-banners_3840x2160.png'
+author: astolzen
+contributors: abattagl
+---
+
+:toc:
+
+.
+
+# Introduction
+
+The next guide will show how to deploy RHEL for Edge to a physical miniature PC https://fit-iot.com/web/products/fitlet2/[Fitlet2] manufactured by Compulab.
+
+The solution of RHEL for Edge uses ostree to manage the packages to install on the device. Ostree is both a shared library and suite of command line tools that combines a “git-like” model for committing and downloading bootable filesystem trees, along with a layer for deploying them and managing the bootloader configuration.
+
+For this use case we are providing a web server with the kickstart file required to start the installation, and hosting the repo with the required packages for this distribution, but we also provide the how to create your own from scratch with the tool image-builder available at the standard RHEL 8 distribution.
+
+# Hardware
+
+[cols="1,1"]
+|===
+|Model name | fitlet2
+|CPU model name | Intel(R) Atom x5-E3930 [CE3930]
+|Memory capacity | 4.00 GiB
+|===
+
+image::/assets/images/posts/rhel-on-fitlet2/fitlet2.png[width=100%]
+
+# Preparation
+
+Connect a USB-Keyboard and a Monitor to the Fitlet2. 
+
+Switch the Device on. 
+
+It should automatically enter the BIOS. 
+
+If not, press “canc” during boot to enter the BIOS.
+
+## Fix system time
+
+If necessary, adjust the Time and Date of the Machine. Use the *UTC Timezone* ! 
+
+If the BIOS clock is way off, your Web-based Kickstart will fail with an SSL-Error (see further below)
+
+image::/assets/images/posts/rhel-on-fitlet2/img01.jpg[width=100%]
+
+## Turn off Secure Boot
+
+Switch to the *"Security"* tab of the Fitlet2 BIOS and select _"Disabled"_ for the Secure Boot option.
+
+image::/assets/images/posts/rhel-on-fitlet2/img02.jpg[width=100%]
+
+## Tune the Boot Order Priorities
+
+Switch to the *"Boot"* tab of the Fitlet2 BIOS and Adjust the boot order to boot _“HDD”_ (*not* SD) first and then “USB Key” and “USB CD/DVD”. 
+
+After the Installation your OS will appear as First UEFI HDD. 
+
+If your system does not correctly boot into RHEL gor Edge after the Installation, please come back into the system BIOS and correct the Boot Order accordingly.
+
+image::/assets/images/posts/rhel-on-fitlet2/img03.jpg[width=100%]
+
+# Bootable ISO
+
+## Download
+
+You can download a Red Hat Boot ISO image from the Red Hat Customer Portal. 
+
+The Red Hat Boot ISO image is used to launch the RHEL installer. 
+
+The installer fetches the Kickstart file that you provide for installing RHEL for Edge images.
+
+* Open a browser and access https://access.redhat.com/downloads.
+* Click the Red Hat Enterprise Linux 8.
+* Click the button Download Now for the option "Red Hat Enterprise Linux 8.x Boot ISO" (8.4 at the time of this article).
+
+For more information about downloading Boot.iso image, see https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html-single/performing_a_standard_rhel_installation/index#downloading-beta-installation-images_preparing-for-your-installation[Downloading the installation ISO image].
+
+## Create a bootable USB-Stick
+
+Time to flash the downloaded ISO image on a USB drive. The minimum space required for the UDB Flash drive is 1Gb.
+
+On a side note, please keep in mind the partition resultant from the flash operation will be marked as read-only, as the ISO image we are about to flash is a DVD image. 
+
+### On Linux
+
+Let’s check the path of the device with
+
+[source,sh]
+----
+sudo fdisk -l
+----
+
+You need to identify the path of type /dev/sdN, in my case is /dev/sda if yours takes another path, replace it in the next step.
+
+To start the flashing process type
+
+[source,sh]
+----
+dd if=rhel-8.4-x86_64-boot.iso of=<devicename> status=progress
+----
+
+as root.
+
+*WARNING* make absolutely sure, that the given device name is in fact the USB-Stick. If you accidentally type in your root-disk, it'll be overwritten!
+
+### On Windows
+
+On Windows, use the free tool https://rufus.ie/en/[Rufus] to create a bootable USB-Stick.
+
+# Boot the Fitlet over the Internet
+
+Connect a Keyboard and a Monitor (HDMI) to the Fitlet2 Device. 
+
+Put the bootable USB-Key and a blank Micro-SD-Card into the Fitlet2.
+
+Connect a Network Cable. Setup using WiFi is not supported at this time.
+
+*WARNING* The Micro SD-card will be overwritten by the installation process without further warning!
+
+Turn on the Fitlet2.
+
+If it does not boot from the USB-Key, enter the BIOS-Setup and check for the following settings:
+
+* Turn OFF secure Boot.
+* Change the Boot order, that the USB-Stick comes first followed by "SD" and "HDD".
+
+Once the System boots from the USB-Stick, you'll see the RHEL-8-Install Prompt.
+
+* On *BIOS-based systems*: Press the _Tab_ key and add custom boot options to the command line. You can also access the boot: prompt by pressing the _Esc_ key but no required boot options are preset. In this scenario, you must always specify the Linux option before using any other boot options.
+* On *UEFI-based systems*: Press the _e_ key and add custom boot options to the command line. When ready press _Ctrl+X_ to boot the modified option.
+
+Once you've got access to the boot options and kernel parameters for the boot process, appent the following key-value pair to the first row:
+
+[source,sh]
+----
+inst.ks=https://edge:qiotH4ckf3st@repo8.rhepds.com/edge/kick.ks
+----
+
+In case you get an SSL-failure whan the installation process is trying to download the kickstart file, also append the following kernel parameter:
+
+[source,sh]
+----
+inst.noverifyssl
+----
+
+*WARNING* Keep in mind that the system will use an US-Keyboard-Layout at this stage.
+This will point to our provided Kickstart File and the Internet based repository.
+
+If you chose to set up your own Deployment Server and use your own Kickstart-File, point to that.
+
+How you create your Own Edge Repository and make that available on an HTTP-Server is documented https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html/composing_installing_and_managing_rhel_for_edge_images/installing-rpm-ostree-images_composing-installing-managing-rhel-for-edge-images[here].
+
+If your Network does not have a DHCP-Server to automatically supply an IP-Address to the Fitlet, refer to this https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html/performing_an_advanced_rhel_installation/kickstart-and-advanced-boot-options_installing-rhel-as-an-experienced-user[document] on how to provide a manual IP-Address, DNS and Gateway-Information for the Networked Install.
+
+The Fitlet will then run through the automated Install process and reboot at the end. Depending on your Internet-Speed, this will take a couple of minutes (the Process will Download 900 MB).
+
+Once the System reboots, you can remove the USB Stick.
+
+# Get Access to the Fitlet2
+
+Once the system is up and running you can log into the local console using user root or user edge with the password _r3dh4t1!_.
+
+*WARNING* The default Keyboard-Layout will be _US_. You can change it to your local Layout at this point. See https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html/configuring_basic_system_settings/assembly_changing-basic-environment-settings_configuring-basic-system-settings#proc_configuring-the-keyboard-layout_assembly_changing-basic-environment-settings[here].
+
+Change the passwords for both users as soon as possible to something secure.
+
+Note down the IP-Address & Name of the System. Again, if you do not have a DHCP-Server in your Network, you need to manually configure the Network.
+
+At this point you also can set up a WiFi-Connection on the Commandline and use it from here on after instead of the cabled Network.
+
+How to set up a static Network on the command line is documented https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html/configuring_and_managing_networking/configuring-an-ethernet-connection_configuring-and-managing-networking#configuring-a-static-ethernet-connection-using-nmcli_configuring-an-ethernet-connection[here].
+
+How to set up a WiFi-Connection on the command line is documented https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html/configuring_and_managing_networking/managing-wi-fi-connections_configuring-and-managing-networking[here].
+
+If you changed your Network Settings, please reboot now.
+
+Once your Fitlet2 is up and Networked, you can also SSH into the system using user _"root"_ or User _"edge"_.
+
+In addition, the Web-Management-Tool Cockpit is available.
+
+Open a browser and point it to: _"https://<fitlet IP or FQDN>:9090"_
+
+Log In as root or edge to manage the Device.
