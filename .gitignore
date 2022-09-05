@@ -25,3 +25,4 @@ bin
 /Gemfile.lock
 /.settings/
 /test/
+/.asciidoctorconfig.adoc

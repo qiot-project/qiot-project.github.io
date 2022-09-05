@@ -1,0 +1,118 @@
+---
+layout: post
+title: 'Install RHEL 9 on ARMv8'
+subtitle: "---"
+date: 2022-08-10
+tags: qiot RHEL4Edge rpi rpi4 howto arm8
+category: blog
+synopsis: Install RHEL 9 on ARMv8
+background: '/assets/images/main/rh-hackfest-banners_3840x2160.png'
+author: astolzen
+contributors: abattagl
+---
+
+:toc:
+
+.
+
+# Introduction
+
+The next guide will show how to roll-out RHEL for Edge 9 on a single board 64-bit native computer: https://www.raspberrypi.com/products/raspberry-pi-4-model-b/[Raspberry Pi 4].
+
+The purpose of this blog is to demo the capability of Red Hat Enterprise Linux on ARMv8 devices.
+
+Please keep in mind *RPi 4 is not officially supported by Red Hat OS*.
+
+# Hardware
+
+For this demo you'll need the following components:
+
+* Raspberry Pi4 with 4 or 8 GB https://www.raspberrypi.com/products/raspberry-pi-4-model-b/specifications/[Specs]
+* SD-Card to boot your OS from (4+ Gb recommended)
+* A USB-Stick (temporary) for the installation process
+
+image::/assets/images/posts/rhel9-on-arm8/rpi4.png[width=100%]
+
+
+# Software
+
+For this demo you'll need the following components:
+
+* https://developers.redhat.com/products/rhel/overview[Red Hat Enterprise Linux]
+* RPi 4 tools
+
+
+# Preparation
+
+Follow the steps below to prepare your SD card: 
+
+* Partition 1, 100 MB, partition type EFI (ef)
+* Partition 2, 1000 MB, Type Linux
+* Partition 3, rest of the SD-Card, Type Linux
+* Format your Partition 1 as FAT (12, 16 or 32, doesn't matter)
+* Download https://github.com/pftf/RPi4[EFI Firmware for PI4]
+* Unpack content of the EFI-Firmware compressed archive to the Partition 1 of the SD Card
+* Flash the RHEL 9 ARM64 ISO to your USB Stick (we recommend using the 'dd' command)
+
+
+# Installation
+
+* Plug the SD-Card, USB-Stick, Mouse, Keyboard, Network Cable and HDMI-Monitor into your RPi 4;
+* Bootthe device and Press ESC on the EFI Boot Screen;
+* Enter the Boot Manager, chose USB Stick to boot from;
+* Run through the RHEL-9-Setup Dialog, choose Packages, Registration, Locales, Timezone etc as needed;
+* Set a root password and create a standard user.
+
+# Disk config
+
+*WARNING* The RHEL-Installer does not accept the existing EFI-Partition as a valid filesystem. 
+
+Create a new one and (re)transfer the Pi-UEFI-Firmware after the installation before first boot, after the installation process is completed successfully.
+
+* Select *Partition 1*
+** Select "reformat partition" and choose "EFI System Parttion";
+** Select _"/boot/efi"_ as mountpoint
+* Select *Partition 2* (1000MB);
+** Select reformat
+** Choose ext4 Filesystem and _"/boot"_ as Mountpoint
+* Select *Partition 3* (remaining space on the SD Card);
+** Select _Reformat_;
+** Choose _ext4_ or _xfs_ as Filesystem and _"/"_ as Mountpoint
+* *Ignore the warning* _"no swap partition specified"_.
+
+Install RHEL 9 and reboot after the installer finished.
+
+At this point, your PI 4 will not start into RHEL 9, since the Installer created a new EFI-Partition.
+
+
+# How to Fix EFI
+* Turn of the PI4, put the SD-Card back into your PC and mount the first partition (EFI).
+* Copy the PI4 EFI Firmware to that Partition (again), leave the EFI-Directory from the RHEL-9-Installer as it is.
+* Plug the SD back into the Pi4, boot and enter the EFI Boot Shell (F1)
+
+* On the shell type:
+```
+FS0:
+bcfg boot add 0 FS0:\EFI\redhat\grubaa64.efi
+```
+
+You should get a message like: 
+```
+"Target = 000x, bcfg Add Boot000x as 0"
+```
+
+With that, now added the RHEL 9 Boot loader as the Default EFI Boot target.
+
+* Type ```reset```;
+
+Your Pi4 will now boot into the RHEL 9 Installation.
+
+image::/assets/images/posts/rhel9-on-arm8/rhel9-screenshot.jpg[width=100%]
+
+
+
+
+
+
+
+
