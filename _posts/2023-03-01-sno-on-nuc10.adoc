@@ -15,8 +15,6 @@ contributors: mparra,abattagl,mkoch
 
 This post is an update for 4.10 / 2023, from the original blog post in 2021, which contains some minor screenshot and version updates.
 
-.
-
 # Introduction
 
 The next guide will show how to deploy a Single Node Openshift (SNO) to a physical Intel® NUC.
@@ -43,14 +41,12 @@ image::/assets/images/posts/usecase-manufacturing/NUC.jpg[width=100%]
 
 ## Single Node Openshift (SNO) 4.10+
 
-Note: During testing for this hackfest, it seems that SNO 4.11 and 4.12 cause kernel panics after bootstrap. 4.10 works, and is close enough to the ARO clusters (4.11) to work. You may try other versions, or upgrades, at your leisure. 
-
 SNO requires the following minimum host resources:
 
 
 [cols="1,1"]
 |===
-|# Virtual CPU | 8
+|Virtual CPU | 8
 |Virtual RAM | 32 GB
 |Storage | 120 GB
 |===
@@ -102,14 +98,16 @@ Then under Assisted Installer, push the new *Create cluster* button.
 image::/assets/images/posts/sno-on-nuc10/img01.png[width=100%]
 
 
+**Note:** During testing for this hackfest, it seems that SNO 4.11 and 4.12 cause kernel panics after bootstrap. 4.10 works, and is close enough to the ARO clusters (4.11) to work. You may try other versions, or upgrades, at your leisure.
+
 You'll be asked to fill a form with the following info:
 
 * Set the Cluster name and Base domain.
 * Mark the checkbox to install single node OpenShift (SNO) and accept the warning message.
-* Select the OpenShift version (Tested with OpenShift 4.8+).
+* Select the OpenShift version: **4.10.52**
 * Edit pull secret (no need to).
 
-image::/assets/images/posts/sno-on-nuc10/img02.png[width=100%]
+image::/assets/images/posts/usecase-retail/sno-details.png[width=100%]
 
 Click Next to continue to the Host discovery section:
 
