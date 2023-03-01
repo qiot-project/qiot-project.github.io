@@ -1,0 +1,36 @@
+---
+layout: post
+title: 'Options for RHEL9 (for Edge) and containers on a Compulab Fitlet2'
+subtitle: "---"
+date: 2023-03-01
+tags: qiot sno nuc howto
+category: blog
+background: '/assets/images/main/rh-hackfest-banners_3840x2160.png'
+author: jread
+contributors: abattagl,astolzen
+---
+
+:toc:
+
+There is an excellent article on how to install RHEL8 on the Fitlet2 from a previous hackfest, by Andreas Stolzenberger. However, with RHEL9 there are even more options, varying from the simple, to the more complex.
+
+# Option 1) RHEL9 + Podman (easiest)
+
+When you start this hackfest, we'd recommend starting off with RHEL9 and Podman. This is the easiest to get started, even though it isn't "RHEL for Edge".
+
+Simply, burn a RHEL9 .iso to a USB stick, add the SD card into the Fitlet2 that came in the box, and follow the graphical installer. 
+
+After RHEL9 finishes installing; 
+
+----
+user@host: dnf install podman
+user@host: systemctl start --now podman
+----
+
+# Option 2) Generate RHEL for Edge images (ostree commits) via Image Builder
+
+https://www.redhat.com/en/blog/get-started-rhel-edge
+
+# Option 3 ) Using FDO (most complex, but also the most realistic)
+
+http://tinyurl.com/redhatfdo
