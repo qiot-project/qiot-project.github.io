@@ -10,4 +10,10 @@ table td, table th {
 
 table {
 	border-collapse: collapse;
+	margin-bottom: 1em;
+}
+
+p.tableblock {
+	margin: 0;
+	padding: .2em;
 }
