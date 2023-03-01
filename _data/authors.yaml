@@ -61,6 +61,7 @@ gnewson:
 jread:
   name: "James Read"
   email: "james@redhat.com"
+  emailhash: "272afa7e145553728bca23a16fe5b3f8"
   job_title: "Principal Solution Architect, covering Microsoft @ Red Hat"
   twitter: "jreadDOTcom"
   github: "jamesread"
