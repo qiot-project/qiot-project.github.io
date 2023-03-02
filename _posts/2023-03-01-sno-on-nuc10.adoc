@@ -1,11 +1,11 @@
 ---
 layout: post
-title: 'Install Single Node Openshift on Intel® 10th gen NUC'
+title: 'Install Single Node OpenShift on Intel® 10th gen NUC'
 subtitle: "---"
 date: 2023-03-01
 tags: qiot sno nuc howto
 category: blog
-synopsis: Install Single Node Openshift on Intel® 10th gen NUC (Updated for 4.10)
+synopsis: Install Single Node OpenShift on Intel® 10th gen NUC (Updated for 4.10)
 background: '/assets/images/main/rh-hackfest-banners_3840x2160.png'
 author: jread
 contributors: mparra,abattagl,mkoch
