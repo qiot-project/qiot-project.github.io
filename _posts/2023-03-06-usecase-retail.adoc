@@ -113,13 +113,13 @@ the future.
 
 https://developers.redhat.com/topics/red-hat-architecture-and-design-patterns[_https://developers.redhat.com/topics/red-hat-architecture-and-design-patterns_]
 
-image::/assets/images/posts/usecase-retail/retail_pos_high_level.png[image,width=2048,height=1152]
+image::/assets/images/posts/usecase-retail/retail_pos_high_level.png[image,width=100%]
 
-image::/assets/images/posts/usecase-retail/retail_pos_why.png[image,width=2048,height=1152]
+image::/assets/images/posts/usecase-retail/retail_pos_why.png[image,width=100%]
 
-image::/assets/images/posts/usecase-retail/retail_cloud_native_dev.png[image,width=2048,height=1152]
+image::/assets/images/posts/usecase-retail/retail_cloud_native_dev.png[image,width=100%]
 
-image::/assets/images/posts/usecase-retail/retail_cloud_native_dev_why.png[image,width=2048,height=1152]
+image::/assets/images/posts/usecase-retail/retail_cloud_native_dev_why.png[image,width=100%]
 
 ## Hackfest Technical Architecture
 
@@ -141,7 +141,7 @@ connection is restored.
 
 ### Architecture diagram
 
-image::/assets/images/posts/usecase-retail/architecture.png[image,width=2048,height=1162]
+image::/assets/images/posts/usecase-retail/architecture.png[image,width=100%]
 
 ### “Virtual Shop” Alternatives
 
@@ -204,7 +204,7 @@ huge improvement in time.
 
 The Hardware of choice for the edge device is the Compulab Fitlet2.
 
-image::/assets/images/posts/usecase-manufacturing/fitlet2.jpg[image,width=1928,height=1509]
+image::/assets/images/posts/usecase-manufacturing/fitlet2.jpg[image,width=100%]
 
 The FITLET2-CE3930 is equipped with Intel® Atom X5-E3930 powered by
 Intel®.
@@ -226,14 +226,13 @@ Intel®.
 |Operating system support |all
 |===
 
-image::/assets/images/posts/usecase-retail/10000000000007D20000058987BF5C3A3F2FBEC8.png[image,width=2002,height=1416]
+image::/assets/images/posts/usecase-manufacturing/fitlet2-block-diagram.png[width=100%]
 
 Additional technical detail can be found at the following
 link:https://fit-iot.com/web/products/fitlet2/fitlet2-specifications/[
 ]https://fit-iot.com/web/products/fitlet2/fitlet2-specifications/[_link_].
 
-### Option 2) Virtual Alternative; RHEL Hypervisor running
-in Azure
+### Option 2) Virtual Alternative; RHEL Hypervisor running in Azure
 
 A RHEL hypervisor virtual machine running in Microsoft Azure. This
 machine is pre-installed with QEMU, and has 4 vCPUs, and 16Gb of RAM
@@ -299,7 +298,7 @@ RHEL, so you get full support on it.
 
 #### qiot-retail-edgepos service
 
-image::/assets/images/logo/logo-quarkus.png[image,width=859,height=900]
+image::/assets/images/logo/logo-quarkus.png[image,width=100]
 
 The edgepos service is implemented on top of thehttps://quarkus.io/[
 ]https://quarkus.io/[_Quarkus_] framework. It can run in several
@@ -344,7 +343,7 @@ NUC10i7FNH.
 The Intel® NUC guarantees performance and stability to the container
 platform designed to control the facility and the machineries.
 
-image::/assets/images/posts/usecase-manufacturing/NUC.jpg[image,width=2118,height=1632]
+image::/assets/images/posts/usecase-manufacturing/NUC.jpg[image,width=100%]
 
 [cols=",",]
 |===
@@ -401,7 +400,7 @@ speed/availability of of the Intel NUC hardware.
 
 ### Main Diagram
 
-image::/assets/images/posts/usecase-retail/backoffice.png[image,width=1071,height=811]
+image::/assets/images/posts/usecase-retail/backoffice.png[image,width=100%]
 
 ### OpenShift Container Platform
 
@@ -466,7 +465,7 @@ and internal certificate authorities. +
 
 #### SQL Databases
 
-image::/assets/images/posts/usecase-retail/10000201000000DC000000E352E1150BC8AE0251.png[image,width=220,height=227]
+image::/assets/images/posts/usecase-retail/crunchydb.png[image,width=480]
 
 PostgreSQL is a powerful, open source object-relational database system
 with over 30 years of active development that has earned it a strong
@@ -480,7 +479,7 @@ Debezium (Kafka Connect).
 
 #### edgepos-manager
 
-image::/assets/images/logo/logo-quarkus.png[image,width=859,height=900]
+image::/assets/images/logo/logo-quarkus.png[image,width=100]
 
 The edgepos-manager service is is implemented on top of
 thehttps://quarkus.io/[ ]https://quarkus.io/[_Quarkus_] framework.
@@ -622,7 +621,7 @@ User Guide Red Hat Integration 2022.q4_]
 
 #### CrunchyDB - PostgresSQL
 
-image::/assets/images/posts/usecase-retail/10000201000000DC000000E352E1150BC8AE0251.png[image,width=220,height=227]
+image::/assets/images/posts/usecase-retail/crunchydb.png[image,width=480]
 
 PostgresSQL hardly needs any introduction, it’s one of the most popular
 open source databases, well known and trustued for it’s scalability and
@@ -657,7 +656,7 @@ metrics.
 
 #### Grafana
 
-image::/assets/images/posts/usecase-retail/grafana.png[image,width=2048,height=497]
+image::/assets/images/posts/usecase-retail/grafana.png[image,width=480]
 
 Grafana also should not need much of an introduction, as it’s powerful
 dashboards are built into OpenShift as well. Much like prometheus, we
@@ -742,7 +741,7 @@ shops, enable features only in certain locations, or at certain times.
 
 #### inventory-manager
 
-image::/assets/images/logo/logo-quarkus.png[image,width=859,height=900]
+image::/assets/images/logo/logo-quarkus.png[image,width=100]
 
 The edgepos-manager service is is implemented on top of
 thehttps://quarkus.io/[ ]https://quarkus.io/[_Quarkus_] framework.
