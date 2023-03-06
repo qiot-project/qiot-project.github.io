@@ -318,9 +318,9 @@ barcode is valid and will generate a valid product, with a fixed price
 that is hard coded into the UI - which is very strange for a retail
 store…
 
-image::/assets/images/posts/usecase-retail/100000000000063500000208E7E31742DF3F4C9B.png[image,width=1588,height=519] +
-The UI is a simple React application,
-https://github.com/qiot-project/qiot-retail-edgepos-ui[_qiot-project/qiot-retail-edgepos-ui_].
+image::/assets/images/posts/usecase-retail/edgepos_ui.png[image,width=100%]
+
+The UI is a simple React application, https://github.com/qiot-project/qiot-retail-edgepos-ui[_qiot-project/qiot-retail-edgepos-ui_].
 This project can be built with `npm run build`, and the changed files
 can should be copied into the qiot-retail-edgepos service, under the
 /src/main/resources/META-INF/resources directory.
@@ -416,7 +416,7 @@ functionality is the same.
 
 #### Red Hat AMQ Streams
 
-image::/assets/images/posts/usecase-retail/10000000000002270000010F4A6E3D16AFD35DEB.png[image,width=364,height=179]
+image::/assets/images/logo/logo-kafka.png[image,width=160]
 
 An enterprise distribution of Apache Kafka, Red Hat AMQ Streams is a
 data streaming platform. It can be installed as a simple service on
@@ -439,7 +439,7 @@ image::/assets/images/posts/usecase-retail/kafka-ecosystem.png[image,width=447,h
 
 #### Cert-manager service (issuer)
 
-image::/assets/images/posts/usecase-retail/100002010000057800000547D36D42C9067C9414.png[image,width=1400,height=1350]
+image::/assets/images/logo/logo-cert-manager.png[image,width=160]
 
 Cert-manager automates certificate management in cloud native
 environments and thus helped with the implementation of a dynamic
@@ -465,7 +465,7 @@ and internal certificate authorities. +
 
 #### SQL Databases
 
-image::/assets/images/posts/usecase-retail/crunchydb.png[image,width=480]
+image::/assets/images/posts/usecase-retail/crunchydb.png[image,width=160]
 
 PostgreSQL is a powerful, open source object-relational database system
 with over 30 years of active development that has earned it a strong
@@ -560,9 +560,7 @@ foundhttps://www.openshift.com/learn/developer[
 
 #### Stream service
 
-image::/assets/images/posts/usecase-retail/strimzi.png[image,width=600,height=156]
-
-image::/assets/images/posts/usecase-retail/100002010000045200000210CEAD1F33222F1DE6.png[image,width=1106,height=528]
+image::/assets/images/logo/logo-kafka.png[image,width=160]
 
 In the forecast of the need for receiving/handling a large number of
 concurrent messages, A-MQ Streams is the component of choice for
@@ -570,24 +568,6 @@ streaming messages through the integration and the storage layers.
 
 An internal streaming service guarantees scalability and reliability of
 the message flow management within the Datacenter business logic.
-
-The Stream service topics serve a variety of functionalities and
-processes impacting the following workflows:
-
-* *Product-line*: New Global product-line are delivered to the streaming
-service for asyncronous consumption by the factories. This workflow
-requires persistence and off-set management, both provided by the A-MQ
-Streams product; +
-* *Telemetry*: A-MQ perfectly fits into the canonical usecase of
-telemetry stream and management. Compared to the previous use-case
-implemented by the community, the team decided to go for a more
-structured and scalable approach based on a could-native product, rather
-that just relying on a communication protocol likehttps://mqtt.org/[
-]https://mqtt.org/[_MQTT protocol_]. +
-
-The implementation choices above make it easy to fine tune the
-connections, the scalability, the message flow, and retention
-separately.
 
 This design makes it a lot easier to decouple the implementation details
 of the integration services responsible for offloading (consuming
@@ -621,7 +601,7 @@ User Guide Red Hat Integration 2022.q4_]
 
 #### CrunchyDB - PostgresSQL
 
-image::/assets/images/posts/usecase-retail/crunchydb.png[image,width=480]
+image::/assets/images/posts/usecase-retail/crunchydb.png[image,width=160]
 
 PostgresSQL hardly needs any introduction, it’s one of the most popular
 open source databases, well known and trustued for it’s scalability and
@@ -656,7 +636,7 @@ metrics.
 
 #### Grafana
 
-image::/assets/images/posts/usecase-retail/grafana.png[image,width=480]
+image::/assets/images/posts/usecase-retail/grafana.png[image,width=160]
 
 Grafana also should not need much of an introduction, as it’s powerful
 dashboards are built into OpenShift as well. Much like prometheus, we
@@ -669,7 +649,7 @@ your architecture.
 
 #### DevSpaces
 
-image::/assets/images/posts/usecase-retail/devspaces.png[image,width=480,height=192]
+image::/assets/images/posts/usecase-retail/devspaces.png[image,width=160,height=192]
 
 OpenShift recently upgraded DevSpaces to include Visual Studio Code Web
 - which provides for a hosted, secure, private, container-based IDE in
