@@ -1,7 +1,7 @@
 ---
 layout: post
 title: 'Red Hat Hackfest for Retail (2023H1)'
-subtitle: "Use-case overview"
+subtitle: "2023, H1, EMEA"
 date: 2023-03-06
 category: usecase
 synopsis: A use case around Retail.
