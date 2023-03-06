@@ -341,7 +341,7 @@ The Edge Server is based on the powerful Intel® NUC 10 Performance kit -
 NUC10i7FNH.
 
 The Intel® NUC guarantees performance and stability to the container
-platform designed to control the facility and the machineries.
+platform designed to control any IT systems that operate in the store, most importantly the point of sale machines.
 
 image::/assets/images/posts/usecase-manufacturing/NUC.jpg[image,width=100%]
 
