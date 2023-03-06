@@ -649,7 +649,7 @@ your architecture.
 
 #### DevSpaces
 
-image::/assets/images/posts/usecase-retail/devspaces.png[image,width=160,height=192]
+image::/assets/images/posts/usecase-retail/devspaces.png[image,width=160]
 
 OpenShift recently upgraded DevSpaces to include Visual Studio Code Web
 - which provides for a hosted, secure, private, container-based IDE in
@@ -658,7 +658,7 @@ Hackfest, but hopefully you find it useful!
 
 #### Cert-manager service
 
-image::/assets/images/logo/logo-cert-manager.png[image,width=1400,height=1350]
+image::/assets/images/logo/logo-cert-manager.png[image,width=160]
 
 Cert-manager automates certificate management in cloud native
 environments and thus helped with the implementation of a dynamic
