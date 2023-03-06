@@ -658,7 +658,7 @@ Hackfest, but hopefully you find it useful!
 
 #### Cert-manager service
 
-image::/assets/images/posts/usecase-retail/100002010000057800000547D36D42C9067C9414.png[image,width=1400,height=1350]
+image::/assets/images/logo/logo-cert-manager.png[image,width=1400,height=1350]
 
 Cert-manager automates certificate management in cloud native
 environments and thus helped with the implementation of a dynamic
