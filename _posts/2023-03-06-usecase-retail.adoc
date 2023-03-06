@@ -404,7 +404,7 @@ image::/assets/images/posts/usecase-retail/backoffice.png[image,width=100%]
 
 ### OpenShift Container Platform
 
-image::/assets/images/posts/usecase-retail/1000020100000599000001E7E5745675784A1B1F.png[image,width=1433,height=486]
+image::/assets/images/logo/Logo-Red_Hat-OpenShift-A-Standard-RGB.png[image,width=100%]
 
 Red Hat has worked a make OpenShift footprint smaller to fit into more
 constrained environments by putting both control and worker capabilities
@@ -536,7 +536,7 @@ image::/assets/images/posts/usecase-retail/datacenter.png[image,width=1051,heigh
 
 ### Red Hat OpenShift Container Platform
 
-image::/assets/images/posts/usecase-retail/1000020100000599000001E7E5745675784A1B1F.png[image,width=1433,height=486]
+image::/assets/images/logo/Logo-Red_Hat-OpenShift-A-Standard-RGB.png[image,width=100%]
 
 Red Hat OpenShift is the hybrid cloud platform of open possibility:
 powerful, so you can build anything and flexible, so it works anywhere.
