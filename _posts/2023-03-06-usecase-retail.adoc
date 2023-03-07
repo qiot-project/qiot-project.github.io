@@ -70,7 +70,7 @@ business is struggling with;
 existing services.
 * Risk: The release processes and change control around these services
 is nonexistent, there isn't even a test environment! Changes are made
-love to production, putting the whole environment as serious risk when
+live to production, putting the whole environment as serious risk when
 developers change things.
 * Revenue: Business leaders really want to serve the e-commerce market,
 and extend to web sales, but the current architecture can barely keep up
