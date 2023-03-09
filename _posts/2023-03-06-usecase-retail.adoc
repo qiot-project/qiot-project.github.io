@@ -578,6 +578,7 @@ More about A-MQ Streams can be
 foundhttps://developers.redhat.com/blog/2019/06/06/accessing-apache-kafka-in-strimzi-part-1-introduction/[
 ]https://developers.redhat.com/blog/2019/06/06/accessing-apache-kafka-in-strimzi-part-1-introduction/[_here_].
 
+[#debezium]
 #### Database change monitoring with Debezium
 
 image::/assets/images/posts/usecase-retail/debezium.png[image,width=724,height=294]
@@ -729,7 +730,7 @@ The inventory manager service is a crude create/list/delete web UI,
 build ontop of a single postgresql table. This simple implementation
 allows you to extend it in various different ways.
 
-The design intent of the architecture, is to use Debezium, to do
+The design intent of the architecture, is to use <<debezium,Debezium>>, to do
 change-data-capture on the database, and emit events back to the
 streaming API as product prices get updated, or new products are added.
 
