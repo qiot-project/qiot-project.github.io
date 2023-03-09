@@ -723,8 +723,7 @@ shops, enable features only in certain locations, or at certain times.
 
 image::/assets/images/logo/logo-quarkus.png[image,width=100]
 
-The edgepos-manager service is is implemented on top of
-thehttps://quarkus.io/[ ]https://quarkus.io/[_Quarkus_] framework.
+The inventory-manager service is is implemented on top of the https://quarkus.io/[_Quarkus_] framework.
 
 The inventory manager service is a crude create/list/delete web UI,
 build ontop of a single postgresql table. This simple implementation
@@ -734,9 +733,7 @@ The design intent of the architecture, is to use Debezium, to do
 change-data-capture on the database, and emit events back to the
 streaming API as product prices get updated, or new products are added.
 
-The edgepos service can by found in the
-https://github.com/qiot-project/qiot-retail-inventory-manager[_qiot-project/qiot-retail-inventory-manager_]
-project.
+The edgepos servicie can by found in the https://github.com/qiot-project/qiot-retail-inventory-manager[_qiot-project/qiot-retail-inventory-manager_] project.
 
 #### distribution-manager
 
