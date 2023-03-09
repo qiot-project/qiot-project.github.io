@@ -273,10 +273,7 @@ operating system:
 memory footprint, like Podman or CRI-O; +
 
 The most suitable and appropriate operating system, also certified on
-the target hardware
-ishttps://www.redhat.com/en/resources/linux-for-edge-datasheet[
-]https://www.redhat.com/en/resources/linux-for-edge-datasheet[_Red Hat
-Enterprise Linux for Edge (RHEL for Edge)_].
+the target hardware is https://www.redhat.com/en/resources/linux-for-edge-datasheet[_Red Hat Enterprise Linux for Edge (RHEL for Edge)_].
 
 #### Containers with Podman
 
@@ -300,8 +297,7 @@ RHEL, so you get full support on it.
 
 image::/assets/images/logo/logo-quarkus.png[image,width=100]
 
-The edgepos service is implemented on top of thehttps://quarkus.io/[
-]https://quarkus.io/[_Quarkus_] framework. It can run in several
+The edgepos service is implemented on top of the https://quarkus.io/[_Quarkus_] framework. It can run in several
 different ways, but on RHEL for Edge, it would run
 https://quarkus.io/guides/building-native-image[_native mode_] on a
 container environment.
@@ -384,8 +380,7 @@ link:https://www.intel.com/content/www/us/en/products/sku/188811/intel-nuc-10-pe
 ]https://www.intel.com/content/www/us/en/products/sku/188811/intel-nuc-10-performance-kit-nuc10i7fnh/specifications.html[_link_].
 
 The team has provided a detailed walkthrough about How to install SNO on
-10th gen NUChttps://qiot-project.github.io/blog/sno-on-nuc10/[
-]https://qiot-project.github.io/blog/sno-on-nuc10/[_here_]
+10th gen NUC https://qiot-project.github.io/blog/sno-on-nuc10/[_here_].
 
 ### Option 2) Virtual Alternative: A shared ARO cluster
 
@@ -481,8 +476,7 @@ Debezium (Kafka Connect).
 
 image::/assets/images/logo/logo-quarkus.png[image,width=100]
 
-The edgepos-manager service is is implemented on top of
-thehttps://quarkus.io/[ ]https://quarkus.io/[_Quarkus_] framework.
+The edgepos-manager service is is implemented on top of the https://quarkus.io/[_Quarkus_] framework.
 
 Several instances of the edgepos service can send messages about
 purchases back to a single edgepos-manager service.
@@ -552,9 +546,7 @@ otherwise:
 * Security and Isolation +
 * Automate cluster scalability +
 
-More about OpenShift Container Platform can be
-foundhttps://www.openshift.com/learn/developer[
-]https://www.openshift.com/learn/developer[_here_].
+More about OpenShift Container Platform can be found https://www.openshift.com/learn/developer[_here_].
 
 ### Datacenter Infrastructure services
 
@@ -574,9 +566,7 @@ of the integration services responsible for offloading (consuming
 messages from) every topic and storing the values into the storage tier,
 improving horizontal scalability.
 
-More about A-MQ Streams can be
-foundhttps://developers.redhat.com/blog/2019/06/06/accessing-apache-kafka-in-strimzi-part-1-introduction/[
-]https://developers.redhat.com/blog/2019/06/06/accessing-apache-kafka-in-strimzi-part-1-introduction/[_here_].
+More about A-MQ Streams can be found https://developers.redhat.com/blog/2019/06/06/accessing-apache-kafka-in-strimzi-part-1-introduction/[_here_].
 
 [#debezium]
 #### Database change monitoring with Debezium
