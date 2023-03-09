@@ -374,8 +374,7 @@ Processors
 |===
 
 Additional technical detail can be found at the following
-link:https://www.intel.com/content/www/us/en/products/sku/188811/intel-nuc-10-performance-kit-nuc10i7fnh/specifications.html[
-]https://www.intel.com/content/www/us/en/products/sku/188811/intel-nuc-10-performance-kit-nuc10i7fnh/specifications.html[_link_].
+link:https://www.intel.com/content/www/us/en/products/sku/188811/intel-nuc-10-performance-kit-nuc10i7fnh/specifications.html[_link_].
 
 The team has provided a detailed walkthrough about How to install SNO on
 10th gen NUC https://qiot-project.github.io/blog/sno-on-nuc10/[_here_].
@@ -671,8 +670,7 @@ certificates. +
 and internal certificate authorities. +
 * Extensible to support custom, internal or otherwise unsupported CAs. +
 
-More about Cert-Manager can be found https://cert-manager.io/[
-]https://cert-manager.io/[_here_].
+More about Cert-Manager can be found https://cert-manager.io/[cert-manager.io].
 
 [arabic]
 . Enable Kubernetes Auth Engine in Vault. +
