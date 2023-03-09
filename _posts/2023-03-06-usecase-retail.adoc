@@ -228,9 +228,7 @@ Intel®.
 
 image::/assets/images/posts/usecase-manufacturing/fitlet2-block-diagram.png[width=100%]
 
-Additional technical detail can be found at the following
-link:https://fit-iot.com/web/products/fitlet2/fitlet2-specifications/[
-]https://fit-iot.com/web/products/fitlet2/fitlet2-specifications/[_link_].
+Additional technical detail can be found at the following link:https://fit-iot.com/web/products/fitlet2/fitlet2-specifications/[_link_].
 
 ### Option 2) Virtual Alternative; RHEL Hypervisor running in Azure
 
