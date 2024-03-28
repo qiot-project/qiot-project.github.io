@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <title>
+    Quarkus Secure on the Edge - QIoT project
+    
+  </title>
+
+  <meta name="description" content="Intro">
+
+  <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+  <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="/assets/vendor/bootstrap/css/bootstrap.min.css">
+
+  <link rel="stylesheet" href="/assets/vendor/fontawesome-free/css/all.min.css">
+
+  <link rel="stylesheet" href="/assets/main.css">
+  <link rel="canonical" href="/blog/qiot-cert-manager/">
+  <link rel="alternate" type="application/rss+xml" title="QIoT project" href="/feed.xml">
+
+  
+    
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-SK96X617FT"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+  
+    gtag('config', 'G-SK96X617FT');
+  </script>
+
+  
+
+</head>
+
+
+<body>
+
+  <!-- Navigation -->
+<nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="/">QIoT project</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+      Menu
+      <i class="fa fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+<!--         <li class="nav-item"> -->
+<!--           <a class="nav-link" href="/">Home</a> -->
+<!--         </li> -->
+        <li class="nav-item">
+          <a class="nav-link" href="/announcements">Announcements</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/usecases">Use Cases</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/projects">Projects</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/blog">Blog</a>
+        <li class="nav-item">
+          <a class="nav-link" href="/community">Community</a>
+        </li>
+      </ul>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  <!-- Page Header -->
+
+<header class="masthead" style="background-image: url('/assets/images/posts/quarkus-native-on-a-raspberry-pi/hardware.jpg')">
+  
+    <div class="overlay"></div>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-16 col-md-10 mx-auto">
+          <div class="post-heading">
+            <h1>Quarkus Secure on the Edge</h1>
+            
+            <h2 class="subheading">---</h2>
+            
+            <span class="meta">
+            
+            
+			  
+			     
+			        
+			            <img class="headshot" src="https://www.gravatar.com/avatar/70c46737c838f278b868139a5bce6c3c">
+			        
+			            <a href="#">Posted by Mattia Mascia</a>
+			    
+			    on April 01, 2021 &middot; <span class="reading-time" title="Estimated read time">
+  
+   8 mins  read </span>
+            
+            </span>
+            <br>
+            <span class="meta">
+			  
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-16 col-md-10 mx-auto">
+
+        <div class="sect1">
+<h2 id="intro"><a class="anchor" href="#intro"></a>Intro</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This is the first part around Security on the Edge topics.</p>
+</div>
+<div class="paragraph">
+<p>When discussing IoT device and edge computing, secure end-to-end device connectivity is critical to consider in this extra layer of complexity.
+How is it possible to automate and securely integrate thousand of devices?
+Quarkus IoT team decided for the certificate management to choose <a href="https://cert-manager.io">cert-manager</a>, which is built on top of Kubernetes to provide 'certificates as services' developers working in Kubernetes cluster.</p>
+</div>
+<div class="paragraph">
+<p>Here the Cert Managers Highlight:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Provide easy to use tools to manage certificates.</p>
+</li>
+<li>
+<p>A standardised API for interacting with multiple certificate authorities (CAs).</p>
+</li>
+<li>
+<p>Gives security teams the confidence to allow developers to self-server certificates.</p>
+</li>
+<li>
+<p>Support for ACME (Let&#8217;s Encrypt), HashiCorp Vault, Venafi, self-signed and internal certificate authorities.</p>
+</li>
+<li>
+<p>Extensible to support custom, internal or otherwise unsupported CAs.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="architecture-overview"><a class="anchor" href="#architecture-overview"></a>Architecture Overview</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><span class="image"><img src="/assets/images/posts/qiot-cert-manager/architecture.png" alt="architecture" width="100%"></span></p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>The device sends a request to Registration Service API. Only devices with the proper Certificate are allowed to send the request.</p>
+</li>
+<li>
+<p>The registration based on the device request payload starts to create the Certificate resource, and it watches the resource for an update.</p>
+</li>
+<li>
+<p>The <code>cert-manager</code> operator detects the new <code>Certificate</code>, and it starts the reconciliation process.</p>
+</li>
+<li>
+<p>Based on the <code>Certificate</code> and <code>Issuer</code> information, the <code>cert-manager</code> creates a CSR and requests the Certificate to PKI.</p>
+</li>
+<li>
+<p>The <code>cert-manager</code> once get the Certificate it updates the secret with the correct key, Certificate and Certificate authority.</p>
+</li>
+<li>
+<p>Due to the asynchronous mechanism, the registration service will wait until the certificate information is available in the secret resource.</p>
+</li>
+<li>
+<p>The registration sends the device certificate as a response to the device.</p>
+</li>
+</ol>
+</div>
+<div class="sect2">
+<h3 id="issuer"><a class="anchor" href="#issuer"></a>Issuer</h3>
+<div class="paragraph">
+<p><code>Issuer</code>, and <code>ClusterIssuer</code>, are Kubernetes resources representing certificate authorities (CAs) that can generate signed certificates by honouring certificate signing requests. All certificates require a referenced issuer that is in a ready condition to attempt to keep the request.
+An example of an Issuer type is CA. A simple CA Issuer is as follows:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: qiot-ca-sample
+spec:
+  ca:
+    secretName: qiot-ca</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This is a simple <code>Issuer</code> that will sign certificates based on a private key. The certificate stored in the secret <code>ca-key-pair</code> can then be used to trust newly signed certificates by this <code>Issuer</code> in a Public Key Infrastructure (PKI) system.</p>
+</div>
+<div class="paragraph">
+<p>An <code>Issuer</code> is a namespaced resource, and it is not possible to issue certificates from an <code>Issuer</code> in a different namespace. It means you will need to create an <code>Issuer</code> in each namespace you wish to obtain <code>Certificate</code>.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Quarkus IoT team decided to use Hashicorp Vault as internal PKI. The next part will explore in details this integration.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="certificate"><a class="anchor" href="#certificate"></a>Certificate</h3>
+<div class="paragraph">
+<p><code>Certificate</code> that define the desired x509 certificate which will be renewed and kept up to date. A <code>Certificate</code> is a namespaced resource that references an <code>Issuer</code> or <code>ClusterIssuer</code> that determine what will be honouring the certificate request.
+When a <code>Certificate</code> is created, a corresponding <code>CertificateRequest</code> resource is created by <code>cert-manager</code> containing the encoded x509 certificate request.
+Here is one example of a Certificate resource.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: qiot-device-sample
+spec:
+  dnsNames:
+    - mydeviceid.qiot-project.github.io
+    - mydeviceid.qiot-project.svc
+  secretName: qiot-device-sample-cert
+  issuerRef:
+    name: qiot-ca-sample</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This <code>Certificate</code> will tell <code>cert-manager</code> to attempt to use the <code>Issuer</code> named <code>qiot-ca-sample</code> to obtain a certificate key pair for the <code>mydeviceid.qiot-project.github.io</code> and <code>mydeviceid,qiot-project.svc</code> domains. If successful, the resulting TLS key and certificate will be stored in secret named <code>qiot-device-sample-cert</code>, with key of <code>tls.key</code>, and <code>tls.crt</code> respectively.</p>
+</div>
+<div class="paragraph">
+<p>This secret will live in the same namespace as the <code>Certificate</code> resource. Additionally, if the Certificate Authority is known, the corresponding CA certificate is stored in secret with key <code>ca.crt</code>.</p>
+</div>
+<div class="paragraph">
+<p>The <code>dnsNames</code> field specifies a list of Subject Alternative Names to be associated with the certificate.</p>
+</div>
+<div class="paragraph">
+<p>The referenced <code>Issuer</code> must exist in the same namespace as the <code>Certificate</code>. A <code>Certificate</code> can alternatively reference a <code>ClusterIssuer</code> that is non namespaced and can be referenced from any namespace.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="certificaterequest"><a class="anchor" href="#certificaterequest"></a>CertificateRequest</h3>
+<div class="paragraph">
+<p>The <code>CertificateRequest</code> is a namespaced resource in cert-manager used to request x509 certificates from an <code>Issuer</code>. The resource contains a
+base64 encoded string of a PEM encoded certificate request sent to the referenced issuer.
+A successful issuance will return a signed certificate based on the certificate signing request.
+<code>CertificateRequest</code> are typically consumed and managed by controllers or other systems and should not be used by humans - unless specifically needed. A simple <code>CertificateRequest</code> looks like the following:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">apiVersion: cert-manager.io/v1
+kind: CertificateRequest
+metadata:
+  name: qiot-device-sample-wnjp5
+spec:
+  issuerRef:
+    name: qiot-ca-sample
+  request: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURSBSRVFVRVNULS0tLS0KTUlJQ3ZUQ0NBYVVDQVFBd0xERXFNQ2dHQTFVRUF4TWhiWGxrWlhacFkyVnBaQzV4YVc5MExYQnliMnBsWTNRdQpaMmwwYUhWaUxtbHZNSUlCSWpBTkJna3Foa2lHOXcwQkFRRUZBQU9DQVE4QU1JSUJDZ0tDQVFFQTFCbngyNlUwCk5rUUxrbzZzZlExK1RCUE5Ud0t6NVpSRnhQK1VycTRCL0U4Vm5RNGt3SUhzSXJXMHozRkE3WC9GUTh6ZEtRNjYKMCtyRkFpQ3ROVDllWEZWRVpmVUowNC9Kb21sc3pVV2JDYmhZejcvVGhSTHE0Nm44U0FTclVCaUNDU2JFQTBsOQp1ZFg1ZEFYT3QxVmxZeVdhTTZqMU52QldvbC9xMGZJREhxaVNOZU1lUFB1b0FIcVQrVGRFbzg1dGQ0U2YvN21zCnJlN1gwNHFadWRHQ1hhc0tDMnErZitsYmd2NmNCaDRxZDNsVHZNQ3JYclZuTkpTRElLY2xMYXE2MzV0d1Q2L1IKSFU5TDB3N2hFR1pQQXR1OXJMZnNZOFJPOXJGWnJZZzVPUzVSME40bHFsQlBucStmdFBUMEdaQlBhSysxWDJDaApDejRMVFR1S2ZWaldRUUlEQVFBQm9Fd3dTZ1lKS29aSWh2Y05BUWtPTVQwd096QXNCZ05WSFJFRUpUQWpnaUZ0CmVXUmxkbWxqWldsa0xuRnBiM1F0Y0hKdmFtVmpkQzVuYVhSb2RXSXVhVzh3Q3dZRFZSMFBCQVFEQWdXZ01BMEcKQ1NxR1NJYjNEUUVCQ3dVQUE0SUJBUUF3VERRMUthM2VQanVWL2J3dDM5OVpWK2MrZS9xaTZWMXRpR3JPNVVkbApPZUlmOU1vNEwwM2lHVHB1aHA1UG1CcnY3cjgrM3NGVGxidXBMNFFqRVZXTHliSGRaZGFFK3RuNCtBL2pQQ1lPClZHdno4OHZoRnlPOHNJT0pranVNZjFKcVMyMGlOVG5hdWJjVVJHeEtXTkdGd3dYQ3hHYm5WaW5laVpjc1M2UUwKd2tCbnhLWVZ3QW90bVlZZDFWK1pWN3dFWmpoakRGaXpXTW1tU0lMM0RWelF2VnFIejBGQWIzemkwNVM1YkJhdgoyYkZ2WGRvTXVqVC9KZU1WWlErQ3A1TDRZeHJxTitIOFBMaHlXQWE3aSt6TGN2U2J1OHVHTkxuZGxKeUZKcytwCkdVWWpLaU10QjRiZlBNeXhoQ254bzZoZnNIMGVrTFBxVU5lZEtRb0JKeVBrCi0tLS0tRU5EIENFUlRJRklDQVRFIFJFUVVFU1QtLS0tLQo=</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This <code>CertificateRequest</code> will make cert-manager attempt to request the <code>Issuer</code> <code>qiot-ca-sample</code>.
+The resource also exposes the option for stating the certificate as CA, Key Usages, and requested validity duration.
+Successful issuance of the certificate signing request will cause an update to the resource, setting the status with the signed certificate, the CA of the certificate (if available), and setting the Ready condition to True,  whether the issuance of the certificate signing request was successful or no.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="registration-service"><a class="anchor" href="#registration-service"></a>Registration Service</h3>
+<div class="paragraph">
+<p>The Registration Service is the entry point for each device that would like to send the data to our IoT platform.</p>
+</div>
+<div class="paragraph">
+<p>The purpose is to register (of course) the device to the system with an identification number and provide the correct certificate to communicate with the MQTT Broker.</p>
+</div>
+<div class="paragraph">
+<p>The Registration API is protected by Mutual TLS, which means that every device comes with a predefined certificate at provisioning time. This integration allows us an extra security layer that only the recognized device can register to the platform.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="whats-next"><a class="anchor" href="#whats-next"></a>What&#8217;s Next</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The next part will look at Hashicorp Vault Integration, our choice for internal PKI Infrastructure.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="reference"><a class="anchor" href="#reference"></a>Reference</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://cert-manager.io/" class="bare">https://cert-manager.io/</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+
+        <div id="share-bar">
+
+    <hr>
+
+    <h4>Share this:</h4>
+
+    <div class="share-buttons">
+        <a  href="https://www.facebook.com/sharer/sharer.php?u=/blog/qiot-cert-manager/"
+            onclick="window.open(this.href, 'pop-up', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;"
+            title="Share on Facebook" >
+            <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-2x"></i>
+                <i class="fab fa-facebook-f fa-stack-1x fa-inverse"></i>
+              </span>
+        </a>
+        <a  href="https://twitter.com/intent/tweet?text=Quarkus Secure on the Edge&url=/blog/qiot-cert-manager/"
+            onclick="window.open(this.href, 'pop-up', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;"
+            title="Share on Twitter" >
+            <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-2x"></i>
+                <i class="fab fa-twitter fa-stack-1x fa-inverse"></i>
+              </span>
+        </a>
+        <a  href="http://www.reddit.com/submit?url=/blog/qiot-cert-manager/"
+            onclick="window.open(this.href, 'pop-up', 'left=20,top=20,width=900,height=500,toolbar=1,resizable=0'); return false;"
+            title="Share on Reddit" >
+            <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-2x"></i>
+                <i class="fab fa-reddit fa-stack-1x fa-inverse"></i>
+              </span>
+        </a>
+        <a  href="https://www.linkedin.com/shareArticle?mini=true&url=/blog/qiot-cert-manager/&title=Quarkus Secure on the Edge&summary=&source=QIoT project"
+            onclick="window.open(this.href, 'pop-up', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;"
+            title="Share on LinkedIn" >
+            <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-2x"></i>
+                <i class="fab fa-linkedin fa-stack-1x fa-inverse"></i>
+              </span>
+        </a>
+        <a  href="mailto:?subject=Quarkus Secure on the Edge&amp;body=Check out this site /blog/qiot-cert-manager/"
+            title="Share via Email" >
+            <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-2x"></i>
+                <i class="far fa-envelope fa-stack-1x fa-inverse"></i>
+              </span>
+        </a>
+    </div>
+
+</div>
+
+        <hr>
+
+<!--         <div class="clearfix"> -->
+<!--            -->
+<!--           <a class="btn btn-primary float-left" href="/blog/quarkus-native-on-a-raspberry-pi/" data-toggle="tooltip" data-placement="top" title="Quarkus native running on a Raspberry Pi">&larr; Previous<span class="d-none d-md-inline"> -->
+<!--               Post</span></a> -->
+<!--            -->
+<!--            -->
+<!--           <a class="btn btn-primary float-right" href="/blog/integration-in-a-distributed-world/" data-toggle="tooltip" data-placement="top" title="Integration in a Distributed World">Next<span class="d-none d-md-inline"> -->
+<!--               Post</span> &rarr;</a> -->
+<!--            -->
+
+	  
+	  
+	  
+	  
+
+        <div class="clearfix">
+          
+          <a class="btn btn-primary float-left" href="/blog/quarkus-native-on-a-raspberry-pi/" data-toggle="tooltip" data-placement="top" title="Quarkus native running on a Raspberry Pi">&larr; Previous<span class="d-none d-md-inline">
+              Post</span></a>
+          
+          
+          <a class="btn btn-primary float-right" href="/blog/integration-in-a-distributed-world/" data-toggle="tooltip" data-placement="top" title="Integration in a Distributed World">Next<span class="d-none d-md-inline">
+              Post</span> &rarr;</a>
+          
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+
+<hr>
+
+<footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-16 col-md-10 mx-auto">
+        <ul class="list-inline text-center">
+          
+          <li class="list-inline-item">
+            <a href="mailto:qiotproject@gmail.com">
+              <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-2x"></i>
+                <i class="far fa-envelope fa-stack-1x fa-inverse"></i>
+              </span>
+            </a>
+          </li>
+          
+          
+          <li class="list-inline-item">
+            <a href="https://twitter.com/qiotproject">
+              <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-2x"></i>
+                <i class="fab fa-twitter fa-stack-1x fa-inverse"></i>
+              </span>
+            </a>
+          </li>
+          
+          
+          
+          
+          <li class="list-inline-item">
+            <a href="https://github.com/qiot-project">
+              <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-2x"></i>
+                <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+              </span>
+            </a>
+          </li>
+          
+          
+          
+          <li class="list-inline-item">
+            <a href="https://join.slack.com/t/https://join.slack.com/t/qiotproject/shared_invite/zt-nuajdyqf-NfQL0dcfCUjFSgoBNng11A">
+              <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-2x"></i>
+                <i class="fab fa-slack fa-stack-1x fa-inverse"></i>
+              </span>
+            </a>
+          </li>
+          
+          
+          <li class="list-inline-item">
+            <a href="https://groups.google.com/u/0/g/qiotproject/qiotproject">
+              <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-2x"></i>
+                <i class="fab fa-google fa-stack-1x fa-inverse"></i>
+              </span>
+            </a>
+          </li>
+          
+          
+          <li class="list-inline-item">
+            <a href="https://calendar.google.com/event?action=TEMPLATE&tmeid=dmFxMzFlZGkxOHVubDcyYm50bjdrcTJxYThfMjAyMTAzMjVUMTYwMDAwWiBxaW90cHJvamVjdEBt&tmsrc=qiotproject%40gmail.com&scp=ALL">
+              <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-2x"></i>
+                <i class="fas fa-calendar-plus fa-stack-1x fa-inverse"></i>
+              </span>
+            </a>
+          </li>
+          
+        </ul>
+        <p class="copyright text-muted"><i class="fab fa-creative-commons"></i><i class="fab fa-creative-commons-by"></i> <a href="https://creativecommons.org/licenses/by/3.0/" target="_blank">CC by 3.0</a> | <a href="https://www.redhat.com/en/about/privacy-policy">Privacy Policy</a> | Copyright &copy;  2024</p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+  <script src="/assets/vendor/jquery/jquery.min.js"></script>
+<script src="/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="/assets/vendor/startbootstrap-clean-blog/js/clean-blog.min.js"></script>
+
+<script src="/assets/scripts.js"></script>
+
+
+
+
+</body>
+
+</html>

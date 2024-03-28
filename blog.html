@@ -1,0 +1,1087 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <title>
+    Blog - QIoT project
+    
+  </title>
+
+  <meta name="description" content="Quarkus meets Internet of Things">
+
+  <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+  <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="/assets/vendor/bootstrap/css/bootstrap.min.css">
+
+  <link rel="stylesheet" href="/assets/vendor/fontawesome-free/css/all.min.css">
+
+  <link rel="stylesheet" href="/assets/main.css">
+  <link rel="canonical" href="/blog">
+  <link rel="alternate" type="application/rss+xml" title="QIoT project" href="/feed.xml">
+
+  
+    
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-SK96X617FT"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+  
+    gtag('config', 'G-SK96X617FT');
+  </script>
+
+  
+
+</head>
+
+
+<body>
+
+  <!-- Navigation -->
+<nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="/">QIoT project</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+      Menu
+      <i class="fa fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+<!--         <li class="nav-item"> -->
+<!--           <a class="nav-link" href="/">Home</a> -->
+<!--         </li> -->
+        <li class="nav-item">
+          <a class="nav-link" href="/announcements">Announcements</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/usecases">Use Cases</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/projects">Projects</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/blog">Blog</a>
+        <li class="nav-item">
+          <a class="nav-link" href="/community">Community</a>
+        </li>
+      </ul>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  <!-- Page Header -->
+
+<header class="masthead" style="background-image: url('/assets/images/main/blog.jpg')">
+  
+    <div class="overlay"></div>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-16 col-md-10 mx-auto">
+          <div class="page-heading">
+            <h1>Blog</h1>
+            
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-16 col-md-10 mx-auto">
+
+        
+  
+
+  
+          
+  
+<article class="post-preview">
+  <a href="/blog/sno-on-nuc10/">
+    <h2 class="post-title">Install Single Node OpenShift on Intel® 10th gen NUC</h2>
+    
+    <h3 class="post-subtitle">---</h3>
+    
+  </a>
+  <p class="post-meta">
+  
+     
+        
+            <img class="headshot" src="https://www.gravatar.com/avatar/272afa7e145553728bca23a16fe5b3f8">
+        
+            Posted by James Read
+    
+    on March 01, 2023 &middot; <span class="reading-time" title="Estimated read time">
+  
+   15 mins  read </span>
+  </p>
+  <p><div id="share-bar">
+    <div class="share-buttons">
+        <a  href="https://www.facebook.com/sharer/sharer.php?u=/blog"
+            onclick="window.open(this.href, 'pop-up', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;"
+            title="Share on Facebook" >
+            <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-1x"></i>
+                <i class="fab fa-facebook-f fa-stack-1x fa-inverse"></i>
+              </span>
+        </a>
+        <a  href="https://twitter.com/intent/tweet?text=Blog&url=/blog"
+            onclick="window.open(this.href, 'pop-up', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;"
+            title="Share on Twitter" >
+            <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-1x"></i>
+                <i class="fab fa-twitter fa-stack-1x fa-inverse"></i>
+              </span>
+        </a>
+        <a  href="http://www.reddit.com/submit?url=/blog"
+            onclick="window.open(this.href, 'pop-up', 'left=20,top=20,width=900,height=500,toolbar=1,resizable=0'); return false;"
+            title="Share on Reddit" >
+            <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-1x"></i>
+                <i class="fab fa-reddit fa-stack-1x fa-inverse"></i>
+              </span>
+        </a>
+        <a  href="https://www.linkedin.com/shareArticle?mini=true&url=/blog&title=Blog&summary=&source=QIoT project"
+            onclick="window.open(this.href, 'pop-up', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;"
+            title="Share on LinkedIn" >
+            <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-1x"></i>
+                <i class="fab fa-linkedin fa-stack-1x fa-inverse"></i>
+              </span>
+        </a>
+        <a  href="mailto:?subject=Blog&amp;body=Check out this site /blog"
+            title="Share via Email" >
+            <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-1x"></i>
+                <i class="far fa-envelope fa-stack-1x fa-inverse"></i>
+              </span>
+        </a>
+    </div>
+
+</div>
+</p>
+</article>
+
+<hr>
+
+  
+
+  
+          
+  
+<article class="post-preview">
+  <a href="/blog/install-rhel9-on-Fitlet2/">
+    <h2 class="post-title">Options for RHEL9 (for Edge) and containers on a Compulab Fitlet2</h2>
+    
+    <h3 class="post-subtitle">---</h3>
+    
+  </a>
+  <p class="post-meta">
+  
+     
+        
+            <img class="headshot" src="https://www.gravatar.com/avatar/272afa7e145553728bca23a16fe5b3f8">
+        
+            Posted by James Read
+    
+    on March 01, 2023 &middot; <span class="reading-time" title="Estimated read time">
+  
+   1 min  read </span>
+  </p>
+  <p><div id="share-bar">
+    <div class="share-buttons">
+        <a  href="https://www.facebook.com/sharer/sharer.php?u=/blog"
+            onclick="window.open(this.href, 'pop-up', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;"
+            title="Share on Facebook" >
+            <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-1x"></i>
+                <i class="fab fa-facebook-f fa-stack-1x fa-inverse"></i>
+              </span>
+        </a>
+        <a  href="https://twitter.com/intent/tweet?text=Blog&url=/blog"
+            onclick="window.open(this.href, 'pop-up', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;"
+            title="Share on Twitter" >
+            <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-1x"></i>
+                <i class="fab fa-twitter fa-stack-1x fa-inverse"></i>
+              </span>
+        </a>
+        <a  href="http://www.reddit.com/submit?url=/blog"
+            onclick="window.open(this.href, 'pop-up', 'left=20,top=20,width=900,height=500,toolbar=1,resizable=0'); return false;"
+            title="Share on Reddit" >
+            <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-1x"></i>
+                <i class="fab fa-reddit fa-stack-1x fa-inverse"></i>
+              </span>
+        </a>
+        <a  href="https://www.linkedin.com/shareArticle?mini=true&url=/blog&title=Blog&summary=&source=QIoT project"
+            onclick="window.open(this.href, 'pop-up', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;"
+            title="Share on LinkedIn" >
+            <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-1x"></i>
+                <i class="fab fa-linkedin fa-stack-1x fa-inverse"></i>
+              </span>
+        </a>
+        <a  href="mailto:?subject=Blog&amp;body=Check out this site /blog"
+            title="Share via Email" >
+            <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-1x"></i>
+                <i class="far fa-envelope fa-stack-1x fa-inverse"></i>
+              </span>
+        </a>
+    </div>
+
+</div>
+</p>
+</article>
+
+<hr>
+
+  
+
+  
+          
+  
+<article class="post-preview">
+  <a href="/blog/rhel9-on-arm8/">
+    <h2 class="post-title">Install RHEL 9 on Raspberry Pi4</h2>
+    
+    <h3 class="post-subtitle">---</h3>
+    
+  </a>
+  <p class="post-meta">
+  
+     
+        
+            <img class="headshot" src="https://www.gravatar.com/avatar/647dec736dd23468695ed590b4d4ce3d">
+        
+            Posted by Andreas Stolzenberger
+    
+    on August 10, 2022 &middot; <span class="reading-time" title="Estimated read time">
+  
+   5 mins  read </span>
+  </p>
+  <p><div id="share-bar">
+    <div class="share-buttons">
+        <a  href="https://www.facebook.com/sharer/sharer.php?u=/blog"
+            onclick="window.open(this.href, 'pop-up', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;"
+            title="Share on Facebook" >
+            <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-1x"></i>
+                <i class="fab fa-facebook-f fa-stack-1x fa-inverse"></i>
+              </span>
+        </a>
+        <a  href="https://twitter.com/intent/tweet?text=Blog&url=/blog"
+            onclick="window.open(this.href, 'pop-up', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;"
+            title="Share on Twitter" >
+            <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-1x"></i>
+                <i class="fab fa-twitter fa-stack-1x fa-inverse"></i>
+              </span>
+        </a>
+        <a  href="http://www.reddit.com/submit?url=/blog"
+            onclick="window.open(this.href, 'pop-up', 'left=20,top=20,width=900,height=500,toolbar=1,resizable=0'); return false;"
+            title="Share on Reddit" >
+            <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-1x"></i>
+                <i class="fab fa-reddit fa-stack-1x fa-inverse"></i>
+              </span>
+        </a>
+        <a  href="https://www.linkedin.com/shareArticle?mini=true&url=/blog&title=Blog&summary=&source=QIoT project"
+            onclick="window.open(this.href, 'pop-up', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;"
+            title="Share on LinkedIn" >
+            <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-1x"></i>
+                <i class="fab fa-linkedin fa-stack-1x fa-inverse"></i>
+              </span>
+        </a>
+        <a  href="mailto:?subject=Blog&amp;body=Check out this site /blog"
+            title="Share via Email" >
+            <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-1x"></i>
+                <i class="far fa-envelope fa-stack-1x fa-inverse"></i>
+              </span>
+        </a>
+    </div>
+
+</div>
+</p>
+</article>
+
+<hr>
+
+  
+
+  
+          
+  
+<article class="post-preview">
+  <a href="/blog/red-hat-hackfest-office-hour-kickoff/">
+    <h2 class="post-title">Red Hat Hackfest Office Hour - Kick off session!</h2>
+    
+    <h3 class="post-subtitle">---</h3>
+    
+  </a>
+  <p class="post-meta">
+  
+     
+        
+            <img class="headshot" src="https://www.gravatar.com/avatar/58d8a28d588d957040fd5288cc208a41">
+        
+            Posted by Andrea Battaglia
+    
+    on May 25, 2022 &middot; <span class="reading-time" title="Estimated read time">
+  
+   1 min  read </span>
+  </p>
+  <p><div id="share-bar">
+    <div class="share-buttons">
+        <a  href="https://www.facebook.com/sharer/sharer.php?u=/blog"
+            onclick="window.open(this.href, 'pop-up', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;"
+            title="Share on Facebook" >
+            <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-1x"></i>
+                <i class="fab fa-facebook-f fa-stack-1x fa-inverse"></i>
+              </span>
+        </a>
+        <a  href="https://twitter.com/intent/tweet?text=Blog&url=/blog"
+            onclick="window.open(this.href, 'pop-up', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;"
+            title="Share on Twitter" >
+            <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-1x"></i>
+                <i class="fab fa-twitter fa-stack-1x fa-inverse"></i>
+              </span>
+        </a>
+        <a  href="http://www.reddit.com/submit?url=/blog"
+            onclick="window.open(this.href, 'pop-up', 'left=20,top=20,width=900,height=500,toolbar=1,resizable=0'); return false;"
+            title="Share on Reddit" >
+            <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-1x"></i>
+                <i class="fab fa-reddit fa-stack-1x fa-inverse"></i>
+              </span>
+        </a>
+        <a  href="https://www.linkedin.com/shareArticle?mini=true&url=/blog&title=Blog&summary=&source=QIoT project"
+            onclick="window.open(this.href, 'pop-up', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;"
+            title="Share on LinkedIn" >
+            <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-1x"></i>
+                <i class="fab fa-linkedin fa-stack-1x fa-inverse"></i>
+              </span>
+        </a>
+        <a  href="mailto:?subject=Blog&amp;body=Check out this site /blog"
+            title="Share via Email" >
+            <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-1x"></i>
+                <i class="far fa-envelope fa-stack-1x fa-inverse"></i>
+              </span>
+        </a>
+    </div>
+
+</div>
+</p>
+</article>
+
+<hr>
+
+  
+
+  
+          
+  
+<article class="post-preview">
+  <a href="/blog/nfs-on-sno/">
+    <h2 class="post-title">Setting up NFS as a storage class on SNO</h2>
+    
+    <h3 class="post-subtitle">---</h3>
+    
+  </a>
+  <p class="post-meta">
+  
+     
+        
+            <img class="headshot" src="https://www.gravatar.com/avatar/0756ced625c557966c84a3218a2bf24b">
+        
+            Posted by Geoff Newson
+    
+    on May 10, 2022 &middot; <span class="reading-time" title="Estimated read time">
+  
+   9 mins  read </span>
+  </p>
+  <p><div id="share-bar">
+    <div class="share-buttons">
+        <a  href="https://www.facebook.com/sharer/sharer.php?u=/blog"
+            onclick="window.open(this.href, 'pop-up', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;"
+            title="Share on Facebook" >
+            <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-1x"></i>
+                <i class="fab fa-facebook-f fa-stack-1x fa-inverse"></i>
+              </span>
+        </a>
+        <a  href="https://twitter.com/intent/tweet?text=Blog&url=/blog"
+            onclick="window.open(this.href, 'pop-up', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;"
+            title="Share on Twitter" >
+            <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-1x"></i>
+                <i class="fab fa-twitter fa-stack-1x fa-inverse"></i>
+              </span>
+        </a>
+        <a  href="http://www.reddit.com/submit?url=/blog"
+            onclick="window.open(this.href, 'pop-up', 'left=20,top=20,width=900,height=500,toolbar=1,resizable=0'); return false;"
+            title="Share on Reddit" >
+            <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-1x"></i>
+                <i class="fab fa-reddit fa-stack-1x fa-inverse"></i>
+              </span>
+        </a>
+        <a  href="https://www.linkedin.com/shareArticle?mini=true&url=/blog&title=Blog&summary=&source=QIoT project"
+            onclick="window.open(this.href, 'pop-up', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;"
+            title="Share on LinkedIn" >
+            <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-1x"></i>
+                <i class="fab fa-linkedin fa-stack-1x fa-inverse"></i>
+              </span>
+        </a>
+        <a  href="mailto:?subject=Blog&amp;body=Check out this site /blog"
+            title="Share via Email" >
+            <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-1x"></i>
+                <i class="far fa-envelope fa-stack-1x fa-inverse"></i>
+              </span>
+        </a>
+    </div>
+
+</div>
+</p>
+</article>
+
+<hr>
+
+  
+
+  
+          
+  
+<article class="post-preview">
+  <a href="/blog/rhel-on-fitlet2/">
+    <h2 class="post-title">Install RHEL for Edge on Compulab Fitlet2</h2>
+    
+    <h3 class="post-subtitle">---</h3>
+    
+  </a>
+  <p class="post-meta">
+  
+     
+        
+            <img class="headshot" src="https://www.gravatar.com/avatar/647dec736dd23468695ed590b4d4ce3d">
+        
+            Posted by Andreas Stolzenberger
+    
+    on October 13, 2021 &middot; <span class="reading-time" title="Estimated read time">
+  
+   11 mins  read </span>
+  </p>
+  <p><div id="share-bar">
+    <div class="share-buttons">
+        <a  href="https://www.facebook.com/sharer/sharer.php?u=/blog"
+            onclick="window.open(this.href, 'pop-up', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;"
+            title="Share on Facebook" >
+            <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-1x"></i>
+                <i class="fab fa-facebook-f fa-stack-1x fa-inverse"></i>
+              </span>
+        </a>
+        <a  href="https://twitter.com/intent/tweet?text=Blog&url=/blog"
+            onclick="window.open(this.href, 'pop-up', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;"
+            title="Share on Twitter" >
+            <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-1x"></i>
+                <i class="fab fa-twitter fa-stack-1x fa-inverse"></i>
+              </span>
+        </a>
+        <a  href="http://www.reddit.com/submit?url=/blog"
+            onclick="window.open(this.href, 'pop-up', 'left=20,top=20,width=900,height=500,toolbar=1,resizable=0'); return false;"
+            title="Share on Reddit" >
+            <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-1x"></i>
+                <i class="fab fa-reddit fa-stack-1x fa-inverse"></i>
+              </span>
+        </a>
+        <a  href="https://www.linkedin.com/shareArticle?mini=true&url=/blog&title=Blog&summary=&source=QIoT project"
+            onclick="window.open(this.href, 'pop-up', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;"
+            title="Share on LinkedIn" >
+            <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-1x"></i>
+                <i class="fab fa-linkedin fa-stack-1x fa-inverse"></i>
+              </span>
+        </a>
+        <a  href="mailto:?subject=Blog&amp;body=Check out this site /blog"
+            title="Share via Email" >
+            <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-1x"></i>
+                <i class="far fa-envelope fa-stack-1x fa-inverse"></i>
+              </span>
+        </a>
+    </div>
+
+</div>
+</p>
+</article>
+
+<hr>
+
+  
+
+  
+          
+  
+<article class="post-preview">
+  <a href="/blog/sno-on-nuc10/">
+    <h2 class="post-title">Install Single Node Openshift on Intel® 10th gen NUC</h2>
+    
+    <h3 class="post-subtitle">---</h3>
+    
+  </a>
+  <p class="post-meta">
+  
+     
+        
+            <img class="headshot" src="https://www.gravatar.com/avatar/ea9a710282723ab8f6dc9c98014f6485">
+        
+            Posted by Mario Parra
+    
+    on September 27, 2021 &middot; <span class="reading-time" title="Estimated read time">
+  
+   15 mins  read </span>
+  </p>
+  <p><div id="share-bar">
+    <div class="share-buttons">
+        <a  href="https://www.facebook.com/sharer/sharer.php?u=/blog"
+            onclick="window.open(this.href, 'pop-up', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;"
+            title="Share on Facebook" >
+            <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-1x"></i>
+                <i class="fab fa-facebook-f fa-stack-1x fa-inverse"></i>
+              </span>
+        </a>
+        <a  href="https://twitter.com/intent/tweet?text=Blog&url=/blog"
+            onclick="window.open(this.href, 'pop-up', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;"
+            title="Share on Twitter" >
+            <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-1x"></i>
+                <i class="fab fa-twitter fa-stack-1x fa-inverse"></i>
+              </span>
+        </a>
+        <a  href="http://www.reddit.com/submit?url=/blog"
+            onclick="window.open(this.href, 'pop-up', 'left=20,top=20,width=900,height=500,toolbar=1,resizable=0'); return false;"
+            title="Share on Reddit" >
+            <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-1x"></i>
+                <i class="fab fa-reddit fa-stack-1x fa-inverse"></i>
+              </span>
+        </a>
+        <a  href="https://www.linkedin.com/shareArticle?mini=true&url=/blog&title=Blog&summary=&source=QIoT project"
+            onclick="window.open(this.href, 'pop-up', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;"
+            title="Share on LinkedIn" >
+            <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-1x"></i>
+                <i class="fab fa-linkedin fa-stack-1x fa-inverse"></i>
+              </span>
+        </a>
+        <a  href="mailto:?subject=Blog&amp;body=Check out this site /blog"
+            title="Share via Email" >
+            <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-1x"></i>
+                <i class="far fa-envelope fa-stack-1x fa-inverse"></i>
+              </span>
+        </a>
+    </div>
+
+</div>
+</p>
+</article>
+
+<hr>
+
+  
+
+  
+
+  
+
+  
+          
+  
+<article class="post-preview">
+  <a href="/blog/integration-in-a-distributed-world/">
+    <h2 class="post-title">Integration in a Distributed World</h2>
+    
+    <h3 class="post-subtitle">How Red Hat Integration canmake life easier</h3>
+    
+  </a>
+  <p class="post-meta">
+  
+     
+        
+            <img class="headshot" src="https://www.gravatar.com/avatar/67908970d2e279b0a7b64c2549c3f9ea">
+        
+            Posted by Eoin Crosbie
+    
+    on April 09, 2021 &middot; <span class="reading-time" title="Estimated read time">
+  
+   5 mins  read </span>
+  </p>
+  <p><div id="share-bar">
+    <div class="share-buttons">
+        <a  href="https://www.facebook.com/sharer/sharer.php?u=/blog"
+            onclick="window.open(this.href, 'pop-up', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;"
+            title="Share on Facebook" >
+            <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-1x"></i>
+                <i class="fab fa-facebook-f fa-stack-1x fa-inverse"></i>
+              </span>
+        </a>
+        <a  href="https://twitter.com/intent/tweet?text=Blog&url=/blog"
+            onclick="window.open(this.href, 'pop-up', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;"
+            title="Share on Twitter" >
+            <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-1x"></i>
+                <i class="fab fa-twitter fa-stack-1x fa-inverse"></i>
+              </span>
+        </a>
+        <a  href="http://www.reddit.com/submit?url=/blog"
+            onclick="window.open(this.href, 'pop-up', 'left=20,top=20,width=900,height=500,toolbar=1,resizable=0'); return false;"
+            title="Share on Reddit" >
+            <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-1x"></i>
+                <i class="fab fa-reddit fa-stack-1x fa-inverse"></i>
+              </span>
+        </a>
+        <a  href="https://www.linkedin.com/shareArticle?mini=true&url=/blog&title=Blog&summary=&source=QIoT project"
+            onclick="window.open(this.href, 'pop-up', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;"
+            title="Share on LinkedIn" >
+            <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-1x"></i>
+                <i class="fab fa-linkedin fa-stack-1x fa-inverse"></i>
+              </span>
+        </a>
+        <a  href="mailto:?subject=Blog&amp;body=Check out this site /blog"
+            title="Share via Email" >
+            <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-1x"></i>
+                <i class="far fa-envelope fa-stack-1x fa-inverse"></i>
+              </span>
+        </a>
+    </div>
+
+</div>
+</p>
+</article>
+
+<hr>
+
+  
+
+  
+          
+  
+<article class="post-preview">
+  <a href="/blog/qiot-cert-manager/">
+    <h2 class="post-title">Quarkus Secure on the Edge</h2>
+    
+    <h3 class="post-subtitle">---</h3>
+    
+  </a>
+  <p class="post-meta">
+  
+     
+        
+            <img class="headshot" src="https://www.gravatar.com/avatar/70c46737c838f278b868139a5bce6c3c">
+        
+            Posted by Mattia Mascia
+    
+    on April 01, 2021 &middot; <span class="reading-time" title="Estimated read time">
+  
+   8 mins  read </span>
+  </p>
+  <p><div id="share-bar">
+    <div class="share-buttons">
+        <a  href="https://www.facebook.com/sharer/sharer.php?u=/blog"
+            onclick="window.open(this.href, 'pop-up', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;"
+            title="Share on Facebook" >
+            <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-1x"></i>
+                <i class="fab fa-facebook-f fa-stack-1x fa-inverse"></i>
+              </span>
+        </a>
+        <a  href="https://twitter.com/intent/tweet?text=Blog&url=/blog"
+            onclick="window.open(this.href, 'pop-up', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;"
+            title="Share on Twitter" >
+            <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-1x"></i>
+                <i class="fab fa-twitter fa-stack-1x fa-inverse"></i>
+              </span>
+        </a>
+        <a  href="http://www.reddit.com/submit?url=/blog"
+            onclick="window.open(this.href, 'pop-up', 'left=20,top=20,width=900,height=500,toolbar=1,resizable=0'); return false;"
+            title="Share on Reddit" >
+            <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-1x"></i>
+                <i class="fab fa-reddit fa-stack-1x fa-inverse"></i>
+              </span>
+        </a>
+        <a  href="https://www.linkedin.com/shareArticle?mini=true&url=/blog&title=Blog&summary=&source=QIoT project"
+            onclick="window.open(this.href, 'pop-up', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;"
+            title="Share on LinkedIn" >
+            <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-1x"></i>
+                <i class="fab fa-linkedin fa-stack-1x fa-inverse"></i>
+              </span>
+        </a>
+        <a  href="mailto:?subject=Blog&amp;body=Check out this site /blog"
+            title="Share via Email" >
+            <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-1x"></i>
+                <i class="far fa-envelope fa-stack-1x fa-inverse"></i>
+              </span>
+        </a>
+    </div>
+
+</div>
+</p>
+</article>
+
+<hr>
+
+  
+
+  
+          
+  
+<article class="post-preview">
+  <a href="/blog/quarkus-native-on-a-raspberry-pi/">
+    <h2 class="post-title">Quarkus native running on a Raspberry Pi</h2>
+    
+    <h3 class="post-subtitle">---</h3>
+    
+  </a>
+  <p class="post-meta">
+  
+     
+        
+            <img class="headshot" src="https://www.gravatar.com/avatar/58d8a28d588d957040fd5288cc208a41">
+        
+            Posted by Andrea Battaglia
+    
+    on March 17, 2021 &middot; <span class="reading-time" title="Estimated read time">
+  
+   26 mins  read </span>
+  </p>
+  <p><div id="share-bar">
+    <div class="share-buttons">
+        <a  href="https://www.facebook.com/sharer/sharer.php?u=/blog"
+            onclick="window.open(this.href, 'pop-up', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;"
+            title="Share on Facebook" >
+            <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-1x"></i>
+                <i class="fab fa-facebook-f fa-stack-1x fa-inverse"></i>
+              </span>
+        </a>
+        <a  href="https://twitter.com/intent/tweet?text=Blog&url=/blog"
+            onclick="window.open(this.href, 'pop-up', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;"
+            title="Share on Twitter" >
+            <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-1x"></i>
+                <i class="fab fa-twitter fa-stack-1x fa-inverse"></i>
+              </span>
+        </a>
+        <a  href="http://www.reddit.com/submit?url=/blog"
+            onclick="window.open(this.href, 'pop-up', 'left=20,top=20,width=900,height=500,toolbar=1,resizable=0'); return false;"
+            title="Share on Reddit" >
+            <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-1x"></i>
+                <i class="fab fa-reddit fa-stack-1x fa-inverse"></i>
+              </span>
+        </a>
+        <a  href="https://www.linkedin.com/shareArticle?mini=true&url=/blog&title=Blog&summary=&source=QIoT project"
+            onclick="window.open(this.href, 'pop-up', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;"
+            title="Share on LinkedIn" >
+            <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-1x"></i>
+                <i class="fab fa-linkedin fa-stack-1x fa-inverse"></i>
+              </span>
+        </a>
+        <a  href="mailto:?subject=Blog&amp;body=Check out this site /blog"
+            title="Share via Email" >
+            <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-1x"></i>
+                <i class="far fa-envelope fa-stack-1x fa-inverse"></i>
+              </span>
+        </a>
+    </div>
+
+</div>
+</p>
+</article>
+
+<hr>
+
+  
+
+  
+          
+  
+<article class="post-preview">
+  <a href="/blog/qiot-hackfest-at-openshift-tv-updates/">
+    <h2 class="post-title">QIoT Hackfest @ Openshift tv - updates</h2>
+    
+    <h3 class="post-subtitle">---</h3>
+    
+  </a>
+  <p class="post-meta">
+  
+     
+        
+            <img class="headshot" src="https://www.gravatar.com/avatar/58d8a28d588d957040fd5288cc208a41">
+        
+            Posted by Andrea Battaglia
+    
+    on January 31, 2021 &middot; <span class="reading-time" title="Estimated read time">
+  
+   1 min  read </span>
+  </p>
+  <p><div id="share-bar">
+    <div class="share-buttons">
+        <a  href="https://www.facebook.com/sharer/sharer.php?u=/blog"
+            onclick="window.open(this.href, 'pop-up', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;"
+            title="Share on Facebook" >
+            <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-1x"></i>
+                <i class="fab fa-facebook-f fa-stack-1x fa-inverse"></i>
+              </span>
+        </a>
+        <a  href="https://twitter.com/intent/tweet?text=Blog&url=/blog"
+            onclick="window.open(this.href, 'pop-up', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;"
+            title="Share on Twitter" >
+            <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-1x"></i>
+                <i class="fab fa-twitter fa-stack-1x fa-inverse"></i>
+              </span>
+        </a>
+        <a  href="http://www.reddit.com/submit?url=/blog"
+            onclick="window.open(this.href, 'pop-up', 'left=20,top=20,width=900,height=500,toolbar=1,resizable=0'); return false;"
+            title="Share on Reddit" >
+            <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-1x"></i>
+                <i class="fab fa-reddit fa-stack-1x fa-inverse"></i>
+              </span>
+        </a>
+        <a  href="https://www.linkedin.com/shareArticle?mini=true&url=/blog&title=Blog&summary=&source=QIoT project"
+            onclick="window.open(this.href, 'pop-up', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;"
+            title="Share on LinkedIn" >
+            <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-1x"></i>
+                <i class="fab fa-linkedin fa-stack-1x fa-inverse"></i>
+              </span>
+        </a>
+        <a  href="mailto:?subject=Blog&amp;body=Check out this site /blog"
+            title="Share via Email" >
+            <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-1x"></i>
+                <i class="far fa-envelope fa-stack-1x fa-inverse"></i>
+              </span>
+        </a>
+    </div>
+
+</div>
+</p>
+</article>
+
+<hr>
+
+  
+
+  
+
+  
+          
+  
+<article class="post-preview">
+  <a href="/blog/qiot-hackfest-at-openshift-tv/">
+    <h2 class="post-title">QIoT Hackfest Pilot @ Openshift tv</h2>
+    
+    <h3 class="post-subtitle">---</h3>
+    
+  </a>
+  <p class="post-meta">
+  
+     
+        
+            <img class="headshot" src="https://www.gravatar.com/avatar/58d8a28d588d957040fd5288cc208a41">
+        
+            Posted by Andrea Battaglia
+    
+    on December 01, 2020 &middot; <span class="reading-time" title="Estimated read time">
+  
+   1 min  read </span>
+  </p>
+  <p><div id="share-bar">
+    <div class="share-buttons">
+        <a  href="https://www.facebook.com/sharer/sharer.php?u=/blog"
+            onclick="window.open(this.href, 'pop-up', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;"
+            title="Share on Facebook" >
+            <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-1x"></i>
+                <i class="fab fa-facebook-f fa-stack-1x fa-inverse"></i>
+              </span>
+        </a>
+        <a  href="https://twitter.com/intent/tweet?text=Blog&url=/blog"
+            onclick="window.open(this.href, 'pop-up', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;"
+            title="Share on Twitter" >
+            <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-1x"></i>
+                <i class="fab fa-twitter fa-stack-1x fa-inverse"></i>
+              </span>
+        </a>
+        <a  href="http://www.reddit.com/submit?url=/blog"
+            onclick="window.open(this.href, 'pop-up', 'left=20,top=20,width=900,height=500,toolbar=1,resizable=0'); return false;"
+            title="Share on Reddit" >
+            <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-1x"></i>
+                <i class="fab fa-reddit fa-stack-1x fa-inverse"></i>
+              </span>
+        </a>
+        <a  href="https://www.linkedin.com/shareArticle?mini=true&url=/blog&title=Blog&summary=&source=QIoT project"
+            onclick="window.open(this.href, 'pop-up', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;"
+            title="Share on LinkedIn" >
+            <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-1x"></i>
+                <i class="fab fa-linkedin fa-stack-1x fa-inverse"></i>
+              </span>
+        </a>
+        <a  href="mailto:?subject=Blog&amp;body=Check out this site /blog"
+            title="Share via Email" >
+            <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-1x"></i>
+                <i class="far fa-envelope fa-stack-1x fa-inverse"></i>
+              </span>
+        </a>
+    </div>
+
+</div>
+</p>
+</article>
+
+<hr>
+
+  
+
+  
+
+
+<!-- Pager -->
+
+
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Footer -->
+
+<hr>
+
+<footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-16 col-md-10 mx-auto">
+        <ul class="list-inline text-center">
+          
+          <li class="list-inline-item">
+            <a href="mailto:qiotproject@gmail.com">
+              <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-2x"></i>
+                <i class="far fa-envelope fa-stack-1x fa-inverse"></i>
+              </span>
+            </a>
+          </li>
+          
+          
+          <li class="list-inline-item">
+            <a href="https://twitter.com/qiotproject">
+              <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-2x"></i>
+                <i class="fab fa-twitter fa-stack-1x fa-inverse"></i>
+              </span>
+            </a>
+          </li>
+          
+          
+          
+          
+          <li class="list-inline-item">
+            <a href="https://github.com/qiot-project">
+              <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-2x"></i>
+                <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+              </span>
+            </a>
+          </li>
+          
+          
+          
+          <li class="list-inline-item">
+            <a href="https://join.slack.com/t/https://join.slack.com/t/qiotproject/shared_invite/zt-nuajdyqf-NfQL0dcfCUjFSgoBNng11A">
+              <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-2x"></i>
+                <i class="fab fa-slack fa-stack-1x fa-inverse"></i>
+              </span>
+            </a>
+          </li>
+          
+          
+          <li class="list-inline-item">
+            <a href="https://groups.google.com/u/0/g/qiotproject/qiotproject">
+              <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-2x"></i>
+                <i class="fab fa-google fa-stack-1x fa-inverse"></i>
+              </span>
+            </a>
+          </li>
+          
+          
+          <li class="list-inline-item">
+            <a href="https://calendar.google.com/event?action=TEMPLATE&tmeid=dmFxMzFlZGkxOHVubDcyYm50bjdrcTJxYThfMjAyMTAzMjVUMTYwMDAwWiBxaW90cHJvamVjdEBt&tmsrc=qiotproject%40gmail.com&scp=ALL">
+              <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-2x"></i>
+                <i class="fas fa-calendar-plus fa-stack-1x fa-inverse"></i>
+              </span>
+            </a>
+          </li>
+          
+        </ul>
+        <p class="copyright text-muted"><i class="fab fa-creative-commons"></i><i class="fab fa-creative-commons-by"></i> <a href="https://creativecommons.org/licenses/by/3.0/" target="_blank">CC by 3.0</a> | <a href="https://www.redhat.com/en/about/privacy-policy">Privacy Policy</a> | Copyright &copy;  2024</p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+  <script src="/assets/vendor/jquery/jquery.min.js"></script>
+<script src="/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="/assets/vendor/startbootstrap-clean-blog/js/clean-blog.min.js"></script>
+
+<script src="/assets/scripts.js"></script>
+
+
+
+
+</body>
+
+</html>

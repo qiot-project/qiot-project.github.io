@@ -1,0 +1,4435 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.2">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2024-03-28T01:04:41+00:00</updated><id>/feed.xml</id><title type="html">QIoT project</title><subtitle>Quarkus meets Internet of Things</subtitle><entry><title type="html">Hackfest for Retail Use Case</title><link href="/blog/usecase-retail/" rel="alternate" type="text/html" title="Hackfest for Retail Use Case" /><published>2023-03-06T00:00:00+00:00</published><updated>2023-03-06T00:00:00+00:00</updated><id>/blog/usecase-retail</id><content type="html" xml:base="/blog/usecase-retail/"><![CDATA[<div id="toc" class="toc">
+<div id="toctitle">Table of Contents</div>
+<ul class="sectlevel1">
+<li><a href="#context">Context</a></li>
+<li><a href="#scenario">Scenario</a>
+<ul class="sectlevel2">
+<li><a href="#goal">Goal</a></li>
+<li><a href="#business-challenges">Business challenges</a></li>
+<li><a href="#two-key-red-hat-solution-frameworks-for-retail">Two key Red Hat Solution Frameworks for Retail</a></li>
+</ul>
+</li>
+<li><a href="#hackfest-technical-architecture">Hackfest Technical Architecture</a>
+<ul class="sectlevel2">
+<li><a href="#architecture-diagram">Architecture diagram</a></li>
+<li><a href="#virtual-shop-alternatives">“Virtual Shop” Alternatives</a></li>
+</ul>
+</li>
+<li><a href="#working-with-the-hackfest-team">Working with the Hackfest Team</a>
+<ul class="sectlevel2">
+<li><a href="#service-desk-operators-and-azure-credits">Service Desk - Operators and Azure credits</a></li>
+<li><a href="#not-sure-what-to-do-next-at-hackfest">Not sure what to do next at Hackfest?</a></li>
+</ul>
+</li>
+<li><a href="#the-point-of-sale-pos-edge-device">The Point of Sale (PoS) edge device</a>
+<ul class="sectlevel2">
+<li><a href="#option-1-hardware-fitlet2">Option 1) Hardware - Fitlet2</a></li>
+<li><a href="#option-2-virtual-alternative-rhel-hypervisor-running-in-azure">Option 2) Virtual Alternative; RHEL Hypervisor running in Azure</a></li>
+<li><a href="#main-diagram">Main Diagram</a></li>
+<li><a href="#operating-system">Operating System</a>
+<ul class="sectlevel3">
+<li><a href="#containers-with-podman">Containers with Podman</a></li>
+</ul>
+</li>
+<li><a href="#business-logic-services">Business Logic Services</a>
+<ul class="sectlevel3">
+<li><a href="#qiot-retail-edgepos-service">qiot-retail-edgepos service</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#the-shop-back-office-edge-gateway">The Shop “Back Office” edge gateway</a>
+<ul class="sectlevel2">
+<li><a href="#option-1-hardware-intel-nuc-running-single-node-openshift">Option 1) Hardware - Intel NUC running Single Node OpenShift</a></li>
+<li><a href="#option-2-virtual-alternative-a-shared-aro-cluster">Option 2) Virtual Alternative: A shared ARO cluster</a></li>
+<li><a href="#main-diagram-2">Main Diagram</a></li>
+<li><a href="#openshift-container-platform">OpenShift Container Platform</a></li>
+<li><a href="#infrastructure-services">Infrastructure Services</a>
+<ul class="sectlevel3">
+<li><a href="#red-hat-amq-streams">Red Hat AMQ Streams</a></li>
+<li><a href="#cert-manager-service-issuer">Cert-manager service (issuer)</a></li>
+<li><a href="#sql-databases">SQL Databases</a></li>
+</ul>
+</li>
+<li><a href="#business-logic-services-2">Business Logic services</a>
+<ul class="sectlevel3">
+<li><a href="#edgepos-manager">edgepos-manager</a></li>
+<li><a href="#registration-service">registration service</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#datacenter">Datacenter</a>
+<ul class="sectlevel2">
+<li><a href="#main-diagram-3">Main Diagram</a></li>
+<li><a href="#red-hat-openshift-container-platform">Red Hat OpenShift Container Platform</a></li>
+<li><a href="#datacenter-infrastructure-services">Datacenter Infrastructure services</a>
+<ul class="sectlevel3">
+<li><a href="#stream-service">Stream service</a></li>
+<li><a href="#debezium">Database change monitoring with Debezium</a></li>
+<li><a href="#crunchydb-postgressql">CrunchyDB - PostgresSQL</a></li>
+<li><a href="#prometheus-operator">Prometheus Operator</a></li>
+<li><a href="#grafana">Grafana</a></li>
+<li><a href="#devspaces">DevSpaces</a></li>
+<li><a href="#cert-manager-service">Cert-manager service</a></li>
+</ul>
+</li>
+<li><a href="#business-logic-services-3">Business Logic Services</a>
+<ul class="sectlevel3">
+<li><a href="#sales-manager">sales-manager</a></li>
+<li><a href="#shop-manager">shop-manager</a></li>
+<li><a href="#inventory-manager">inventory-manager</a></li>
+<li><a href="#distribution-manager">distribution-manager</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="sect1">
+<h2 id="context"><a class="anchor" href="#context"></a>Context</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In the post-covid world, retailers are facing huge challenges from
+increased competition from online shopping, consumers who are more
+concerned about cost than ever before, and many have ageing IT
+infrastructure, have outsourced much of their core services, and are
+trying to adopt the public clouds more than ever before.</p>
+</div>
+<div class="paragraph">
+<p>This is pushing retailers to look at how they can bring innovation to
+the Point of Sale, the Stores, and the Data Centers.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="scenario"><a class="anchor" href="#scenario"></a>Scenario</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The business leaders for a retail company know they need to modernise
+and improve their IT architecture so that they can try new business
+models and explore new ideas. They made a lot of technology investments
+with Red Hat and Azure, but don’t know how to guide the IT department to
+make best use of this technology to solve business problems. They’ve
+brought you in as a potential partner to help them on this journey.</p>
+</div>
+<div class="paragraph">
+<p>You have found that the business leaders don’t speak to the IT
+department very often, and they don’t share much detail about what they
+want - they just want something better than they have today. They’ve
+left you alone as a potential partner, and set you the challenge to use
+these recent technology investments with Red Hat and Azure. The business
+leaders will speak with their IT department at the end of the month to
+find the Top 3 technical implementations, and invite those potential
+partners to a business presentation to determine the winner.</p>
+</div>
+<div class="paragraph">
+<p>You know the current architecture of the system has many pain points and
+limitations, and as you explore the architecture over next few weeks,
+you’re bound to find more issues. It has been “lifted and shifted” into
+a container environment, but it isn’t really cloud native, yet.</p>
+</div>
+<div class="sect2">
+<h3 id="goal"><a class="anchor" href="#goal"></a>Goal</h3>
+<div class="paragraph">
+<p>Your main goal is to build upon the template environment that you start
+with, taking into account the solution frameworks, and enablement you’ve
+had so far. You have the freedom to improve the microservices, the
+development process, the cloud adoption or similar.</p>
+</div>
+<div class="paragraph">
+<p>Your goal is to get the customer to prove to the customer you can use
+technology to solve some of their business challenges and be a trusted
+partner.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="business-challenges"><a class="anchor" href="#business-challenges"></a>Business challenges</h3>
+<div class="paragraph">
+<p>The business leaders don&#8217;t understand the technology, let alone know how
+to write a requirements specification. However, after a discovery call
+and talking to some industry analysts, you know roughly what the
+business is struggling with;</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Revenue: It takes days of process and tools to publish new versions of
+existing services.</p>
+</li>
+<li>
+<p>Risk: The release processes and change control around these services
+is nonexistent, there isn&#8217;t even a test environment! Changes are made
+live to production, putting the whole environment as serious risk when
+developers change things.</p>
+</li>
+<li>
+<p>Revenue: Business leaders really want to serve the e-commerce market,
+and extend to web sales, but the current architecture can barely keep up
+with physical stores!</p>
+</li>
+<li>
+<p>Risk: It&#8217;s almost impossible to know how much inventory is being held
+at any one time, and in which area of the business.</p>
+</li>
+<li>
+<p>Risk: The current architecture is so insecure, encryption isn&#8217;t being
+used in most places, data at rest, data in transit, all cleartext.</p>
+</li>
+<li>
+<p>Nearly all services cannot be monitored! The teams have no idea how to
+build management dashboards, with metrics and monitoring.</p>
+</li>
+<li>
+<p>Developers often use laptops that are locked down and slow, they would
+much rather develop in the cloud, close to the code.</p>
+</li>
+<li>
+<p>We&#8217;ve made an investment in OpenShift, but are not yet using it to
+it&#8217;s full potential - just some applications have been containerized.
+There are few pipelines, monitoring, logging or similar being used.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>You take a deep breath, and keep the business challenges in mind, as you
+look at this application and architecture described in this document.</p>
+</div>
+<div class="paragraph">
+<p>You are provided access to 4 environments, the Point of Sale (Fitlet2),
+the Store (Intel NUC), the Warehouse (Azure Red Hat OpenShift) and the
+Data Center (Azure Red Hat OpenShift). All these components are
+connected to each other as part of a system that serves the retailer to
+make money.</p>
+</div>
+<div class="paragraph">
+<p>Lastly, you forget for a moment what products you even sell in your
+store! Thankfully, in this Hackfest, you decide it&#8217;s not important, and
+can choose which virtual products your store sells, while you focus on
+addressing some of those business challenges.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="two-key-red-hat-solution-frameworks-for-retail"><a class="anchor" href="#two-key-red-hat-solution-frameworks-for-retail"></a>Two key Red Hat Solution Frameworks for Retail</h3>
+<div class="paragraph">
+<p>This retail company has been talking with Red Hat’s architects on the
+topic of validated patterns that could be implemented, on top of 2 key
+solution frameworks that affect retailers, around the Point of Sale, and
+Cloud Native development. Your team has been given a high level overview
+of these solution frameworks, in the hope that your proof of concept
+developed during the hackfest could contribute to a validated pattern in
+the future.</p>
+</div>
+<div class="paragraph">
+<p><a href="https://developers.redhat.com/topics/red-hat-architecture-and-design-patterns"><em>https://developers.redhat.com/topics/red-hat-architecture-and-design-patterns</em></a></p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/posts/usecase-retail/retail_pos_high_level.png" alt="image" width="100%">
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/posts/usecase-retail/retail_pos_why.png" alt="image" width="100%">
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/posts/usecase-retail/retail_cloud_native_dev.png" alt="image" width="100%">
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/posts/usecase-retail/retail_cloud_native_dev_why.png" alt="image" width="100%">
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="hackfest-technical-architecture"><a class="anchor" href="#hackfest-technical-architecture"></a>Hackfest Technical Architecture</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The architecture you’ve been provided by the Retailer’s IT department
+consists of 3 main environments.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>There is the Edge Endpoint device, running a Point of Sale (PoS).
+There are several of these deployed into each shop building.</p>
+</li>
+<li>
+<p>There is a Shop “Back Office” which is connected to the PoS edge
+devices. This is normally a low powered server running in the warehouse
+in the shop. This part of the architecture is expected to work offline,
+as the shop’s internet connection goes down quite frequently.</p>
+</li>
+<li>
+<p>There is also the public cloud datacenter, which provides several
+services to the shop. When the internet connection to the shop is
+working, updates are streamed into the datacenter. When the connection
+goes down, the “Back Office” server will buffer the updates until the
+connection is restored.</p>
+</li>
+</ol>
+</div>
+<div class="sect2">
+<h3 id="architecture-diagram"><a class="anchor" href="#architecture-diagram"></a>Architecture diagram</h3>
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/posts/usecase-retail/architecture.png" alt="image" width="100%">
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="virtual-shop-alternatives"><a class="anchor" href="#virtual-shop-alternatives"></a>“Virtual Shop” Alternatives</h3>
+<div class="paragraph">
+<p>There are some teams in this Hackfest event which did not receive a
+package containing the hardware - a Fitlet 2 Edge Device and Intel NUC
+for the Edge Gateway. This is either due to availability, shipping
+delays, or problems with shipping to your country.</p>
+</div>
+<div class="paragraph">
+<p>The judges will not penalise you for this, and virtual alternatives to
+these environments are available. There are also teams who are working
+fully remotely, and may prefer to use a virtual environment instead.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="working-with-the-hackfest-team"><a class="anchor" href="#working-with-the-hackfest-team"></a>Working with the Hackfest Team</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="service-desk-operators-and-azure-credits"><a class="anchor" href="#service-desk-operators-and-azure-credits"></a>Service Desk - Operators and Azure credits</h3>
+<div class="paragraph">
+<p>You do not have full administrative access to the entire cluster of ARO
+and Azure, but many of the operators you would want to use to install
+the architecture, and extend it, have been pre-installed for you in the
+Datacenter cluster. The Hackfest admins (“Service Desk”) will happily
+install more operators at your request.</p>
+</div>
+<div class="paragraph">
+<p>Additionally, access to an empty Azure Resource Group per team is
+available at request - we would ask that if you feel your solution needs
+to deploy native Azure services, that you are mindful of the costs, as
+running out of Azure credits halfway through the Hackfest would be a
+disaster for everyone! If possible, keep as much of your solution inside
+OpenShift as possible. As a guideline, a “soft budget” of $500 is
+available for Azure credits per team.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="not-sure-what-to-do-next-at-hackfest"><a class="anchor" href="#not-sure-what-to-do-next-at-hackfest"></a>Not sure what to do next at Hackfest?</h3>
+<div class="paragraph">
+<p>At Hackfest, we won’t tell you what to do, or what direction to take.
+This is an opportunity to learn by doing, and use the skills you have as
+a partner to compete in a competition!</p>
+</div>
+<div class="paragraph">
+<p>With that being said, there are support teams here for you, to help you
+get past technical blockers, or get more familiar with the technology.
+Do ask if you are stuck!</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="the-point-of-sale-pos-edge-device"><a class="anchor" href="#the-point-of-sale-pos-edge-device"></a>The Point of Sale (PoS) edge device</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The software running on the edge device runs a single application called
+<strong>edgepos</strong>. It has the purpose of being able to process basic
+transactions on it’s simple web interface, which is operated by Shop
+employees. The software can handle discounts via a decision table, and
+records of purchases are sent to the Shop “back office” server which is
+a bit more powerful.</p>
+</div>
+<div class="paragraph">
+<p>This hardware running on the edge device is relatively low powered, and
+there is one at each shop till. It has ethernet, and a few USB devices
+attached to it, and most shops use old monitors that barely support HDMI
+1.0!</p>
+</div>
+<div class="paragraph">
+<p>The <strong>edgepos</strong> software was recently upgraded from J2SE running on
+Windows XP to Quarkus running in a container on Linux, which should be a
+huge improvement in time.</p>
+</div>
+<div class="sect2">
+<h3 id="option-1-hardware-fitlet2"><a class="anchor" href="#option-1-hardware-fitlet2"></a>Option 1) Hardware - Fitlet2</h3>
+<div class="paragraph">
+<p>The Hardware of choice for the edge device is the Compulab Fitlet2.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/posts/usecase-manufacturing/fitlet2.jpg" alt="image" width="100%">
+</div>
+</div>
+<div class="paragraph">
+<p>The FITLET2-CE3930 is equipped with Intel® Atom X5-E3930 powered by
+Intel®.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Model</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">FITLET2-CE3930-P36</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Fan / Fanless</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Fanless</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">CPU</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Intel® Atom x5-3930</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">RAM</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1x 2Gb SO-DIMM 204-pin DDR3L Non-ECC DDR3L-1866 (1.35V)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Display</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Dual head: mini DP 1.2 4K @ 60 Hz; HDMI 1.4 4K @ 30 Hz</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">WIFI</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">802.11ac dual antenna + BT 4.2</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Ethernet</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2 GbE ports on-board</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">USB 2.0</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">4 USB ports on-board: 2x USB 3.0 + 2x USB 2.0</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Audio</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Stereo line out Realtek ALC1150 audio codec</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Serial Port</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">RS232 mini-serial</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">BIOS</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AMI Aptio V</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Input voltage range</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Up to DC 9V – 36V*</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Operating system support</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">all</p></td>
+</tr>
+</tbody>
+</table>
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/posts/usecase-manufacturing/fitlet2-block-diagram.png" alt="fitlet2 block diagram" width="100%">
+</div>
+</div>
+<div class="paragraph">
+<p>Additional technical detail can be found at the following <a href="https://fit-iot.com/web/products/fitlet2/fitlet2-specifications/"><em>link</em></a>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="option-2-virtual-alternative-rhel-hypervisor-running-in-azure"><a class="anchor" href="#option-2-virtual-alternative-rhel-hypervisor-running-in-azure"></a>Option 2) Virtual Alternative; RHEL Hypervisor running in Azure</h3>
+<div class="paragraph">
+<p>A RHEL hypervisor virtual machine running in Microsoft Azure. This
+machine is pre-installed with QEMU, and has 4 vCPUs, and 16Gb of RAM
+(somewhat more powerful than the Fitlet 2). This hypervisor machine can
+be accessed with SSH, and you can use the libvirt / qemu tooling to
+create virtual machines to simulate a Fitlet 2 / PoS.</p>
+</div>
+<div class="paragraph">
+<p>This may be a far more viable option if your team gets heavily involved
+with using FDO to roll out new operating system images, as well - as it
+will be faster to test than flashing to a SD card.</p>
+</div>
+<div class="paragraph">
+<p>Please reach out to the “Service Desk” (Hackfest admins) if you’d like
+one of these machines provisioned for you.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="main-diagram"><a class="anchor" href="#main-diagram"></a>Main Diagram</h3>
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/posts/usecase-retail/edgepos.png" alt="image" width="453" height="731">
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Reminder: </strong>Not using RHEL for Edge will lose you many points when it
+comes to judging time! Standard RHEL for Podman is just useful for
+getting started quickly at the beginning of Hackfest.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="operating-system"><a class="anchor" href="#operating-system"></a>Operating System</h3>
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/posts/usecase-manufacturing/brand/Logo-Red_Hat-Edge-A-Standard-RGB.png" alt="image" width="702" height="278">
+</div>
+</div>
+<div class="paragraph">
+<p>In an edge computing solution, the operating system is required to be
+efficient, lightweight and mature. The team focused on the most
+efficient enterprise-grade solution on the marker, which guarantees
+security, performance, and container-native solutions. Below a list of
+the principal, compulsory features we’ve been looking for in an
+operating system:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Must be fully-fledged 64 bit OS (not just its kernel);<br></p>
+</li>
+<li>
+<p>Must have a very small memory footprint;<br></p>
+</li>
+<li>
+<p>Must be immutable or, at least, modular;<br></p>
+</li>
+<li>
+<p>Must have the ability to run a container engine with the minimum
+memory footprint, like Podman or CRI-O;<br></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The most suitable and appropriate operating system, also certified on
+the target hardware is <a href="https://www.redhat.com/en/resources/linux-for-edge-datasheet"><em>Red Hat Enterprise Linux for Edge (RHEL for Edge)</em></a>.</p>
+</div>
+<div class="sect3">
+<h4 id="containers-with-podman"><a class="anchor" href="#containers-with-podman"></a>Containers with Podman</h4>
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/posts/usecase-manufacturing/brand/podman-logo.png" alt="image" width="222" height="222">
+</div>
+</div>
+<div class="paragraph">
+<p>Podman is a daemonless, open source, Linux-native tool designed to
+develop, manage, and run Open Container Initiative (OCI) containers and
+pods.</p>
+</div>
+<div class="paragraph">
+<p>It has a similar directory structure to Buildah, Skopeo, and CRI-O.</p>
+</div>
+<div class="paragraph">
+<p>Podman doesn’t require an active container engine for its commands to
+work.</p>
+</div>
+<div class="paragraph">
+<p>Last but not least, Podman is available in the standard rpm library of
+RHEL, so you get full support on it.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="business-logic-services"><a class="anchor" href="#business-logic-services"></a>Business Logic Services</h3>
+<div class="sect3">
+<h4 id="qiot-retail-edgepos-service"><a class="anchor" href="#qiot-retail-edgepos-service"></a>qiot-retail-edgepos service</h4>
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/logo/logo-quarkus.png" alt="image" width="100">
+</div>
+</div>
+<div class="paragraph">
+<p>The edgepos service is implemented on top of the <a href="https://quarkus.io/"><em>Quarkus</em></a> framework. It can run in several
+different ways, but on RHEL for Edge, it would run
+<a href="https://quarkus.io/guides/building-native-image"><em>native mode</em></a> on a
+container environment.</p>
+</div>
+<div class="paragraph">
+<p>Moreover, the edgepos service is designed and implemented to have the
+smallest memory footprint as possible and perform the transactions with
+the API exposed by the shop “back office” in the shortest time. The
+native mode dramatically improves the performance and guarantees the
+full compatibility with the OCI standards and the Podman engine.</p>
+</div>
+<div class="paragraph">
+<p>The edgepos service is responsible for the emulation of a shop “till”,
+that scans barcodes, and eventually “checks out” those products. Any
+barcode is valid and will generate a valid product, with a fixed price
+that is hard coded into the UI - which is very strange for a retail
+store…</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/posts/usecase-retail/edgepos_ui.png" alt="image" width="100%">
+</div>
+</div>
+<div class="paragraph">
+<p>The UI is a simple React application, <a href="https://github.com/qiot-project/qiot-retail-edgepos-ui"><em>qiot-project/qiot-retail-edgepos-ui</em></a>.
+This project can be built with <code>npm run build</code>, and the changed files
+can should be copied into the qiot-retail-edgepos service, under the
+/src/main/resources/META-INF/resources directory.</p>
+</div>
+<div class="paragraph">
+<p>The edgepos service can by found in the
+<a href="https://github.com/qiot-project/qiot-retail-edgepos"><em>qiot-project/qiot-retail-edgepos</em></a>
+project.</p>
+</div>
+<div class="paragraph">
+<p>When scanning barcodes, or doing a checkout, the UI will call make a
+REST API call to <code>/bill</code>, which will emit Kafka messages to a configured
+broker.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="the-shop-back-office-edge-gateway"><a class="anchor" href="#the-shop-back-office-edge-gateway"></a>The Shop “Back Office” edge gateway</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="option-1-hardware-intel-nuc-running-single-node-openshift"><a class="anchor" href="#option-1-hardware-intel-nuc-running-single-node-openshift"></a>Option 1) Hardware - Intel NUC running Single Node OpenShift</h3>
+<div class="paragraph">
+<p>The Edge Server is based on the powerful Intel® NUC 10 Performance kit -
+NUC10i7FNH.</p>
+</div>
+<div class="paragraph">
+<p>The Intel® NUC guarantees performance and stability to the container
+platform designed to control any IT systems that operate in the store, most importantly the point of sale machines.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/posts/usecase-manufacturing/NUC.jpg" alt="image" width="100%">
+</div>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Product Collection</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Intel® NUC Kit with 10th Generation Intel® Core™
+Processors</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Board Number</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">NUC10i7FNB</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Board Form Factor</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">UCFF (4" x 4")</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Socket</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Soldered-down BGA</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"># of Cores</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">6</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"># of Threads</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">12</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Processor Base Frequency</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.10 GHz</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Max Turbo Frequency</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">4.70 GHz</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">RAM</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">DDR4-2666 1.2V SO-DIMM</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Internal Drive Form Factor</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">M.2 and 2.5" Drive</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SSD</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">M.2 256Gb</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Lithography</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">14 nm</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">TDP</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">14 nm</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Lithography</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">25 W</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">DC Input Voltage Supported</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">19 VDC</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Additional technical detail can be found at the following
+<a href="https://www.intel.com/content/www/us/en/products/sku/188811/intel-nuc-10-performance-kit-nuc10i7fnh/specifications.html"><em>link</em></a>.</p>
+</div>
+<div class="paragraph">
+<p>The team has provided a detailed walkthrough about How to install SNO on
+10th gen NUC <a href="https://qiot-project.github.io/blog/sno-on-nuc10/"><em>here</em></a>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="option-2-virtual-alternative-a-shared-aro-cluster"><a class="anchor" href="#option-2-virtual-alternative-a-shared-aro-cluster"></a>Option 2) Virtual Alternative: A shared ARO cluster</h3>
+<div class="paragraph">
+<p>As the Intel NUC is designed to run OpenShift in this simulation, an
+alternative environment is an Azure Red Hat OpenShift environment. This
+is a fully capable OpenShift cluster, but will have minimal operators
+installed - compared to the DataCenter cluster, which has many operators
+installed.</p>
+</div>
+<div class="paragraph">
+<p>This also may be a far more viable option if you are limited by the
+speed/availability of of the Intel NUC hardware.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="main-diagram-2"><a class="anchor" href="#main-diagram-2"></a>Main Diagram</h3>
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/posts/usecase-retail/backoffice.png" alt="image" width="100%">
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="openshift-container-platform"><a class="anchor" href="#openshift-container-platform"></a>OpenShift Container Platform</h3>
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/logo/Logo-Red_Hat-OpenShift-A-Standard-RGB.png" alt="image" width="100%">
+</div>
+</div>
+<div class="paragraph">
+<p>Red Hat has worked a make OpenShift footprint smaller to fit into more
+constrained environments by putting both control and worker capabilities
+into a single node. If you are using the shared Shop cluster instead,
+then your environment is larger than a single node, but it’s
+functionality is the same.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="infrastructure-services"><a class="anchor" href="#infrastructure-services"></a>Infrastructure Services</h3>
+<div class="sect3">
+<h4 id="red-hat-amq-streams"><a class="anchor" href="#red-hat-amq-streams"></a>Red Hat AMQ Streams</h4>
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/logo/logo-kafka.png" alt="image" width="160">
+</div>
+</div>
+<div class="paragraph">
+<p>An enterprise distribution of Apache Kafka, Red Hat AMQ Streams is a
+data streaming platform. It can be installed as a simple service on
+RHEL, or easily using the Integration operator on OpenShift.</p>
+</div>
+<div class="paragraph">
+<p>Services can connect to the provider to publish, or receive messages
+over a channel, making it easy to build event-driven architectures, with
+loose coupling between services.</p>
+</div>
+<div class="paragraph">
+<p>Kafka instances can be connected in several ways, but this template
+architecture uses MirrorMaker2 to connect a Kafka instance running on
+the Shop Back Office OpenShift to a Kafka instance running in the
+Datacenter instance of Kafka. This allows messages about purchases to
+reach the datacenter, even if the connection goes down temporarily.</p>
+</div>
+<div class="paragraph">
+<p>Kafka is a vibrant ecosystem of supporting services, including Connect
+(Debezium), and MirrorMaker2.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/posts/usecase-retail/kafka-ecosystem.png" alt="image" width="447" height="488">
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="cert-manager-service-issuer"><a class="anchor" href="#cert-manager-service-issuer"></a>Cert-manager service (issuer)</h4>
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/logo/logo-cert-manager.png" alt="image" width="160">
+</div>
+</div>
+<div class="paragraph">
+<p>Cert-manager automates certificate management in cloud native
+environments and thus helped with the implementation of a dynamic
+certificate provisioning for edge devices</p>
+</div>
+<div class="paragraph">
+<p>Cert-manager builds on top of Kubernetes Custom Resource Definitions
+(CRDs), introducing certificate authorities and certificates as
+first-class resource types in the Kubernetes API.</p>
+</div>
+<div class="paragraph">
+<p>This makes it possible to provide 'certificates as a service' to
+developers working within your Kubernetes cluster.</p>
+</div>
+<div class="paragraph">
+<p>Highlights: Provide easy to use tools to manage certificates.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>A standardised API for interacting with multiple certificate
+authorities (CAs).<br></p>
+</li>
+<li>
+<p>Gives security teams the confidence to allow developers to self-server
+certificates.<br></p>
+</li>
+<li>
+<p>Support for ACME (Let’s Encrypt), HashiCorp Vault, Venafi, self signed
+and internal certificate authorities.<br></p>
+</li>
+<li>
+<p>Extensible to support custom, internal or otherwise unsupported CAs.<br>
++</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="sql-databases"><a class="anchor" href="#sql-databases"></a>SQL Databases</h4>
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/posts/usecase-retail/crunchydb.png" alt="image" width="160">
+</div>
+</div>
+<div class="paragraph">
+<p>PostgreSQL is a powerful, open source object-relational database system
+with over 30 years of active development that has earned it a strong
+reputation for reliability, feature robustness, and performance.</p>
+</div>
+<div class="paragraph">
+<p>It is recommended to use the CrunchyDB Operator to install Postgres,
+which can be configured to expose the transaction logs to services like
+Debezium (Kafka Connect).</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="business-logic-services-2"><a class="anchor" href="#business-logic-services-2"></a>Business Logic services</h3>
+<div class="sect3">
+<h4 id="edgepos-manager"><a class="anchor" href="#edgepos-manager"></a>edgepos-manager</h4>
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/logo/logo-quarkus.png" alt="image" width="100">
+</div>
+</div>
+<div class="paragraph">
+<p>The edgepos-manager service is is implemented on top of the <a href="https://quarkus.io/"><em>Quarkus</em></a> framework.</p>
+</div>
+<div class="paragraph">
+<p>Several instances of the edgepos service can send messages about
+purchases back to a single edgepos-manager service.</p>
+</div>
+<div class="paragraph">
+<p>The data model used to talk inbetween the edgepos and edgepos-manager is
+in the
+<a href="https://github.com/qiot-project/qiot-retail-edgepos-model"><em>qiot-project/qiot-retail-edgepos-model</em></a>
+repository.</p>
+</div>
+<div class="paragraph">
+<p>More details can be found in the
+<a href="https://github.com/qiot-project/qiot-retail-edgepos-manager"><em>qiot-project/qiot-retail-edgepos-manger</em></a>
+repository.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="registration-service"><a class="anchor" href="#registration-service"></a>registration service</h4>
+<div class="paragraph">
+<p>This service is a suggested concept in the architecture, and is NOT
+implemented (ie, there is no code).</p>
+</div>
+<div class="paragraph">
+<p>This is because at the moment there is no concept of registration, or
+security, between the Point of Sale and the edgepos-manager service.</p>
+</div>
+<div class="paragraph">
+<p>One potential solution to this is mutual TLS, handled by a registration
+service. However, the implementation is left entirely up to you to
+decide.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="datacenter"><a class="anchor" href="#datacenter"></a>Datacenter</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The Datacenter area of the architecture is hosted entirely by a Azure
+Red Hat OpenShift cluster. This cluster contains two default namespaces,
+<code>team-production</code> and <code>team-development</code>, but you may create additional
+namespaces as needed.</p>
+</div>
+<div class="paragraph">
+<p>This cluster as a largen umber of useful operators pre-installed;</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>OpenShift DevSpaces operator - providing a “development environment in
+the cloud” based on visual studio / eclipse Che. This allows for rapid
+prototyping of new services inside OpenShift.</p>
+</li>
+<li>
+<p>Red Hat Integration operator, providing AMQ Streams (Kafka), Connect
+(Debezium), and MirrorMaker2, as well as several other useful resources.</p>
+</li>
+<li>
+<p>OpenShift Service Mesh Operator. Although, the services that you have
+today don’t really make use of Service Mesh - which is a real lost
+opportunity.</p>
+</li>
+<li>
+<p>Web Terminal operator - making it easy to get access to the <code>oc</code>
+command, and other useful Openshift command line tools.</p>
+</li>
+<li>
+<p>cert-manager - as described previously.</p>
+</li>
+<li>
+<p>CrunchyDB - as described previously, to install PostgresQL.</p>
+</li>
+</ul>
+</div>
+<div class="sect2">
+<h3 id="main-diagram-3"><a class="anchor" href="#main-diagram-3"></a>Main Diagram</h3>
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/posts/usecase-retail/datacenter.png" alt="image" width="1051" height="940">
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="red-hat-openshift-container-platform"><a class="anchor" href="#red-hat-openshift-container-platform"></a>Red Hat OpenShift Container Platform</h3>
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/logo/Logo-Red_Hat-OpenShift-A-Standard-RGB.png" alt="image" width="100%">
+</div>
+</div>
+<div class="paragraph">
+<p>Red Hat OpenShift is the hybrid cloud platform of open possibility:
+powerful, so you can build anything and flexible, so it works anywhere.</p>
+</div>
+<div class="paragraph">
+<p>Adopting the Openshift container platform made us save tons of hors
+implementing features and behaviors supposed to be home cooked,
+otherwise:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Native pipelines using Tekton<br></p>
+</li>
+<li>
+<p>One-shot installation using Helm charts<br></p>
+</li>
+<li>
+<p>2-day operations using Operator Framework<br></p>
+</li>
+<li>
+<p>Container storage<br></p>
+</li>
+<li>
+<p>Security and Isolation<br></p>
+</li>
+<li>
+<p>Automate cluster scalability<br></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>More about OpenShift Container Platform can be found <a href="https://www.openshift.com/learn/developer"><em>here</em></a>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="datacenter-infrastructure-services"><a class="anchor" href="#datacenter-infrastructure-services"></a>Datacenter Infrastructure services</h3>
+<div class="sect3">
+<h4 id="stream-service"><a class="anchor" href="#stream-service"></a>Stream service</h4>
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/logo/logo-kafka.png" alt="image" width="160">
+</div>
+</div>
+<div class="paragraph">
+<p>In the forecast of the need for receiving/handling a large number of
+concurrent messages, A-MQ Streams is the component of choice for
+streaming messages through the integration and the storage layers.</p>
+</div>
+<div class="paragraph">
+<p>An internal streaming service guarantees scalability and reliability of
+the message flow management within the Datacenter business logic.</p>
+</div>
+<div class="paragraph">
+<p>This design makes it a lot easier to decouple the implementation details
+of the integration services responsible for offloading (consuming
+messages from) every topic and storing the values into the storage tier,
+improving horizontal scalability.</p>
+</div>
+<div class="paragraph">
+<p>More about A-MQ Streams can be found <a href="https://developers.redhat.com/blog/2019/06/06/accessing-apache-kafka-in-strimzi-part-1-introduction/"><em>here</em></a>.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="debezium"><a class="anchor" href="#debezium"></a>Database change monitoring with Debezium</h4>
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/posts/usecase-retail/debezium.png" alt="image" width="724" height="294">
+</div>
+</div>
+<div class="paragraph">
+<p>Debizum is an important part of the Red Hat Inegration and Kafka
+ecosystem. It is used not just in quarkus, or java projects, but it
+connects to your database transaction logs, and looks for updates. It
+can respond to inserts, deletes, updates and changes from any
+application (as it listens to the database) and respond with a Kafka
+event.</p>
+</div>
+<div class="paragraph">
+<p>In modern cloud native architectures, debezium allows you to build
+loosely coupled microservices and event driven architectures with ease -
+creating powerful new events simply by editing configuration.</p>
+</div>
+<div class="paragraph">
+<p><a href="https://access.redhat.com/documentation/en-us/red_hat_integration/2022.q4/html/installing_debezium_on_openshift"><em>Installing
+Debezium on OpenShift Red Hat Integration 2022.q4</em></a></p>
+</div>
+<div class="paragraph">
+<p><a href="https://access.redhat.com/documentation/en-us/red_hat_integration/2022.q4/html/debezium_user_guide"><em>Debezium
+User Guide Red Hat Integration 2022.q4</em></a></p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="crunchydb-postgressql"><a class="anchor" href="#crunchydb-postgressql"></a>CrunchyDB - PostgresSQL</h4>
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/posts/usecase-retail/crunchydb.png" alt="image" width="160">
+</div>
+</div>
+<div class="paragraph">
+<p>PostgresSQL hardly needs any introduction, it’s one of the most popular
+open source databases, well known and trustued for it’s scalability and
+performance in the enterprise space.</p>
+</div>
+<div class="paragraph">
+<p>Red Hat recommends using the CrunchyDB operator to easily install
+PostgresSQL on OpenShift, in particular because the operator includes
+support for exposing transaction logs to Debezium as well. Note that not
+all PostgresSQL container images support exposing the transaction logs,
+so, do use the operator!</p>
+</div>
+<div class="paragraph">
+<p><a href="https://cloud.redhat.com/blog/crunchy-data-postgresql-on-red-hat-openshift"><em>https://cloud.redhat.com/blog/crunchy-data-postgresql-on-red-hat-openshift</em></a></p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="prometheus-operator"><a class="anchor" href="#prometheus-operator"></a>Prometheus Operator</h4>
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/posts/usecase-retail/prometheus.png" alt="image" width="829" height="370">
+</div>
+</div>
+<div class="paragraph">
+<p>Prometheus is the defacto time series merics database, which is
+pervasively used in cloud native architectures - Kubernetes is no
+exception. While OpenShift includes Prometheus as part of the cluster
+infrastructure, it is commonly misunderstood how to use that Prometheus
+instance with your applications.</p>
+</div>
+<div class="paragraph">
+<p>The short answer, is that you don’t! Leave OpenShift to manage it’s
+Prometheus, but us the operator to deploy a Prometheus instance just for
+your application(s). This separates cluster logic and business logic.</p>
+</div>
+<div class="paragraph">
+<p>You will see at least one Microservice has elementary Prometheus support
+- consider studying this code and adding Prometheus to all of your
+services, giving a standard, well supported API to monitor and pull in
+metrics.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="grafana"><a class="anchor" href="#grafana"></a>Grafana</h4>
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/posts/usecase-retail/grafana.png" alt="image" width="160">
+</div>
+</div>
+<div class="paragraph">
+<p>Grafana also should not need much of an introduction, as it’s powerful
+dashboards are built into OpenShift as well. Much like prometheus, we
+find customers frequently trying to use the cluster Grafana instance for
+their applications. Using Grafana is the right idea, but instead, use
+the operator to deploy a Grafana instance just for your apps, in your
+namespace. This allows you to build powerful dashboards, charts and
+graphs to showcase the performance and availability of components of
+your architecture.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="devspaces"><a class="anchor" href="#devspaces"></a>DevSpaces</h4>
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/posts/usecase-retail/devspaces.png" alt="image" width="160">
+</div>
+</div>
+<div class="paragraph">
+<p>OpenShift recently upgraded DevSpaces to include Visual Studio Code Web
+- which provides for a hosted, secure, private, container-based IDE in
+the cloud. Using DevSpaces will not necessarily give you any points at
+Hackfest, but hopefully you find it useful!</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="cert-manager-service"><a class="anchor" href="#cert-manager-service"></a>Cert-manager service</h4>
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/logo/logo-cert-manager.png" alt="image" width="160">
+</div>
+</div>
+<div class="paragraph">
+<p>Cert-manager automates certificate management in cloud native
+environments and thus helped with the implementation of a dynamic
+certificate provisioning for edge devices</p>
+</div>
+<div class="paragraph">
+<p>cert-manager builds on top of Kubernetes, introducing certificate
+authorities and certificates as first-class resource types in the
+Kubernetes API.</p>
+</div>
+<div class="paragraph">
+<p>This makes it possible to provide 'certificates as a service' to
+developers working within your Kubernetes cluster.</p>
+</div>
+<div class="paragraph">
+<p>Highlights</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Provide easy to use tools to manage certificates.<br></p>
+</li>
+<li>
+<p>A standardised API for interacting with multiple certificate
+authorities (CAs).<br></p>
+</li>
+<li>
+<p>Gives security teams the confidence to allow developers to self-server
+certificates.<br></p>
+</li>
+<li>
+<p>Support for ACME (Let’s Encrypt), HashiCorp Vault, Venafi, self signed
+and internal certificate authorities.<br></p>
+</li>
+<li>
+<p>Extensible to support custom, internal or otherwise unsupported CAs.<br></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>More about Cert-Manager can be found <a href="https://cert-manager.io/">cert-manager.io</a>.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Enable Kubernetes Auth Engine in Vault.<br></p>
+</li>
+<li>
+<p>Authorize Vault SA in k8s to Token Review.<br></p>
+</li>
+<li>
+<p>Enable PKI engine.<br></p>
+</li>
+<li>
+<p>Configure PKI role name in Vault.<br></p>
+</li>
+<li>
+<p>Configure PKI policy in Vault.<br></p>
+</li>
+<li>
+<p>Authorize/Binding issuer SA to use (policy) the PKI role.<br></p>
+</li>
+<li>
+<p>Create Vault Issuer in app namespace with issuer SA.<br></p>
+</li>
+<li>
+<p>Cert Manager validates the credentials of the issuer against Vault.<br></p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="business-logic-services-3"><a class="anchor" href="#business-logic-services-3"></a>Business Logic Services</h3>
+<div class="sect3">
+<h4 id="sales-manager"><a class="anchor" href="#sales-manager"></a>sales-manager</h4>
+<div class="paragraph">
+<p>This service is a suggested concept in the architecture, and is NOT
+implemented (ie, there is no code).</p>
+</div>
+<div class="paragraph">
+<p>The edgepos service emits events when the cart is updated, and that
+event contains isCheckout for checkout time. One suggested approach to
+implementing a central billing and reporting system is to listen for
+these events in the edgepos-manager service, and then emit a new event
+back onto the steaming service, so that a sales-manager service can pick
+up checkouts, totals, and a list of items, for example.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="shop-manager"><a class="anchor" href="#shop-manager"></a>shop-manager</h4>
+<div class="paragraph">
+<p>This service is a suggested concept in the architecture, and is NOT
+implemented (ie, there is no code).</p>
+</div>
+<div class="paragraph">
+<p>The shop-manager service could listen for new edgepos services being
+provisioned, and update a central list, or database of shops, and points
+of sale. The shop manager could also be used to classify different
+shops, enable features only in certain locations, or at certain times.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="inventory-manager"><a class="anchor" href="#inventory-manager"></a>inventory-manager</h4>
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/logo/logo-quarkus.png" alt="image" width="100">
+</div>
+</div>
+<div class="paragraph">
+<p>The inventory-manager service is is implemented on top of the <a href="https://quarkus.io/"><em>Quarkus</em></a> framework.</p>
+</div>
+<div class="paragraph">
+<p>The inventory manager service is a crude create/list/delete web UI,
+build ontop of a single postgresql table. This simple implementation
+allows you to extend it in various different ways.</p>
+</div>
+<div class="paragraph">
+<p>The design intent of the architecture, is to use <a href="#debezium">Debezium</a>, to do
+change-data-capture on the database, and emit events back to the
+streaming API as product prices get updated, or new products are added.</p>
+</div>
+<div class="paragraph">
+<p>The edgepos servicie can by found in the <a href="https://github.com/qiot-project/qiot-retail-inventory-manager"><em>qiot-project/qiot-retail-inventory-manager</em></a> project.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="distribution-manager"><a class="anchor" href="#distribution-manager"></a>distribution-manager</h4>
+<div class="paragraph">
+<p>This service is a suggested concept in the architecture, and is NOT
+implemented (ie, there is no code).</p>
+</div>
+<div class="paragraph">
+<p>The distribution-manager service could help shops and warehouses control
+how much product they have in a specific location, making it easier to
+identify stock that is running out, or stock that need a special offer
+to be sold quickly.</p>
+</div>
+</div>
+</div>
+</div>
+</div>]]></content><author><name>James Read</name><email>james@redhat.com</email></author><category term="usecase" /></entry><entry><title type="html">Options for RHEL9 (for Edge) and containers on a Compulab Fitlet2</title><link href="/blog/install-rhel9-on-Fitlet2/" rel="alternate" type="text/html" title="Options for RHEL9 (for Edge) and containers on a Compulab Fitlet2" /><published>2023-03-01T00:00:00+00:00</published><updated>2023-03-01T00:00:00+00:00</updated><id>/blog/install-rhel9-on-Fitlet2</id><content type="html" xml:base="/blog/install-rhel9-on-Fitlet2/"><![CDATA[<div id="toc" class="toc">
+<div id="toctitle">Table of Contents</div>
+<ul class="sectlevel0">
+<li><a href="#option-1-rhel9-podman-easiest">Option 1) RHEL9 + Podman (easiest)</a></li>
+<li><a href="#option-2-generate-rhel-for-edge-images-ostree-commits-via-image-builder">Option 2) Generate RHEL for Edge images (ostree commits) via Image Builder</a></li>
+<li><a href="#option-3-using-fdo-most-complex-but-also-the-most-realistic">Option 3 ) Using FDO (most complex, but also the most realistic)</a></li>
+</ul>
+</div>
+<div class="paragraph">
+<p>There is an excellent article on how to install RHEL8 on the Fitlet2 from a previous hackfest, by Andreas Stolzenberger. However, with RHEL9 there are even more options, varying from the simple, to the more complex.</p>
+</div>
+<h1 id="option-1-rhel9-podman-easiest" class="sect0"><a class="anchor" href="#option-1-rhel9-podman-easiest"></a>Option 1) RHEL9 + Podman (easiest)</h1>
+<div class="paragraph">
+<p>When you start this hackfest, we&#8217;d recommend starting off with RHEL9 and Podman. This is the easiest to get started, even though it isn&#8217;t "RHEL for Edge".</p>
+</div>
+<div class="paragraph">
+<p>Simply, burn a RHEL9 .iso to a USB stick, add the SD card into the Fitlet2 that came in the box, and follow the graphical installer.</p>
+</div>
+<div class="paragraph">
+<p>After RHEL9 finishes installing;</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>user@host: dnf install podman
+user@host: systemctl start --now podman</pre>
+</div>
+</div>
+<h1 id="option-2-generate-rhel-for-edge-images-ostree-commits-via-image-builder" class="sect0"><a class="anchor" href="#option-2-generate-rhel-for-edge-images-ostree-commits-via-image-builder"></a>Option 2) Generate RHEL for Edge images (ostree commits) via Image Builder</h1>
+<div class="paragraph">
+<p><a href="https://www.redhat.com/en/blog/get-started-rhel-edge" class="bare">https://www.redhat.com/en/blog/get-started-rhel-edge</a></p>
+</div>
+<h1 id="option-3-using-fdo-most-complex-but-also-the-most-realistic" class="sect0"><a class="anchor" href="#option-3-using-fdo-most-complex-but-also-the-most-realistic"></a>Option 3 ) Using FDO (most complex, but also the most realistic)</h1>
+<div class="paragraph">
+<p><a href="http://tinyurl.com/redhatfdo" class="bare">http://tinyurl.com/redhatfdo</a></p>
+</div>]]></content><author><name>James Read</name><email>james@redhat.com</email></author><category term="blog" /><category term="qiot" /><category term="sno" /><category term="nuc" /><category term="howto" /><summary type="html"><![CDATA[There is an excellent article on how to install RHEL8 on the Fitlet2 from a previous hackfest, by Andreas Stolzenberger. However, with RHEL9 there are even more options, varying from the simple, to the more complex.]]></summary></entry><entry><title type="html">Install Single Node OpenShift on Intel® 10th gen NUC</title><link href="/blog/sno-on-nuc10/" rel="alternate" type="text/html" title="Install Single Node OpenShift on Intel® 10th gen NUC" /><published>2023-03-01T00:00:00+00:00</published><updated>2023-03-01T00:00:00+00:00</updated><id>/blog/sno-on-nuc10</id><content type="html" xml:base="/blog/sno-on-nuc10/"><![CDATA[<div id="toc" class="toc">
+<div id="toctitle">Table of Contents</div>
+<ul class="sectlevel0">
+<li><a href="#introduction">Introduction</a></li>
+<li><a href="#prerequisites">Prerequisites:</a>
+<ul class="sectlevel1">
+<li><a href="#hardware">Hardware</a></li>
+<li><a href="#single-node-openshift-sno-4-10">Single Node Openshift (SNO) 4.10+</a></li>
+<li><a href="#additional-requirements">Additional requirements:</a></li>
+<li><a href="#optional-requirements">Optional requirements</a></li>
+</ul>
+</li>
+<li><a href="#the-discovery-iso">The discovery ISO</a>
+<ul class="sectlevel1">
+<li><a href="#create-the-iso">Create the ISO</a></li>
+<li><a href="#burn-iso-to-usb-flash-drive">Burn ISO to USB flash drive</a></li>
+</ul>
+</li>
+<li><a href="#installation">Installation</a>
+<ul class="sectlevel1">
+<li><a href="#start-the-installation">Start the installation</a>
+<ul class="sectlevel2">
+<li><a href="#the-storage-page">The Storage page</a></li>
+<li><a href="#the-networking-page">The Networking page</a></li>
+<li><a href="#the-review-page">The Review page</a></li>
+<li><a href="#the-installation-process-page">The Installation process page</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#dns-required-configuration">DNS required configuration</a>
+<ul class="sectlevel1">
+<li><a href="#option-a-external-dns-highly-recommended">Option A) External DNS (Highly recommended)</a></li>
+<li><a href="#redirect-dns-for-subdomain-cluster_name-cluster_domain-to-the-nuc">Redirect DNS for subdomain <code>cluster_name.cluster_domain</code> to the NUC</a></li>
+<li><a href="#option-b-local-resolution">Option B) Local resolution:</a></li>
+</ul>
+</li>
+<li><a href="#start-using-sno-on-intel-nuc">Start using SNO on Intel® NUC</a></li>
+</ul>
+</div>
+<div class="paragraph">
+<p>This post is an update for 4.10 / 2023, from the original blog post in 2021, which contains some minor screenshot and version updates.</p>
+</div>
+<h1 id="introduction" class="sect0"><a class="anchor" href="#introduction"></a>Introduction</h1>
+<div class="paragraph">
+<p>The next guide will show how to deploy a Single Node Openshift (SNO) to a physical Intel® NUC.</p>
+</div>
+<h1 id="prerequisites" class="sect0"><a class="anchor" href="#prerequisites"></a>Prerequisites:</h1>
+<div class="paragraph">
+<p>Minimum prerequisites for the installation of single node openshift must be respected so I decided to provision a set of hardware components powerful enough to run services on the platform once it&#8217;s been installed from both the computational power and the resources availability perspective.</p>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s have a look at what it&#8217;s needed to install Single Node Openshift on a 10th gen Intel® NUC.</p>
+</div>
+<div class="sect1">
+<h2 id="hardware"><a class="anchor" href="#hardware"></a>Hardware</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Intel NUC model</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">NUC10i7FNK</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Memory capacity</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">64.00 GiB</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">CPU model name</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Intel&#174; Core&#8482; i7-10710U CPU @ 1.10GHz</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">CPU cores and clock speed</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">6 cores (12 with hyper-threaded) at 4,700 MHz</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">CPU architecture</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">x86_64</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SSD Disk</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Samsung SSD M.2 256GB</p></td>
+</tr>
+</tbody>
+</table>
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/posts/usecase-manufacturing/NUC.jpg" alt="NUC" width="100%">
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="single-node-openshift-sno-4-10"><a class="anchor" href="#single-node-openshift-sno-4-10"></a>Single Node Openshift (SNO) 4.10+</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>SNO requires the following minimum host resources:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Virtual CPU</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">8</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Virtual RAM</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">32 GB</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Storage</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">120 GB</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect1">
+<h2 id="additional-requirements"><a class="anchor" href="#additional-requirements"></a>Additional requirements:</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In order to go through the installation process, the following additioal components are required:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>And a Red Hat account, with access to <a href="https://console.redhat.com/openshift/" class="bare">https://console.redhat.com/openshift/</a></p>
+</li>
+<li>
+<p>USB flash drive &gt;= 2GB</p>
+</li>
+<li>
+<p>DHCP is required like IPI (Installer Provisioned Infrastructure) installations</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="optional-requirements"><a class="anchor" href="#optional-requirements"></a>Optional requirements</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The following are optional requirements, but highly recommended:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Generated a ssh key to connect to the node from your computer with ssh</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">$ ssh-keygen -t ed25519 -N '' -f ~/.ssh/id_rsa
+
+$ cat ~/.ssh/id_rsa.pub
+ssh-rsa AAAAB3NzaC1yc[...]</code></pre>
+</div>
+</div>
+</div>
+</div>
+<h1 id="the-discovery-iso" class="sect0"><a class="anchor" href="#the-discovery-iso"></a>The discovery ISO</h1>
+<div class="paragraph">
+<p>Deploying Openshift clusters with a discovery ISO is a functionality in Tech-Preview.</p>
+</div>
+<div class="paragraph">
+<p>The above taking into consideration that the fully SNO installation is a proof-of-concept without high availability or support.</p>
+</div>
+<div class="paragraph">
+<p>The use of the discovery ISO will help us especially in this case by not working with VMs.</p>
+</div>
+<div class="paragraph">
+<p>We will burn it to the USB memory to launch the installation process, without any interaction required until the SNO installation ends.</p>
+</div>
+<div class="sect1">
+<h2 id="create-the-iso"><a class="anchor" href="#create-the-iso"></a>Create the ISO</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>To create the discovery ISO you need to login and access  <a href="https://console.redhat.com/openshift/" class="bare">https://console.redhat.com/openshift/</a></p>
+</div>
+<div class="paragraph">
+<p>Once you are there, click on the “Create cluster” button, select <strong>Datacenter</strong>.</p>
+</div>
+<div class="paragraph">
+<p>Then under Assisted Installer, push the new <strong>Create cluster</strong> button.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/posts/sno-on-nuc10/img01.png" alt="img01" width="100%">
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Note:</strong> During testing for this hackfest, it seems that SNO 4.11 and 4.12 cause kernel panics after bootstrap. 4.10 works, and is close enough to the ARO clusters (4.11) to work. You may try other versions, or upgrades, at your leisure.</p>
+</div>
+<div class="paragraph">
+<p>You&#8217;ll be asked to fill a form with the following info:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Set the Cluster name and Base domain.</p>
+</li>
+<li>
+<p>Mark the checkbox to install single node OpenShift (SNO) and accept the warning message.</p>
+</li>
+<li>
+<p>Select the OpenShift version: <strong>4.10.52</strong></p>
+</li>
+<li>
+<p>Edit pull secret (no need to).</p>
+</li>
+</ul>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/posts/usecase-retail/sno-details.png" alt="sno details" width="100%">
+</div>
+</div>
+<div class="paragraph">
+<p>Click Next to continue to the Host discovery section:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/posts/sno-on-nuc10/img03.png" alt="img03" width="100%">
+</div>
+</div>
+<div class="paragraph">
+<p>Then click on button “Generate Discovery ISO”</p>
+</div>
+<div class="paragraph">
+<p>Select <strong>Minimal image file</strong>.</p>
+</div>
+<div class="paragraph">
+<p>Paste your public key (check <a href="#optional-requirements">Optional requirements</a> section)</p>
+</div>
+<div class="paragraph">
+<p>In case you need to add a proxy configuration for your setup, this is the time to define it.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/posts/sno-on-nuc10/img04.png" alt="img04" width="100%">
+</div>
+</div>
+<div class="paragraph">
+<p>Click on “Generate Discovery ISO” button, a temporary download link will appear</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/posts/sno-on-nuc10/img05.png" alt="img05" width="100%">
+</div>
+</div>
+<div class="paragraph">
+<p>Copy the field “Command to download the ISO” or download to your PC with button “Download Discovery ISO”</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/posts/sno-on-nuc10/img06.png" alt="img06" width="100%">
+</div>
+</div>
+<div class="paragraph">
+<p>Once the download of the Discovery ISO is complete, you are ready to burn it to the USB flash drive.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="burn-iso-to-usb-flash-drive"><a class="anchor" href="#burn-iso-to-usb-flash-drive"></a>Burn ISO to USB flash drive</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Obviously, start by connecting your USB flash drive to your computer.</p>
+</div>
+<div class="paragraph">
+<p>Fedora / RHEL:</p>
+</div>
+<div class="paragraph">
+<p>Let’s check the path of the device with “sudo fdisk -l”.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/posts/sno-on-nuc10/img07.png" alt="img07" width="100%">
+</div>
+</div>
+<div class="paragraph">
+<p>You need to identify the path of type /dev/sdN, in my case is /dev/sda if yours takes another path, replace it in the next step.</p>
+</div>
+<div class="paragraph">
+<p>Let’s burn the ISO to the USB with the command;</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>sudo dd if=discovery_image_sno01.iso of=/dev/sda status=progress</pre>
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/posts/sno-on-nuc10/img08.png" alt="img08" width="100%">
+</div>
+</div>
+</div>
+</div>
+<h1 id="installation" class="sect0"><a class="anchor" href="#installation"></a>Installation</h1>
+<div class="paragraph">
+<p>The whole installation process is performed in several phases.</p>
+</div>
+<div class="paragraph">
+<p>Each and every installation phase can be monitored and customized from the <a href="https://console.redhat.com/openshift/">remote interface</a>.</p>
+</div>
+<div class="paragraph">
+<p>This section will guide you through the installation process and will highlight the potential issues and customization you&#8217;ll be asked to apply to the SNO configuration.</p>
+</div>
+<div class="sect1">
+<h2 id="start-the-installation"><a class="anchor" href="#start-the-installation"></a>Start the installation</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Plug the USB flash drive to the Intel NUC, don’t forget to connect also the ethernet cable.</p>
+</div>
+<div class="paragraph">
+<p>You&#8217;ll also need to connect a keyboard and a monitor to perform take preliminary actions in order to make the NUC boot from the USB flash drive:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Power the NUC on;</p>
+</li>
+<li>
+<p>When the NUC logo shows on the screen, Press F10 to access the boot menu;</p>
+<div class="ulist">
+<ul>
+<li>
+<p>If you are keen to apply persistent changes to the boot menu, press F2 instead and enter the BIOS menu;</p>
+</li>
+<li>
+<p><strong>Do not apply any changes to the default BIOS performance config</strong>, just set up the Boot section accordingly;</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Select your USB flash drive from the boot menu to boot from it;</p>
+</li>
+<li>
+<p>Return to the browser at the <strong>Host Discovery</strong> page;</p>
+</li>
+<li>
+<p>After a short time the status of your host will turn into <strong>Ready</strong>.</p>
+</li>
+</ul>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/posts/usecase-retail/host-inventory-ready.png" alt="host inventory ready" width="100%">
+</div>
+</div>
+<div class="sect2">
+<h3 id="the-storage-page"><a class="anchor" href="#the-storage-page"></a>The Storage page</h3>
+<div class="paragraph">
+<p>Leave the formatting options as default, to format the SSD, but not the flash drive that you are using to install SNO! :-)</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/posts/usecase-retail/format-osdisk.png" alt="format osdisk" width="100%">
+</div>
+</div>
+<div class="paragraph">
+<p>Click Next to continue to Networking section.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="the-networking-page"><a class="anchor" href="#the-networking-page"></a>The Networking page</h3>
+<div class="paragraph">
+<p>In the networking section you&#8217;ll be asked to pick a machine network. You can probably leave everything here as default unless you need to setup anything differently. Note that you should select "OVN" as the networking standard in modern OpenShift.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/posts/usecase-retail/networking.png" alt="networking" width="100%">
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="the-review-page"><a class="anchor" href="#the-review-page"></a>The Review page</h3>
+<div class="paragraph">
+<p>In this page you can review all the info associated to your cluster.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/posts/usecase-retail/review.png" alt="review" width="100%">
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="the-installation-process-page"><a class="anchor" href="#the-installation-process-page"></a>The Installation process page</h3>
+<div class="paragraph">
+<p>This page gives you an overview of the overall installation process.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/posts/usecase-retail/installationProgress.png" alt="installationProgress" width="100%">
+</div>
+</div>
+<div class="paragraph">
+<p>The logs of the cluster and node installation can be consulted:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/posts/sno-on-nuc10/img13.png" alt="img13" width="100%">
+</div>
+</div>
+<div class="paragraph">
+<p>Once the installation process reboots, the machine will need to boot from the disk.</p>
+</div>
+<div class="paragraph">
+<p>In case the machine keeps booting from the USB flash drive. the installer will warn you about it:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/posts/sno-on-nuc10/boot-from-disk.png" alt="boot from disk" width="100%">
+</div>
+</div>
+<div class="paragraph">
+<p>Remove the USB and reboot the Host.</p>
+</div>
+<div class="paragraph">
+<p>It will take about 30 minutes to the installation process to complete. Duting that timeframe, the process will complete the installation of the SNO on the machine and will perform an update of the current version, up to the latest fix version (e.g.: 4.8.2 &#8594; 4.8.9).</p>
+</div>
+<div class="paragraph">
+<p>Once the installation process is complete you will obtain the kubeadmin password and the url to login to the console:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/posts/sno-on-nuc10/img14.png" alt="img14" width="100%">
+</div>
+</div>
+</div>
+</div>
+</div>
+<h1 id="dns-required-configuration" class="sect0"><a class="anchor" href="#dns-required-configuration"></a>DNS required configuration</h1>
+<div class="paragraph">
+<p>In order to access the SNO Web Console, you need to setup the hostname resolution for the SNO running on the NUC.</p>
+</div>
+<div class="paragraph">
+<p>Given:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">XXX.XXX.XXX.XXX = your SNO IP</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>It&#8217;s possible to pick up one of the following options:</p>
+</div>
+<div class="sect1">
+<h2 id="option-a-external-dns-highly-recommended"><a class="anchor" href="#option-a-external-dns-highly-recommended"></a>Option A) External DNS (Highly recommended)</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Use an external DNS server or local configuration to resolve the SNO hostname.</p>
+</div>
+<div class="paragraph">
+<p>Add the following records to your DNS server (recommended)</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">api.cluster_name.cluster_domain      A	XXX.XXX.XXX.XXX
+*.apps.cluster_name.cluster_domain   A	XXX.XXX.XXX.XXX</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Optional:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">cluster_name.cluster_domain	A	XXX.XXX.XXX.XXX</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="redirect-dns-for-subdomain-cluster_name-cluster_domain-to-the-nuc"><a class="anchor" href="#redirect-dns-for-subdomain-cluster_name-cluster_domain-to-the-nuc"></a>Redirect DNS for subdomain <code>cluster_name.cluster_domain</code> to the NUC</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>During the installation of Single Node Openshift  a fully functional DNS server with the required wildcard DNS is configured. So you can redirect all DNS queries for the subdomain <code>cluster_name.clusterdomain</code> to the NUC</p>
+</div>
+<div class="paragraph">
+<p>Modern Linux Systems like RHEL or Fedora use NetworkManager for Networking configuration and use dnsmasq for local DNS caching. To setup DNS on a RHEL 8 client you can create the file <code>/etc/NetworkManager/dnsmasq.d</code> with the follwoing content:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">server=/apps.cluster_name.cluster_domain/XXX.XXX.XXX.XXX
+host-record=api.cluster_name.cluster_domain,XXX.XXX.XXX.XXX</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Then power-cycle NetworkManager and you are good to go.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">$ sudo systemctl NetworkManager restart</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="option-b-local-resolution"><a class="anchor" href="#option-b-local-resolution"></a>Option B) Local resolution:</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Local resolution is limited because you cannot specify a wildcard record in your hosts file, meaning you need to set key URLs manually, like so;</p>
+</div>
+<div class="paragraph">
+<p>Update your local /etc/hosts or /etc/resolve.conf files</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">XXX.XXX.XXX.XXX	api.cluster_name.cluster_domain
+XXX.XXX.XXX.XXX	oauth-openshift.apps.cluster_name.cluster_domain
+XXX.XXX.XXX.XXX	console-openshift-console.apps.cluster_name.cluster_domain
+XXX.XXX.XXX.XXX	grafana-openshift-monitoring.apps.cluster_name.cluster_domain
+XXX.XXX.XXX.XXX	thanos-querier-openshift-monitoring.apps.cluster_name.cluster_domain
+XXX.XXX.XXX.XXX	prometheus-k8s-openshift-monitoring.apps.cluster_name.cluster_domain
+XXX.XXX.XXX.XXX	alertmanager-main-openshift-monitoring.apps.cluster_name.cluster_domain</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Optional:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">XXX.XXX.XXX.XXX	cluster_name.cluster_domain</code></pre>
+</div>
+</div>
+</div>
+</div>
+<h1 id="start-using-sno-on-intel-nuc" class="sect0"><a class="anchor" href="#start-using-sno-on-intel-nuc"></a>Start using SNO on Intel® NUC</h1>
+<div class="paragraph">
+<p>Then you can access your new Single Node Openshift at the following URL:</p>
+</div>
+<div class="paragraph">
+<p><a href="https://console-openshift-console.apps.cluster_name.cluster_domain" class="bare">https://console-openshift-console.apps.cluster_name.cluster_domain</a></p>
+</div>]]></content><author><name>James Read</name><email>james@redhat.com</email></author><category term="blog" /><category term="qiot" /><category term="sno" /><category term="nuc" /><category term="howto" /><summary type="html"><![CDATA[This post is an update for 4.10 / 2023, from the original blog post in 2021, which contains some minor screenshot and version updates.]]></summary></entry><entry><title type="html">Install RHEL 9 on Raspberry Pi4</title><link href="/blog/rhel9-on-arm8/" rel="alternate" type="text/html" title="Install RHEL 9 on Raspberry Pi4" /><published>2022-08-10T00:00:00+00:00</published><updated>2022-08-10T00:00:00+00:00</updated><id>/blog/rhel9-on-arm8</id><content type="html" xml:base="/blog/rhel9-on-arm8/"><![CDATA[<div id="toc" class="toc">
+<div id="toctitle">Table of Contents</div>
+<ul class="sectlevel0">
+<li><a href="#introduction">Introduction</a></li>
+<li><a href="#hardware">Hardware</a></li>
+<li><a href="#software">Software</a></li>
+<li><a href="#preparation">Preparation</a></li>
+<li><a href="#installation">Installation</a></li>
+<li><a href="#disk-config">Disk config</a></li>
+<li><a href="#how-to-fix-efi">How to Fix EFI</a></li>
+</ul>
+</div>
+<div class="paragraph">
+<p>.</p>
+</div>
+<h1 id="introduction" class="sect0"><a class="anchor" href="#introduction"></a>Introduction</h1>
+<div class="paragraph">
+<p>The next guide will show how to roll-out RHEL 9 on a single board 64-bit native computer: <a href="https://www.raspberrypi.com/products/raspberry-pi-4-model-b/">Raspberry Pi 4</a>.</p>
+</div>
+<div class="paragraph">
+<p>The purpose of this blog is to demo the capability of Red Hat Enterprise Linux on ARMv8 devices.</p>
+</div>
+<div class="paragraph">
+<p>Please keep in mind <strong>RPi 4 is not officially supported by Red Hat OS</strong>.</p>
+</div>
+<h1 id="hardware" class="sect0"><a class="anchor" href="#hardware"></a>Hardware</h1>
+<div class="paragraph">
+<p>For this demo you&#8217;ll need the following components:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Raspberry Pi4 with 4 or 8 GB <a href="https://www.raspberrypi.com/products/raspberry-pi-4-model-b/specifications/">Specs</a></p>
+</li>
+<li>
+<p>SD-Card to boot your OS from (4+ Gb recommended)</p>
+</li>
+<li>
+<p>A USB-Stick (temporary) for the installation process</p>
+</li>
+</ul>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/posts/rhel9-on-arm8/rpi4.png" alt="rpi4" width="100%">
+</div>
+</div>
+<h1 id="software" class="sect0"><a class="anchor" href="#software"></a>Software</h1>
+<div class="paragraph">
+<p>For this demo you&#8217;ll need the following components:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://developers.redhat.com/products/rhel/overview">Red Hat Enterprise Linux</a></p>
+</li>
+<li>
+<p>RPi 4 tools</p>
+</li>
+</ul>
+</div>
+<h1 id="preparation" class="sect0"><a class="anchor" href="#preparation"></a>Preparation</h1>
+<div class="paragraph">
+<p>Follow the steps below to prepare your SD card.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Plug the SD-Card into your PC or Notebook</p>
+</li>
+<li>
+<p>as root, start the partition manager tool of your choice and partition the card as follows:</p>
+</li>
+<li>
+<p>Partition 1, 100 MB, partition type EFI (ef)</p>
+</li>
+<li>
+<p>Partition 2, 1000 MB, Type Linux</p>
+</li>
+<li>
+<p>Partition 3, rest of the SD-Card, Type Linux</p>
+</li>
+<li>
+<p>Format your Partition 1 as FAT (12, 16 or 32, doesn&#8217;t matter)</p>
+</li>
+<li>
+<p>Download <a href="https://github.com/pftf/RPi4">EFI Firmware for PI4</a></p>
+</li>
+<li>
+<p>Unpack content of the EFI-Firmware compressed archive to the Partition 1 of the SD Card</p>
+</li>
+<li>
+<p>Copy the RHEL 9 ARM64 ISO to your USB Stick (we recommend using the 'dd' command)</p>
+</li>
+</ul>
+</div>
+<h1 id="installation" class="sect0"><a class="anchor" href="#installation"></a>Installation</h1>
+<div class="ulist">
+<ul>
+<li>
+<p>Plug the SD-Card, USB-Stick, Mouse, Keyboard, Network Cable and HDMI-Monitor into your RPi 4</p>
+</li>
+<li>
+<p>Boot the device and Press ESC on the EFI Boot Screen</p>
+</li>
+<li>
+<p>Go to the device manager and make sure, that "limit RAM to 3 GB" is turned OFF (on by default!), save the device config</p>
+</li>
+<li>
+<p>Enter the Boot Manager, chose USB Stick to boot from</p>
+</li>
+<li>
+<p>Run through the RHEL-9-Setup Dialog, choose Packages, Registration, Locales, Timezone etc as needed</p>
+</li>
+<li>
+<p>Set a root password and create a standard user.</p>
+</li>
+</ul>
+</div>
+<h1 id="disk-config" class="sect0"><a class="anchor" href="#disk-config"></a>Disk config</h1>
+<div class="paragraph">
+<p><strong>WARNING</strong> The RHEL-Installer does not accept the existing EFI-Partition as a valid filesystem.</p>
+</div>
+<div class="paragraph">
+<p>As a workaround you&#8217;ll create a new one and (re)transfer the Pi-UEFI-Firmware back to the SD-Card after the RHEL 9 installation.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Select <strong>Partition 1</strong></p>
+<div class="ulist">
+<ul>
+<li>
+<p>Select "reformat partition" and choose "EFI System Parttion";</p>
+</li>
+<li>
+<p>Select <em>"/boot/efi"</em> as mountpoint</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Select <strong>Partition 2</strong> (1000MB);</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Select reformat</p>
+</li>
+<li>
+<p>Choose ext4 Filesystem and <em>"/boot"</em> as Mountpoint</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Select <strong>Partition 3</strong> (remaining space on the SD Card);</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Select <em>Reformat</em>;</p>
+</li>
+<li>
+<p>Choose <em>ext4</em> or <em>xfs</em> as Filesystem and <em>"/"</em> as Mountpoint</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong>Ignore the warning</strong> <em>"no swap partition specified"</em>.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Install RHEL 9 and shut down the Pi4 after the installer finished.</p>
+</div>
+<div class="paragraph">
+<p>At this point, your PI 4 will not start into RHEL 9, since the RHEL 9 Installer created a new EFI-Partition without the Pi4 specific files.</p>
+</div>
+<h1 id="how-to-fix-efi" class="sect0"><a class="anchor" href="#how-to-fix-efi"></a>How to Fix EFI</h1>
+<div class="ulist">
+<ul>
+<li>
+<p>Turn of the PI4, put the SD-Card back into your PC and mount the first partition (EFI).</p>
+</li>
+<li>
+<p>Copy the PI4 EFI Firmware to that Partition (again), leave the EFI-Directory from the RHEL-9-Installer as it is.</p>
+</li>
+<li>
+<p>Plug the SD back into the Pi4</p>
+</li>
+<li>
+<p>Boot the Pi4 and enter the EFI Boot Shell (F1)</p>
+</li>
+<li>
+<p>On the shell type:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">FS0:
+bcfg boot add 0 FS0:\EFI\redhat\grubaa64.efi</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You should get a message like:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">"Target = 000x, bcfg Add Boot000x as 0"</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This step added the RHEL 9 Boot loader as the Default EFI Boot target.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Type <code><code>reset</code></code>;</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Your Pi4 will now boot into the RHEL 9 Installation.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/posts/rhel9-on-arm8/rhel9-screenshot.jpg" alt="rhel9 screenshot" width="100%">
+</div>
+</div>]]></content><author><name>Andreas Stolzenberger</name><email>astolzen@redhat.com</email></author><category term="blog" /><category term="qiot" /><category term="RHEL4Edge" /><category term="rpi" /><category term="rpi4" /><category term="howto" /><category term="arm8" /><summary type="html"><![CDATA[.]]></summary></entry><entry><title type="html">Red Hat Hackfest Office Hour - Kick off session!</title><link href="/blog/red-hat-hackfest-office-hour-kickoff/" rel="alternate" type="text/html" title="Red Hat Hackfest Office Hour - Kick off session!" /><published>2022-05-25T00:00:00+00:00</published><updated>2022-05-25T00:00:00+00:00</updated><id>/blog/red-hat-hackfest-office-hour-kickoff</id><content type="html" xml:base="/blog/red-hat-hackfest-office-hour-kickoff/"><![CDATA[<div class="paragraph">
+<p>Today the Red Hat Hackfest team has kicked off the brand new Red Hat Hackfest Office Hour series hosted by our friends from <a href="https://www.youtube.com/user/rhopenshift"><strong>Openshift tv</strong></a>!</p>
+</div>
+<div class="paragraph">
+<p>This is the first event of a series, so we have been supported by the Openshift Coffee Break crew (our big thanks go to Natale, Fabio and Andrea for this co-hosting opportunity).</p>
+</div>
+<div class="paragraph">
+<p>The Red Hat Hackfest Office Hour aims to share with the audience news and info around the collaboration between the Red Hat Partner Ecosystem and the Red Hat Hackfest team from both the business and the technical standpoint.</p>
+</div>
+<div class="paragraph">
+<p>To achive our goal, we&#8217;ll receive the contribution of several Subject Matter Expert joining us on each and every episode.</p>
+</div>
+<div class="paragraph">
+<p>Enjoy the episode linked below and feel free to join us to discuss further!</p>
+</div>
+<div class="paragraph">
+<p>The content presented during the session can be downloaded in PDF format from this <a href="https://github.com/qiot-project/hackfest-office-hour/tree/main/2022-05-25%20-%20Session%20%231"><strong>link</strong></a>.</p>
+</div>
+<div class="videoblock">
+<div class="content">
+<iframe width="640" height="480" src="https://www.youtube.com/embed/BR62uwtcFDY?rel=0" frameborder="0" allowfullscreen></iframe>
+</div>
+</div>]]></content><author><name>Andrea Battaglia</name><email>abattagl@redhat.com</email></author><category term="blog" /><category term="qiot" /><category term="media" /><category term="openshifttv" /><summary type="html"><![CDATA[Today the Red Hat Hackfest team has kicked off the brand new Red Hat Hackfest Office Hour series hosted by our friends from Openshift tv!]]></summary></entry><entry><title type="html">Setting up NFS as a storage class on SNO</title><link href="/blog/nfs-on-sno/" rel="alternate" type="text/html" title="Setting up NFS as a storage class on SNO" /><published>2022-05-10T00:00:00+00:00</published><updated>2022-05-10T00:00:00+00:00</updated><id>/blog/nfs-on-sno</id><content type="html" xml:base="/blog/nfs-on-sno/"><![CDATA[<div id="toc" class="toc">
+<div id="toctitle">Table of Contents</div>
+<ul class="sectlevel0">
+<li><a href="#summary">Summary</a></li>
+<li><a href="#introduction">Introduction</a></li>
+<li><a href="#nas-configuration-and-testing">NAS configuration and testing</a></li>
+<li><a href="#configuring-the-csi-driver-on-openshift">Configuring the CSI driver on OpenShift</a></li>
+</ul>
+</div>
+<div class="paragraph">
+<p>.</p>
+</div>
+<h1 id="summary" class="sect0"><a class="anchor" href="#summary"></a>Summary</h1>
+<div class="paragraph">
+<p>This guide will show you how to serve NFS from a home NAS (or other NFS share,
+referenced as a NAS for the rest of the article) to a Single Node OpenShift (SNO) and consume it as a storage class through the <a href="https://github.com/container-storage-interface/spec/blob/master/spec.md">CSI</a> NFS storage driver.</p>
+</div>
+<div class="paragraph">
+<p>I&#8217;m assuming that you have a Single Node OpenShift installed based on
+<a href="https://qiot-project.github.io/blog/sno-on-nuc10/">this previous post</a> and also
+a NAS on the local network.  No assumption is made about the NAS but for the
+purpose of this guide I&#8217;ll be using NFS served from my Synology NAS.  Other NAS
+appliances should work the same based on the settings in the NAS section.</p>
+</div>
+<h1 id="introduction" class="sect0"><a class="anchor" href="#introduction"></a>Introduction</h1>
+<div class="paragraph">
+<p>If you deployed the
+<a href="https://github.com/qiot-project/qiot-manufacturing-factory-installer">QIOT
+factory</a> on SNO on the NUC you&#8217;ll have seen that the PVs needed to be set up as
+part of the machineconfig. This means that if any more PVs are required the
+machineconfig needs to be updated, causing a restart of OpenShift and a few
+minutes of outage before it comes back up.</p>
+</div>
+<div class="paragraph">
+<p>This isn&#8217;t ideal. What if you want more space than is available on the NUC, which only has 256 GB? What if you want to consume storage dynamically rather than defining the machineconfig up front?  What if this needs to change due to unforseen circumstances?</p>
+</div>
+<div class="paragraph">
+<p>If, like me, you&#8217;re running the NUC on a home network and you have a NAS with some spare capacity you might think "maybe I can use some of that storage".  And indeed you can.  The NAS storage can be shared to your SNO and exposed via an NFS storage class.</p>
+</div>
+<div class="paragraph">
+<p>But wait, NFS shouldn&#8217;t be used with OpenShift should it?  Well, that isn&#8217;t always the case and this isn&#8217;t a production system, so why not. :)</p>
+</div>
+<div class="paragraph">
+<p>Step forward
+<a href="https://docs.openshift.com/container-platform/4.9/storage/container_storage_interface/persistent-storage-csi.html">Container
+Storage Interface</a> (CSI). CSI will provide the ability to add NFS as a storage
+type to the SNO and consume it dynamically via a storage class.</p>
+</div>
+<h1 id="nas-configuration-and-testing" class="sect0"><a class="anchor" href="#nas-configuration-and-testing"></a>NAS configuration and testing</h1>
+<div class="paragraph">
+<p>I have a Synology NAS device and the instructions for setting up an NFS share
+on it are
+<a href="https://kb.synology.com/en-global/DSM/tutorial/How_to_access_files_on_Synology_NAS_within_the_local_network_NFS">here</a>
+but on the assumption that you will likely have a different type of NAS, or just
+want to export an NFS share from another computer, the
+configuration of my NFS storage in the exports file is as follows:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/posts/nfs-on-sno/exports.png" alt="exports" width="100%">
+</div>
+</div>
+<div class="paragraph">
+<p>While this is maybe not the most secure set up, it allows us to get going relatively
+quickly and easily.  You could set a different squash policy (but be careful if
+you do), set the hostname or encrypt your folder.</p>
+</div>
+<div class="paragraph">
+<p>Once your NAS is set up, let&#8217;s test it out. I&#8217;m assuming you&#8217;ll be testing on a
+linux host so you&#8217;ll need to install the <code>nfs-utils</code> package if on
+CentOS/RedHat/Fedora or <code>nfs-common</code> if on Ubuntu.</p>
+</div>
+<div class="paragraph">
+<p>On the linux host, assuming <code>/mnt</code> exists, run <code>sudo mount -t nfs 192.168.50.195:/volume1/sno_nfs /mnt</code>
+(drop the sudo if running as root (why are you running as root?)) but feel free
+to mount the NFS share wherever suit you.  Create a file in the mounted folder <code>touch /mnt/testing</code>
+and unmount the NFS folder <code>cd; sudo umount /mnt</code>.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/posts/nfs-on-sno/mount_nas.png" alt="mount nas" width="75%">
+</div>
+</div>
+<div class="paragraph">
+<p>By logging in to the NAS via SSH we can check that the file is created.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/posts/nfs-on-sno/nas_output.png" alt="nas output" width="33%">
+</div>
+</div>
+<div class="paragraph">
+<p>With NFS on the NAS confirmed as working let&#8217;s move on to setting up the SNO.</p>
+</div>
+<h1 id="configuring-the-csi-driver-on-openshift" class="sect0"><a class="anchor" href="#configuring-the-csi-driver-on-openshift"></a>Configuring the CSI driver on OpenShift</h1>
+<div class="paragraph">
+<p>We&#8217;re setting this up on OpenShift 4.9 running on the NUC.  On a Single Node installation there is no built in support for NFS so we&#8217;re going to add support via a CSI driver.  This will give us the ability not only to use NFS but to add it as a storage class to give us dynamic storage.</p>
+</div>
+<div class="paragraph">
+<p>The CSI NFS driver is still beta software but, for the purposes of this test setup, it is stable enough.</p>
+</div>
+<div class="paragraph">
+<p>The driver can be downloaded from the github repository <a href="https://github.com/openshift/csi-driver-nfs" class="bare">https://github.com/openshift/csi-driver-nfs</a>.  There are multiple ways to install the driver</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>helm</p>
+</li>
+<li>
+<p>directly from the internet</p>
+</li>
+<li>
+<p>from a local clone of the repo.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>For this guide we&#8217;re going with installing from a local copy of the repo, which allows us to look at the code that is being run to see what resources are being created and where.</p>
+</div>
+<div class="paragraph">
+<p>The procedure is documented as option#2
+<a href="https://github.com/openshift/csi-driver-nfs/blob/master/docs/install-csi-driver-master.md">here</a> but to save having to follow the link&#8230;&#8203;</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>in the terminal, log into your OpenShift cluster with a cluster admin user</p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>oc login --token=&lt;token value&gt; --server=https://api.&lt;sno cluster&gt;:6443</code></p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>clone the repo and change into the directory</p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>git clone <a href="https://github.com/kubernetes-csi/csi-driver-nfs.git" class="bare">https://github.com/kubernetes-csi/csi-driver-nfs.git</a></code></p>
+</li>
+<li>
+<p><code>cd csi-driver-nfs</code></p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>before running the deploy script take a look at it in your favourite editor and then look at the yaml files that get called so you know what&#8217;s being deployed.</p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>vi ./deploy/install-driver.sh</code></p>
+</li>
+<li>
+<p><code>vi ./deploy/csi-nfs-conftoller.yaml</code></p>
+</li>
+<li>
+<p>&#8230;&#8203;</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>run the deploy script</p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>./deploy/install-driver.sh master local</code></p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>show output file</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>check pods and you should find that they are running</p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>oc -n kube-system get pod -o wide -l app=csi-nfs-controller</code></p>
+</li>
+<li>
+<p><code>oc -n kube-system get pod -o wide -l app=csi-nfs-node</code></p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Once the CSI driver is deployed successfully we need to define our storage
+class.  Note that it is annotated to be the default storage class.  Parameters
+specific to the nfs provisioner are described
+<a href="https://github.com/openshift/csi-driver-nfs/blob/master/docs/driver-parameters.md">here</a>.</p>
+</div>
+<div class="paragraph">
+<p>Create a file storageclass-nfs.yaml</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: nfs-csi
+  annotations:
+    storageclass.kubernetes.io/is-default-class: 'true'
+provisioner: nfs.csi.k8s.io
+parameters:
+  server: &lt;NAS IP address&gt;
+  share: &lt;NFS share&gt;
+reclaimPolicy: Delete
+volumeBindingMode: Immediate
+mountOptions:
+  - hard
+  - nfsvers=3</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Create the resource in OpenShift, <code>oc create -f storageclass-nfs.yaml</code> and you
+should get confirmation that it is created.</p>
+</div>
+<div class="paragraph">
+<p>Now to test it out we&#8217;ll create a new project and deploy an example app that
+uses persistent storage.  As our nfs-csi class is set as the default storage
+class it should be used.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>oc new-project nfs-test</code></p>
+</li>
+<li>
+<p><code>oc new-app openshift/rails-pgsql-persistent</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Eventually <code>oc status</code> should show something similar to the below and then you
+are ready to test.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/posts/nfs-on-sno/deployed_app.png" alt="deployed app" width="100%">
+</div>
+</div>
+<div class="paragraph">
+<p>In your browser navigate to the route shown and you should be greeted with a rails application test page.</p>
+</div>
+<div class="paragraph">
+<p><strong>Congratulations!</strong> You now have NFS set up on you SNO!</p>
+</div>]]></content><author><name>Geoff Newson</name><email>geoff.newson@gmail.com</email></author><category term="blog" /><category term="qiot" /><category term="sno" /><category term="nuc" /><category term="howto" /><category term="storage" /><category term="nfs" /><summary type="html"><![CDATA[.]]></summary></entry><entry><title type="html">Install RHEL for Edge on Compulab Fitlet2</title><link href="/blog/rhel-on-fitlet2/" rel="alternate" type="text/html" title="Install RHEL for Edge on Compulab Fitlet2" /><published>2021-10-13T00:00:00+00:00</published><updated>2021-10-13T00:00:00+00:00</updated><id>/blog/rhel-on-fitlet2</id><content type="html" xml:base="/blog/rhel-on-fitlet2/"><![CDATA[<div id="toc" class="toc">
+<div id="toctitle">Table of Contents</div>
+<ul class="sectlevel0">
+<li><a href="#introduction">Introduction</a></li>
+<li><a href="#hardware">Hardware</a></li>
+<li><a href="#preparation">Preparation</a>
+<ul class="sectlevel1">
+<li><a href="#fix-system-time">Fix system time</a></li>
+<li><a href="#turn-off-secure-boot">Turn off Secure Boot</a></li>
+<li><a href="#tune-the-boot-order-priorities">Tune the Boot Order Priorities</a></li>
+</ul>
+</li>
+<li><a href="#bootable-iso">Bootable ISO</a>
+<ul class="sectlevel1">
+<li><a href="#download">Download</a></li>
+<li><a href="#create-a-bootable-usb-stick">Create a bootable USB-Stick</a>
+<ul class="sectlevel2">
+<li><a href="#on-linux">On Linux</a></li>
+<li><a href="#on-windows">On Windows</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#boot-the-fitlet-over-the-internet">Boot the Fitlet over the Internet</a></li>
+<li><a href="#get-access-to-the-fitlet2">Get Access to the Fitlet2</a></li>
+</ul>
+</div>
+<div class="paragraph">
+<p>.</p>
+</div>
+<h1 id="introduction" class="sect0"><a class="anchor" href="#introduction"></a>Introduction</h1>
+<div class="paragraph">
+<p>The next guide will show how to deploy RHEL for Edge to a physical miniature PC <a href="https://fit-iot.com/web/products/fitlet2/">Fitlet2</a> manufactured by Compulab.</p>
+</div>
+<div class="paragraph">
+<p>The solution of RHEL for Edge uses ostree to manage the packages to install on the device. Ostree is both a shared library and suite of command line tools that combines a “git-like” model for committing and downloading bootable filesystem trees, along with a layer for deploying them and managing the bootloader configuration.</p>
+</div>
+<div class="paragraph">
+<p>For this use case we are providing a web server with the kickstart file required to start the installation, and hosting the repo with the required packages for this distribution, but we also provide the how to create your own from scratch with the tool image-builder available at the standard RHEL 8 distribution.</p>
+</div>
+<h1 id="hardware" class="sect0"><a class="anchor" href="#hardware"></a>Hardware</h1>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Model name</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">fitlet2</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">CPU model name</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Intel&#174; Atom x5-E3930 [CE3930]</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Memory capacity</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">4.00 GiB</p></td>
+</tr>
+</tbody>
+</table>
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/posts/rhel-on-fitlet2/fitlet2.png" alt="fitlet2" width="100%">
+</div>
+</div>
+<h1 id="preparation" class="sect0"><a class="anchor" href="#preparation"></a>Preparation</h1>
+<div class="paragraph">
+<p>Connect a USB-Keyboard and a Monitor to the Fitlet2.</p>
+</div>
+<div class="paragraph">
+<p>Switch the Device on.</p>
+</div>
+<div class="paragraph">
+<p>It should automatically enter the BIOS.</p>
+</div>
+<div class="paragraph">
+<p>If not, press “canc” during boot to enter the BIOS.</p>
+</div>
+<div class="sect1">
+<h2 id="fix-system-time"><a class="anchor" href="#fix-system-time"></a>Fix system time</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>If necessary, adjust the Time and Date of the Machine. Use the <strong>UTC Timezone</strong> !</p>
+</div>
+<div class="paragraph">
+<p>If the BIOS clock is way off, your Web-based Kickstart will fail with an SSL-Error (see further below)</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/posts/rhel-on-fitlet2/img01.jpg" alt="img01" width="100%">
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="turn-off-secure-boot"><a class="anchor" href="#turn-off-secure-boot"></a>Turn off Secure Boot</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Switch to the <strong>"Security"</strong> tab of the Fitlet2 BIOS and select <em>"Disabled"</em> for the Secure Boot option.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/posts/rhel-on-fitlet2/img02.jpg" alt="img02" width="100%">
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="tune-the-boot-order-priorities"><a class="anchor" href="#tune-the-boot-order-priorities"></a>Tune the Boot Order Priorities</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Switch to the <strong>"Boot"</strong> tab of the Fitlet2 BIOS and Adjust the boot order to boot <em>“HDD”</em> (<strong>not</strong> SD) first and then “USB Key” and “USB CD/DVD”.</p>
+</div>
+<div class="paragraph">
+<p>After the Installation your OS will appear as First UEFI HDD.</p>
+</div>
+<div class="paragraph">
+<p>If your system does not correctly boot into RHEL gor Edge after the Installation, please come back into the system BIOS and correct the Boot Order accordingly.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/posts/rhel-on-fitlet2/img03.jpg" alt="img03" width="100%">
+</div>
+</div>
+</div>
+</div>
+<h1 id="bootable-iso" class="sect0"><a class="anchor" href="#bootable-iso"></a>Bootable ISO</h1>
+<div class="sect1">
+<h2 id="download"><a class="anchor" href="#download"></a>Download</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>You can download a Red Hat Boot ISO image from the Red Hat Customer Portal.</p>
+</div>
+<div class="paragraph">
+<p>The Red Hat Boot ISO image is used to launch the RHEL installer.</p>
+</div>
+<div class="paragraph">
+<p>The installer fetches the Kickstart file that you provide for installing RHEL for Edge images.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Open a browser and access <a href="https://access.redhat.com/downloads" class="bare">https://access.redhat.com/downloads</a>.</p>
+</li>
+<li>
+<p>Click the Red Hat Enterprise Linux 8.</p>
+</li>
+<li>
+<p>Click the button Download Now for the option "Red Hat Enterprise Linux 8.x Boot ISO" (8.4 at the time of this article).</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>For more information about downloading Boot.iso image, see <a href="https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html-single/performing_a_standard_rhel_installation/index#downloading-beta-installation-images_preparing-for-your-installation">Downloading the installation ISO image</a>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="create-a-bootable-usb-stick"><a class="anchor" href="#create-a-bootable-usb-stick"></a>Create a bootable USB-Stick</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Time to flash the downloaded ISO image on a USB drive. The minimum space required for the UDB Flash drive is 1Gb.</p>
+</div>
+<div class="paragraph">
+<p>On a side note, please keep in mind the partition resultant from the flash operation will be marked as read-only, as the ISO image we are about to flash is a DVD image.</p>
+</div>
+<div class="sect2">
+<h3 id="on-linux"><a class="anchor" href="#on-linux"></a>On Linux</h3>
+<div class="paragraph">
+<p>Let’s check the path of the device with</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">sudo fdisk -l</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You need to identify the path of type /dev/sdN, in my case is /dev/sda if yours takes another path, replace it in the next step.</p>
+</div>
+<div class="paragraph">
+<p>To start the flashing process type</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">dd if=rhel-8.4-x86_64-boot.iso of=&lt;devicename&gt; status=progress</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>as root.</p>
+</div>
+<div class="paragraph">
+<p><strong>WARNING</strong> make absolutely sure, that the given device name is in fact the USB-Stick. If you accidentally type in your root-disk, it&#8217;ll be overwritten!</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="on-windows"><a class="anchor" href="#on-windows"></a>On Windows</h3>
+<div class="paragraph">
+<p>On Windows, use the free tool <a href="https://rufus.ie/en/">Rufus</a> to create a bootable USB-Stick.</p>
+</div>
+</div>
+</div>
+</div>
+<h1 id="boot-the-fitlet-over-the-internet" class="sect0"><a class="anchor" href="#boot-the-fitlet-over-the-internet"></a>Boot the Fitlet over the Internet</h1>
+<div class="paragraph">
+<p>Connect a Keyboard and a Monitor (HDMI) to the Fitlet2 Device.</p>
+</div>
+<div class="paragraph">
+<p>Put the bootable USB-Key and a blank Micro-SD-Card into the Fitlet2.</p>
+</div>
+<div class="paragraph">
+<p>Connect a Network Cable. Setup using WiFi is not supported at this time.</p>
+</div>
+<div class="paragraph">
+<p><strong>WARNING</strong> The Micro SD-card will be overwritten by the installation process without further warning!</p>
+</div>
+<div class="paragraph">
+<p>Turn on the Fitlet2.</p>
+</div>
+<div class="paragraph">
+<p>If it does not boot from the USB-Key, enter the BIOS-Setup and check for the following settings:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Turn OFF secure Boot.</p>
+</li>
+<li>
+<p>Change the Boot order, that the USB-Stick comes first followed by "SD" and "HDD".</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Once the System boots from the USB-Stick, you&#8217;ll see the RHEL-8-Install Prompt.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>On <strong>BIOS-based systems</strong>: Press the <em>Tab</em> key and add custom boot options to the command line. You can also access the boot: prompt by pressing the <em>Esc</em> key but no required boot options are preset. In this scenario, you must always specify the Linux option before using any other boot options.</p>
+</li>
+<li>
+<p>On <strong>UEFI-based systems</strong>: Press the <em>e</em> key and add custom boot options to the command line. When ready press <em>Ctrl+X</em> to boot the modified option.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Once you&#8217;ve got access to the boot options and kernel parameters for the boot process, appent the following key-value pair to the first row:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">inst.ks=https://edge:qiotH4ckf3st@repo8.rhepds.com/edge/kick.ks</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In case you get an SSL-failure whan the installation process is trying to download the kickstart file, also append the following kernel parameter:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">inst.noverifyssl</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>WARNING</strong> Keep in mind that the system will use an US-Keyboard-Layout at this stage.
+This will point to our provided Kickstart File and the Internet based repository.</p>
+</div>
+<div class="paragraph">
+<p>If you chose to set up your own Deployment Server and use your own Kickstart-File, point to that.</p>
+</div>
+<div class="paragraph">
+<p>How you create your Own Edge Repository and make that available on an HTTP-Server is documented <a href="https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html/composing_installing_and_managing_rhel_for_edge_images/installing-rpm-ostree-images_composing-installing-managing-rhel-for-edge-images">here</a>.</p>
+</div>
+<div class="paragraph">
+<p>If your Network does not have a DHCP-Server to automatically supply an IP-Address to the Fitlet, refer to this <a href="https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html/performing_an_advanced_rhel_installation/kickstart-and-advanced-boot-options_installing-rhel-as-an-experienced-user">document</a> on how to provide a manual IP-Address, DNS and Gateway-Information for the Networked Install.</p>
+</div>
+<div class="paragraph">
+<p>The Fitlet will then run through the automated Install process and reboot at the end. Depending on your Internet-Speed, this will take a couple of minutes (the Process will Download 900 MB).</p>
+</div>
+<div class="paragraph">
+<p>Once the System reboots, you can remove the USB Stick.</p>
+</div>
+<h1 id="get-access-to-the-fitlet2" class="sect0"><a class="anchor" href="#get-access-to-the-fitlet2"></a>Get Access to the Fitlet2</h1>
+<div class="paragraph">
+<p>Once the system is up and running you can log into the local console using user root or user edge with the password <em>r3dh4t1!</em>.</p>
+</div>
+<div class="paragraph">
+<p><strong>WARNING</strong> The default Keyboard-Layout will be <em>US</em>. You can change it to your local Layout at this point. See <a href="https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html/configuring_basic_system_settings/assembly_changing-basic-environment-settings_configuring-basic-system-settings#proc_configuring-the-keyboard-layout_assembly_changing-basic-environment-settings">here</a>.</p>
+</div>
+<div class="paragraph">
+<p>Change the passwords for both users as soon as possible to something secure.</p>
+</div>
+<div class="paragraph">
+<p>Note down the IP-Address &amp; Name of the System. Again, if you do not have a DHCP-Server in your Network, you need to manually configure the Network.</p>
+</div>
+<div class="paragraph">
+<p>At this point you also can set up a WiFi-Connection on the Commandline and use it from here on after instead of the cabled Network.</p>
+</div>
+<div class="paragraph">
+<p>How to set up a static Network on the command line is documented <a href="https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html/configuring_and_managing_networking/configuring-an-ethernet-connection_configuring-and-managing-networking#configuring-a-static-ethernet-connection-using-nmcli_configuring-an-ethernet-connection">here</a>.</p>
+</div>
+<div class="paragraph">
+<p>How to set up a WiFi-Connection on the command line is documented <a href="https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html/configuring_and_managing_networking/managing-wi-fi-connections_configuring-and-managing-networking">here</a>.</p>
+</div>
+<div class="paragraph">
+<p>If you changed your Network Settings, please reboot now.</p>
+</div>
+<div class="paragraph">
+<p>Once your Fitlet2 is up and Networked, you can also SSH into the system using user <em>"root"</em> or User <em>"edge"</em>.</p>
+</div>
+<div class="paragraph">
+<p>In addition, the Web-Management-Tool Cockpit is available.</p>
+</div>
+<div class="paragraph">
+<p>Open a browser and point it to: <em>"https://&lt;fitlet IP or FQDN&gt;:9090"</em></p>
+</div>
+<div class="paragraph">
+<p>Log In as root or edge to manage the Device.</p>
+</div>]]></content><author><name>Andreas Stolzenberger</name><email>astolzen@redhat.com</email></author><category term="blog" /><category term="qiot" /><category term="sno" /><category term="nuc" /><category term="howto" /><summary type="html"><![CDATA[.]]></summary></entry><entry><title type="html">Install Single Node Openshift on Intel® 10th gen NUC</title><link href="/blog/sno-on-nuc10/" rel="alternate" type="text/html" title="Install Single Node Openshift on Intel® 10th gen NUC" /><published>2021-09-27T00:00:00+00:00</published><updated>2021-09-27T00:00:00+00:00</updated><id>/blog/sno-on-nuc10</id><content type="html" xml:base="/blog/sno-on-nuc10/"><![CDATA[<div id="toc" class="toc">
+<div id="toctitle">Table of Contents</div>
+<ul class="sectlevel0">
+<li><a href="#introduction">Introduction</a></li>
+<li><a href="#prerequisites">Prerequisites:</a>
+<ul class="sectlevel1">
+<li><a href="#hardware">Hardware</a></li>
+<li><a href="#single-node-openshift-sno-4-8">Single Node Openshift (SNO) 4.8+</a></li>
+<li><a href="#additional-requirements">Additional requirements:</a></li>
+<li><a href="#optional-requirements">Optional requirements</a></li>
+</ul>
+</li>
+<li><a href="#the-discovery-iso">The discovery ISO</a>
+<ul class="sectlevel1">
+<li><a href="#create-the-iso">Create the ISO</a></li>
+<li><a href="#burn-iso-to-usb-flash-drive">Burn ISO to USB flash drive</a></li>
+</ul>
+</li>
+<li><a href="#installation">Installation</a>
+<ul class="sectlevel1">
+<li><a href="#start-the-installation">Start the installation</a>
+<ul class="sectlevel2">
+<li><a href="#the-overview-page">The Overview page</a></li>
+<li><a href="#the-networking-page">The Networking page</a></li>
+<li><a href="#the-review-page">The Review page</a></li>
+<li><a href="#the-installation-process-page">The Installation process page</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#dns-required-configuration">DNS required configuration</a>
+<ul class="sectlevel1">
+<li><a href="#external-dns">External DNS</a></li>
+<li><a href="#redirect-dns-for-subdomain-cluster_name-cluster_domain-to-the-nuc">Redirect DNS for subdomain <code>cluster_name.cluster_domain</code> to the NUC</a></li>
+<li><a href="#local-resolution">Local resolution:</a></li>
+</ul>
+</li>
+<li><a href="#start-using-sno-on-intel-nuc">Start using SNO on Intel® NUC</a></li>
+</ul>
+</div>
+<div class="paragraph">
+<p>.</p>
+</div>
+<h1 id="introduction" class="sect0"><a class="anchor" href="#introduction"></a>Introduction</h1>
+<div class="paragraph">
+<p>The next guide will show how to deploy a Single Node Openshift (SNO) to a physical Intel® NUC.</p>
+</div>
+<h1 id="prerequisites" class="sect0"><a class="anchor" href="#prerequisites"></a>Prerequisites:</h1>
+<div class="paragraph">
+<p>Minimum prerequisites for the installation of single node openshift must be respected so I decided to provision a set of hardware components powerful enough to run services on the platform once it&#8217;s been installed from both the computational power and the resources availability perspective.</p>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s have a look at what it&#8217;s needed to install Single Node Openshift on a 10th gen Intel® NUC.</p>
+</div>
+<div class="sect1">
+<h2 id="hardware"><a class="anchor" href="#hardware"></a>Hardware</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Intel NUC model</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">NUC10i7FNK</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Memory capacity</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">64.00 GiB</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">CPU model name</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Intel&#174; Core&#8482; i7-10710U CPU @ 1.10GHz</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">CPU cores and clock speed</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">6 cores (12 with hyper-threaded) at 4,700 MHz</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">CPU architecture</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">x86_64</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SSD Disk</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Samsung SSD M.2 256GB</p></td>
+</tr>
+</tbody>
+</table>
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/posts/usecase-manufacturing/NUC.jpg" alt="NUC" width="100%">
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="single-node-openshift-sno-4-8"><a class="anchor" href="#single-node-openshift-sno-4-8"></a>Single Node Openshift (SNO) 4.8+</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>SNO requires the following minimum host resources:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"># Virtual CPU</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">8</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Virtual RAM</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">32 GB</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Storage</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">120 GB</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect1">
+<h2 id="additional-requirements"><a class="anchor" href="#additional-requirements"></a>Additional requirements:</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In order to go through the installation process, the following additioal components are required:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>And a Red Hat account, with access to <a href="https://console.redhat.com/openshift/" class="bare">https://console.redhat.com/openshift/</a></p>
+</li>
+<li>
+<p>USB flash drive &gt;= 2GB</p>
+</li>
+<li>
+<p>DHCP is required like IPI (Installer Provisioned Infrastructure) installations</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="optional-requirements"><a class="anchor" href="#optional-requirements"></a>Optional requirements</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The following are optional requirements, but highly recommended:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Generated a ssh key to connect to the node from your computer with ssh</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">$ ssh-keygen -t ed25519 -N '' -f ~/.ssh/id_rsa
+
+$ cat ~/.ssh/id_rsa.pub
+ssh-rsa AAAAB3NzaC1yc[...]</code></pre>
+</div>
+</div>
+</div>
+</div>
+<h1 id="the-discovery-iso" class="sect0"><a class="anchor" href="#the-discovery-iso"></a>The discovery ISO</h1>
+<div class="paragraph">
+<p>Deploying Openshift clusters with a discovery ISO is a functionality in Tech-Preview.</p>
+</div>
+<div class="paragraph">
+<p>The above taking into consideration that the fully SNO installation is a proof-of-concept without high availability or support.</p>
+</div>
+<div class="paragraph">
+<p>The use of the discovery ISO will help us especially in this case by not working with VMs.</p>
+</div>
+<div class="paragraph">
+<p>We will burn it to the USB memory to launch the installation process, without any interaction required until the SNO installation ends.</p>
+</div>
+<div class="sect1">
+<h2 id="create-the-iso"><a class="anchor" href="#create-the-iso"></a>Create the ISO</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>To create the discovery ISO you need to login and access  <a href="https://console.redhat.com/openshift/" class="bare">https://console.redhat.com/openshift/</a></p>
+</div>
+<div class="paragraph">
+<p>Once you are there, click on the “Create cluster” button, select <strong>Datacenter</strong>.</p>
+</div>
+<div class="paragraph">
+<p>Then under Assisted Installer, push the new <strong>Create cluster</strong> button.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/posts/sno-on-nuc10/img01.png" alt="img01" width="100%">
+</div>
+</div>
+<div class="paragraph">
+<p>You&#8217;ll be asked to fill a form with the following info:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Set the Cluster name and Base domain.</p>
+</li>
+<li>
+<p>Mark the checkbox to install single node OpenShift (SNO) and accept the warning message.</p>
+</li>
+<li>
+<p>Select the OpenShift version (Tested with OpenShift 4.8+).</p>
+</li>
+<li>
+<p>Edit pull secret (no need to).</p>
+</li>
+</ul>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/posts/sno-on-nuc10/img02.png" alt="img02" width="100%">
+</div>
+</div>
+<div class="paragraph">
+<p>Click Next to continue to the Host discovery section:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/posts/sno-on-nuc10/img03.png" alt="img03" width="100%">
+</div>
+</div>
+<div class="paragraph">
+<p>Then click on button “Generate Discovery ISO”</p>
+</div>
+<div class="paragraph">
+<p>Select <strong>Minimal image file</strong>.</p>
+</div>
+<div class="paragraph">
+<p>Paste your public key (check <a href="#optional-requirements">Optional requirements</a> section)</p>
+</div>
+<div class="paragraph">
+<p>In case you need to add a proxy configuration for your setup, this is the time to define it.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/posts/sno-on-nuc10/img04.png" alt="img04" width="100%">
+</div>
+</div>
+<div class="paragraph">
+<p>Click on “Generate Discovery ISO” button, a temporary download link will appear</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/posts/sno-on-nuc10/img05.png" alt="img05" width="100%">
+</div>
+</div>
+<div class="paragraph">
+<p>Copy the field “Command to download the ISO” or download to your PC with button “Download Discovery ISO”</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/posts/sno-on-nuc10/img06.png" alt="img06" width="100%">
+</div>
+</div>
+<div class="paragraph">
+<p>Once the download of the Discovery ISO is complete, you are ready to burn it to the USB flash drive.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="burn-iso-to-usb-flash-drive"><a class="anchor" href="#burn-iso-to-usb-flash-drive"></a>Burn ISO to USB flash drive</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Obviously, start by connecting your USB flash drive to your computer.</p>
+</div>
+<div class="paragraph">
+<p>Fedora / RHEL:</p>
+</div>
+<div class="paragraph">
+<p>Let’s check the path of the device with “sudo fdisk -l”.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/posts/sno-on-nuc10/img07.png" alt="img07" width="100%">
+</div>
+</div>
+<div class="paragraph">
+<p>You need to identify the path of type /dev/sdN, in my case is /dev/sda if yours takes another path, replace it in the next step.</p>
+</div>
+<div class="paragraph">
+<p>Let’s burn the ISO to the USB with the command “sudo dd if=discovery_image_sno01.iso of=/dev/sda”</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/posts/sno-on-nuc10/img08.png" alt="img08" width="100%">
+</div>
+</div>
+</div>
+</div>
+<h1 id="installation" class="sect0"><a class="anchor" href="#installation"></a>Installation</h1>
+<div class="paragraph">
+<p>The whole installation process is performed in several phases.</p>
+</div>
+<div class="paragraph">
+<p>Each and every installation phase can be monitored and customized from the <a href="https://console.redhat.com/openshift/">remote interface</a>.</p>
+</div>
+<div class="paragraph">
+<p>This section will guide you through the installation process and will highlight the potential issues and customization you&#8217;ll be asked to apply to the SNO configuration.</p>
+</div>
+<div class="sect1">
+<h2 id="start-the-installation"><a class="anchor" href="#start-the-installation"></a>Start the installation</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Plug the USB flash drive to the Intel NUC, don’t forget to connect also the ethernet cable.</p>
+</div>
+<div class="paragraph">
+<p>You&#8217;ll also need to connect a keyboard and a monitor to perform take preliminary actions in order to make the NUC boot from the USB flash drive:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Power the NUC on;</p>
+</li>
+<li>
+<p>When the NUC logo shows on the screen, Press F10 to access the boot menu;</p>
+<div class="ulist">
+<ul>
+<li>
+<p>If you are keen to apply persistent changes to the boot menu, press F2 instead and enter the BIOS menu;</p>
+</li>
+<li>
+<p><strong>Do not apply any changes to the default BIOS performance config</strong>, just set up the Boot section accordingly;</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Select your USB flash drive from the boot menu to boot from it;</p>
+</li>
+<li>
+<p>Return to the browser at the <strong>Host Discovery</strong> page;</p>
+</li>
+<li>
+<p>After a short time the status of your host will turn into <strong>Ready</strong>.</p>
+</li>
+</ul>
+</div>
+<div class="sect2">
+<h3 id="the-overview-page"><a class="anchor" href="#the-overview-page"></a>The Overview page</h3>
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/posts/sno-on-nuc10/img09.png" alt="img09" width="100%">
+</div>
+</div>
+<div class="paragraph">
+<p>Click Next to continue to Networking section.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="the-networking-page"><a class="anchor" href="#the-networking-page"></a>The Networking page</h3>
+<div class="paragraph">
+<p>In the networking section you&#8217;ll be asked to pick up a subnet in the <strong>Available subnets</strong> section.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/posts/sno-on-nuc10/img10.png" alt="img10" width="100%">
+</div>
+</div>
+<div class="paragraph">
+<p>Also you can modify the cluster and services networks, or change the default CNI from Openshift SDN to OVN-Kubernetes.</p>
+</div>
+<div class="paragraph">
+<p>It’s also fine to leave as default.</p>
+</div>
+<div class="paragraph">
+<p>Click on the Next button.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="the-review-page"><a class="anchor" href="#the-review-page"></a>The Review page</h3>
+<div class="paragraph">
+<p>In this page you can review all the info associated to your cluster.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/posts/sno-on-nuc10/img11.png" alt="img11" width="100%">
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="the-installation-process-page"><a class="anchor" href="#the-installation-process-page"></a>The Installation process page</h3>
+<div class="paragraph">
+<p>This page gives you an overview of the overall installation process.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/posts/sno-on-nuc10/img12.png" alt="img12" width="100%">
+</div>
+</div>
+<div class="paragraph">
+<p>The logs of the cluster and node installation can be consulted:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/posts/sno-on-nuc10/img13.png" alt="img13" width="100%">
+</div>
+</div>
+<div class="paragraph">
+<p>Once the installation process reboots, the machine will need to boot from the disk.</p>
+</div>
+<div class="paragraph">
+<p>In case the machine keeps booting from the USB flash drive. the installer will warn you about it:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/posts/sno-on-nuc10/boot-from-disk.png" alt="boot from disk" width="100%">
+</div>
+</div>
+<div class="paragraph">
+<p>Remove the USB and reboot the Host.</p>
+</div>
+<div class="paragraph">
+<p>It will take about 30 minutes to the installation process to complete. Duting that timeframe, the process will complete the installation of the SNO on the machine and will perform an update of the current version, up to the latest fix version (e.g.: 4.8.2 &#8594; 4.8.9).</p>
+</div>
+<div class="paragraph">
+<p>Once the installation process is complete you will obtain the kubeadmin password and the url to login to the console:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/posts/sno-on-nuc10/img14.png" alt="img14" width="100%">
+</div>
+</div>
+</div>
+</div>
+</div>
+<h1 id="dns-required-configuration" class="sect0"><a class="anchor" href="#dns-required-configuration"></a>DNS required configuration</h1>
+<div class="paragraph">
+<p>In order to access the SNO Web Console, you need to setup the hostname resolution for the SNO running on the NUC.</p>
+</div>
+<div class="paragraph">
+<p>Given:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">XXX.XXX.XXX.XXX = your SNO IP</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>It&#8217;s possible to pick up one of the following options:</p>
+</div>
+<div class="sect1">
+<h2 id="external-dns"><a class="anchor" href="#external-dns"></a>External DNS</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Use an external DNS server or local configuration to resolve the SNO hostname.</p>
+</div>
+<div class="paragraph">
+<p>Add the following records to your DNS server (recommended)</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">api.cluster_name.cluster_domain      A	XXX.XXX.XXX.XXX
+*.apps.cluster_name.cluster_domain   A	XXX.XXX.XXX.XXX</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Optional:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">cluster_name.cluster_domain	A	XXX.XXX.XXX.XXX</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="redirect-dns-for-subdomain-cluster_name-cluster_domain-to-the-nuc"><a class="anchor" href="#redirect-dns-for-subdomain-cluster_name-cluster_domain-to-the-nuc"></a>Redirect DNS for subdomain <code>cluster_name.cluster_domain</code> to the NUC</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>During the installation of Single Node Openshift  a fully functional DNS server with the required wildcard DNS is configured. So you can redirect all DNS queries for the subdomain <code>cluster_name.clusterdomain</code> to the NUC</p>
+</div>
+<div class="paragraph">
+<p>Modern Linux Systems like RHEL or Fedora use NetworkManager for Networking configuration and use dnsmasq for local DNS caching. To setup DNS on a RHEL 8 client you can create the file <code>/etc/NetworkManager/dnsmasq.d</code> with the follwoing content:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">server=/apps.cluster_name.cluster_domain/XXX.XXX.XXX.XXX
+host-record=api.cluster_name.cluster_domain,XXX.XXX.XXX.XXX</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Then power-cycle NetworkManager and you are good to go.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">$ sudo systemctl NetworkManager restart</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="local-resolution"><a class="anchor" href="#local-resolution"></a>Local resolution:</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Update your local /etc/hosts or /etc/resolve.conf files</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">XXX.XXX.XXX.XXX	api.cluster_name.cluster_domain
+XXX.XXX.XXX.XXX	oauth-openshift.apps.cluster_name.cluster_domain
+XXX.XXX.XXX.XXX	console-openshift-console.apps.cluster_name.cluster_domain
+XXX.XXX.XXX.XXX	grafana-openshift-monitoring.apps.cluster_name.cluster_domain
+XXX.XXX.XXX.XXX	thanos-querier-openshift-monitoring.apps.cluster_name.cluster_domain
+XXX.XXX.XXX.XXX	prometheus-k8s-openshift-monitoring.apps.cluster_name.cluster_domain
+XXX.XXX.XXX.XXX	alertmanager-main-openshift-monitoring.apps.cluster_name.cluster_domain</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Optional:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">XXX.XXX.XXX.XXX	cluster_name.cluster_domain</code></pre>
+</div>
+</div>
+</div>
+</div>
+<h1 id="start-using-sno-on-intel-nuc" class="sect0"><a class="anchor" href="#start-using-sno-on-intel-nuc"></a>Start using SNO on Intel® NUC</h1>
+<div class="paragraph">
+<p>Then you can access your new Single Node Openshift at the following URL:</p>
+</div>
+<div class="paragraph">
+<p><a href="https://console-openshift-console.apps.cluster_name.cluster_domain" class="bare">https://console-openshift-console.apps.cluster_name.cluster_domain</a></p>
+</div>]]></content><author><name>Mario Parra</name><email>mparra@redhat.com</email></author><category term="blog" /><category term="qiot" /><category term="sno" /><category term="nuc" /><category term="howto" /><summary type="html"><![CDATA[.]]></summary></entry><entry><title type="html">PoC Edge Manufacturing</title><link href="/blog/usecase-manufacturing/" rel="alternate" type="text/html" title="PoC Edge Manufacturing" /><published>2021-09-20T00:00:00+00:00</published><updated>2021-09-20T00:00:00+00:00</updated><id>/blog/usecase-manufacturing</id><content type="html" xml:base="/blog/usecase-manufacturing/"><![CDATA[<div id="toc" class="toc">
+<div id="toctitle">Table of Contents</div>
+<ul class="sectlevel0">
+<li><a href="#intro">Intro</a>
+<ul class="sectlevel1">
+<li><a href="#main-diagram">Main Diagram</a></li>
+</ul>
+</li>
+<li><a href="#the-machinery-edge-device">The Machinery (edge device)</a>
+<ul class="sectlevel1">
+<li><a href="#hardware">Hardware</a></li>
+<li><a href="#main-diagram-2">Main Diagram</a></li>
+<li><a href="#operating-system">Operating System</a></li>
+<li><a href="#container-technology">Container technology</a></li>
+<li><a href="#machinery-service">Machinery service</a></li>
+</ul>
+</li>
+<li><a href="#the-factory-edge-server">The Factory (Edge Server)</a>
+<ul class="sectlevel1">
+<li><a href="#hardware-2">Hardware</a></li>
+<li><a href="#main-diagram-3">Main Diagram</a></li>
+<li><a href="#platform">Platform</a></li>
+<li><a href="#software-infrastructure-components">Software infrastructure components</a>
+<ul class="sectlevel2">
+<li><a href="#broker-service">Broker service</a></li>
+<li><a href="#cert-manager-service-issuer">Cert-manager service (issuer)</a></li>
+<li><a href="#sql-storage">SQL Storage</a></li>
+<li><a href="#nosql-storage">NoSQL Storage</a></li>
+</ul>
+</li>
+<li><a href="#business-logic-implementation">Business Logic implementation</a>
+<ul class="sectlevel2">
+<li><a href="#facility-manager">Facility Manager</a></li>
+<li><a href="#product-line-service">Product-Line service</a></li>
+<li><a href="#production-validator-service">Production Validator service</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#datacenter">Datacenter</a>
+<ul class="sectlevel1">
+<li><a href="#main-diagram-4">Main Diagram</a></li>
+<li><a href="#platform-architecture">Platform architecture</a>
+<ul class="sectlevel2">
+<li><a href="#red-hat-openshift-container-platform">Red Hat Openshift Container Platform</a></li>
+</ul>
+</li>
+<li><a href="#software-infrastructure-components-2">Software infrastructure components</a>
+<ul class="sectlevel2">
+<li><a href="#stream-service">Stream service</a></li>
+<li><a href="#timeseries-storage">Timeseries Storage</a></li>
+<li><a href="#sql-storage-2">SQL Storage</a></li>
+<li><a href="#nosql-storage-2">NoSQL Storage</a></li>
+<li><a href="#cert-manager-service">Cert-manager service</a></li>
+</ul>
+</li>
+<li><a href="#business-logic-implementations">Business Logic implementations</a>
+<ul class="sectlevel2">
+<li><a href="#registration-service">Registration service</a></li>
+<li><a href="#plant-manager-service">Plant Manager service</a></li>
+<li><a href="#global-product-line-service">Global Product-line service</a></li>
+<li><a href="#event-collector-service">Event Collector service</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The team has been listening to the Market needs and investments for quite a few months recently.
+In addition to that, we tried to understand what is the main trend in the innovation space, as well as the latest and greatest in terms of new projects and customer requests.</p>
+</div>
+<div class="paragraph">
+<p>It came out that the manufacturing vertical is currently most invested vertical and we decided to try to address some common issues and questions regarding the architectural design and the most important collaterals such as security, workload distribution, connectivity and so on so forth.</p>
+</div>
+<h1 id="intro" class="sect0"><a class="anchor" href="#intro"></a>Intro</h1>
+<div class="paragraph">
+<p>The main goal is to build an environmental network of machineries producing goods intended for the global market.</p>
+</div>
+<div class="paragraph">
+<p>The machineries (edge devices) belong to a facility network environment identified as Factory (Edge Server). The factories are managed by the central plant manager, identified as Datacenter.</p>
+</div>
+<div class="paragraph">
+<p>To be specific, the machineries produce t-shirts.</p>
+</div>
+<div class="paragraph">
+<p>The item production is based on a <strong>production model</strong> (a.k.a. <em>Product Line</em>) and consists of <strong>four production stages</strong>, each and every of subject to validation against a 3rd party entity living on the Factory layer.</p>
+</div>
+<div class="paragraph">
+<p>If the validation process returns a negative outcome, the item is marked as discarded and it&#8217;s production process is interrupted.</p>
+</div>
+<div class="paragraph">
+<p>Each and every stage production and the related validation are documented through telemetry sends to the plant manager.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/posts/usecase-manufacturing/use-case-overview.png" alt="use case overview" width="100%">
+</div>
+</div>
+<div class="sect1">
+<h2 id="main-diagram"><a class="anchor" href="#main-diagram"></a>Main Diagram</h2>
+<div class="sectionbody">
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/posts/usecase-manufacturing/architecture/overview.png" alt="overview" width="100%">
+</div>
+</div>
+</div>
+</div>
+<h1 id="the-machinery-edge-device" class="sect0"><a class="anchor" href="#the-machinery-edge-device"></a>The Machinery (edge device)</h1>
+<div class="paragraph">
+<p>The software running on the edge device has the purpose of emulating a machinery producing T-shirts based on the production model provided by the factory controller.</p>
+</div>
+<div class="paragraph">
+<p>The business logic of the Machinery has been entirely implemented using cloud-native frameworks and packaged using container technologies.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/posts/usecase-manufacturing/machinery-marketing.png" alt="machinery marketing" width="100%">
+</div>
+</div>
+<div class="sect1">
+<h2 id="hardware"><a class="anchor" href="#hardware"></a>Hardware</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The Hardware of choice for the edge device is the Compulab Fitlet2.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/posts/usecase-manufacturing/fitlet2.jpg" alt="fitlet2" width="100%">
+</div>
+</div>
+<div class="paragraph">
+<p>The FITLET2-CE3930 is equipped with Intel® Atom X5-E3930 powered by Intel®.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Model</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">FITLET2-CE3930-P36</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Fan / Fanless</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Fanless</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">CPU</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Intel® Atom x5-3930</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">RAM</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1x 2Gb SO-DIMM 204-pin DDR3L Non-ECC DDR3L-1866 (1.35V)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Display</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Dual head: mini DP 1.2 4K @ 60 Hz; HDMI 1.4 4K @ 30 Hz</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">WIFI</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">802.11ac dual antenna + BT 4.2</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Ethernet</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2 GbE ports on-board</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">USB 2.0</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">4 USB ports on-board: 2x USB 3.0 + 2x USB 2.0</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Audio</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Stereo line out Realtek ALC1150 audio codec</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Serial Port</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">RS232 mini-serial</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">BIOS</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AMI Aptio V</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Input voltage range</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Up to DC 9V – 36V*</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Operating system support</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">all</p></td>
+</tr>
+</tbody>
+</table>
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/posts/usecase-manufacturing/fitlet2-block-diagram.png" alt="fitlet2 block diagram" width="100%">
+</div>
+</div>
+<div class="paragraph">
+<p>Additional technical detail can be found at the following link: <a href="https://fit-iot.com/web/products/fitlet2/fitlet2-specifications/">link</a>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="main-diagram-2"><a class="anchor" href="#main-diagram-2"></a>Main Diagram</h2>
+<div class="sectionbody">
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/posts/usecase-manufacturing/architecture/edge.png" alt="edge" width="50%">
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="operating-system"><a class="anchor" href="#operating-system"></a>Operating System</h2>
+<div class="sectionbody">
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/posts/usecase-manufacturing/brand/Logo-Red_Hat-Edge-A-Standard-RGB.png" alt="Logo Red Hat Edge A Standard RGB" width="20%">
+</div>
+</div>
+<div class="paragraph">
+<p>In an edge computing solution, the operating system is required to be efficient, lightweight and mature.
+The team focused on the most efficient enterprise-grade solution on the marker, which guarantees security, performance, and container-native solutions.
+Below a list of the principal, compulsory features we&#8217;ve been looking for in an operating system:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Must be fully-fledged 64 bit OS (not just its kernel);</p>
+</li>
+<li>
+<p>Must have a very small memory footprint;</p>
+</li>
+<li>
+<p>Must be immutable or, at least, modular;</p>
+</li>
+<li>
+<p>Must have the ability to run a container engine with the minimum memory footprint, like Podman or CRI-O;</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The most suitable and appropriate operating system, also certified on the target hardware is <a href="https://www.redhat.com/en/resources/linux-for-edge-datasheet">Red Hat Enterprise Linux for Edge (RHEL for Edge)</a>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="container-technology"><a class="anchor" href="#container-technology"></a>Container technology</h2>
+<div class="sectionbody">
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/posts/usecase-manufacturing/brand/podman-logo.png" alt="podman logo" width="15%">
+</div>
+</div>
+<div class="paragraph">
+<p>Podman is a daemonless, open source, Linux-native tool designed to develop, manage, and run Open Container Initiative (OCI) containers and pods.</p>
+</div>
+<div class="paragraph">
+<p>It has a similar directory structure to Buildah, Skopeo, and CRI-O.</p>
+</div>
+<div class="paragraph">
+<p>Podman doesn&#8217;t require an active container engine for its commands to work.</p>
+</div>
+<div class="paragraph">
+<p>Last but not least, Podman is available in the standard rpm library of RHEL, so you get full support on it.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="machinery-service"><a class="anchor" href="#machinery-service"></a>Machinery service</h2>
+<div class="sectionbody">
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/logo/logo-quarkus.png" alt="logo quarkus" width="10%">
+</div>
+</div>
+<div class="paragraph">
+<p>It&#8217;s implemented on top of the <a href="https://quarkus.io/">Quarkus</a> framework and runs in <a href="https://quarkus.io/guides/building-native-image">native mode</a> on a container environment.</p>
+</div>
+<div class="paragraph">
+<p>The Machinery service is the core service of the edge device and implemented on top of the <a href="https://quarkus.io/">Quarkus framework</a>. The service is compiled in native mode using <a href="https://developers.redhat.com/blog/2021/04/14/mandrel-a-specialized-distribution-of-graalvm-for-quarkus">MandrelVM</a> to run natively into a container (possible on 64bit OS only!)</p>
+</div>
+<div class="paragraph">
+<p>Moreover, the Machinery service is designed and implemented to have the smallest memory footprint as possible and perform the transactions with the API exposed by the Factory in the shortest time. The native mode dramatically improves the performance and guarantees the full compatibility with the OCI standards and the Podman engine.</p>
+</div>
+<div class="paragraph">
+<p>The Machinery service is responsible for the emulation of a machinery producing T-shirts. The production process goes through four different stages each of the managed by a conveyor belt.</p>
+</div>
+<div class="paragraph">
+<p>The production stages are enumerated <a href="https://raw.githubusercontent.com/qiot-project/qiot-manufacturing-all-domainmodel/main/src/main/java/io/qiot/manufacturing/all/commons/domain/production/ProductionChainStageEnum.java">here</a> and can be listed as:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>WEAVING</p>
+</li>
+<li>
+<p>COLORING</p>
+</li>
+<li>
+<p>PRINTING</p>
+</li>
+<li>
+<p>PACKAGING</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Each and every production stage generates a set of random numbers representing what&#8217;s been produced and that outcome is added to the Item data object and sent to the <a href="#production-validator-service">Production Validator service</a> (Factory layer) for validation.</p>
+</div>
+<div class="paragraph">
+<p>The Machinery service starts the production of a new T-shirt every 2 seconds and the execution of each and stage job takes a random amount of time between 1 and 2 seconds. The team is open to thoughts and suggestions about the opportunity/need to make that timeframe variable for performance testing purposes.</p>
+</div>
+<div class="paragraph">
+<p>More details can be found in the <a href="https://github.com/qiot-project/qiot-manufacturing-edge-machinery">dedicated repository</a>.</p>
+</div>
+</div>
+</div>
+<h1 id="the-factory-edge-server" class="sect0"><a class="anchor" href="#the-factory-edge-server"></a>The Factory (Edge Server)</h1>
+<div class="sect1">
+<h2 id="hardware-2"><a class="anchor" href="#hardware-2"></a>Hardware</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The Edge Server is based on the powerful Intel® NUC 10 Performance kit - NUC10i7FNH.</p>
+</div>
+<div class="paragraph">
+<p>The Intel® NUC guarantees performance and stability to the container platform designed to control the facility and the machineries.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/posts/usecase-manufacturing/NUC.jpg" alt="NUC" width="100%">
+</div>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Product Collection</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Intel® NUC Kit with 10th Generation Intel® Core™ Processors</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Board Number</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">NUC10i7FNB</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Board Form Factor</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">UCFF (4" x 4")</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Socket</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Soldered-down BGA</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"># of Cores</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">6</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"># of Threads</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">12</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Processor Base Frequency</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.10 GHz</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Max Turbo Frequency</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">4.70 GHz</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">RAM</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">DDR4-2666 1.2V SO-DIMM</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Internal Drive Form Factor</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">M.2 and 2.5" Drive</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SSD</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">M.2 256Gb</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Lithography</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">14 nm</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">TDP</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">14 nm</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Lithography</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">25 W</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">DC Input Voltage Supported</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">19 VDC</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Additional technical detail can be found at the following link: <a href="https://www.intel.com/content/www/us/en/products/sku/188811/intel-nuc-10-performance-kit-nuc10i7fnh/specifications.html">link</a>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="main-diagram-3"><a class="anchor" href="#main-diagram-3"></a>Main Diagram</h2>
+<div class="sectionbody">
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/posts/usecase-manufacturing/architecture/factory.png" alt="factory" width="100%">
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="platform"><a class="anchor" href="#platform"></a>Platform</h2>
+<div class="sectionbody">
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/logo/Logo-Red_Hat-OpenShift-A-Standard-RGB.png" alt="Logo Red Hat OpenShift A Standard RGB" width="20%">
+</div>
+</div>
+<div class="paragraph">
+<p>Red Hat has worked a lot to make OpenShift footprint smaller to fit into more constrained environments by putting both control and worker capabilities into a single node.</p>
+</div>
+<div class="paragraph">
+<p>Thanks to the capabilities and functionalities of Single Node Openshift (SNO) it is now possible to leverage the overall factory management and automation with less reaources and dedicate at scale dedicated business logic to the scale of the production facilities in a secured fashion.</p>
+</div>
+<div class="paragraph">
+<p>The team is keen to provide a detailed walkthrough about How to install SNO on 10th gen NUC <a href="https://qiot-project.github.io/blog/sno-on-nuc10/">here</a></p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="software-infrastructure-components"><a class="anchor" href="#software-infrastructure-components"></a>Software infrastructure components</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="broker-service"><a class="anchor" href="#broker-service"></a>Broker service</h3>
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/logo/Logo-Red_Hat-AMQ-A-Standard-RGB.png" alt="Logo Red Hat AMQ A Standard RGB" width="20%">
+</div>
+</div>
+<div class="paragraph">
+<p>A-MQ Broker is a pure-Java multiprotocol message broker. It’s built on an efficient, asynchronous core with a fast native journal for message persistence and the option of shared-nothing state replication for high availability.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Persistence - A fast, native-IO journal or a JDBC-based store</p>
+</li>
+<li>
+<p>High availability - Shared store or shared-nothing state replication</p>
+</li>
+<li>
+<p>Advanced queueing - Last value queues, message groups, topic hierarchies, and large message support</p>
+</li>
+<li>
+<p>Multiprotocol - AMQP 1.0, MQTT, STOMP, OpenWire, and HornetQ Core</p>
+</li>
+<li>
+<p>Integration - Full integration with Red Hat JBoss EAP</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>A-MQ Broker is based on the <a href="https://activemq.apache.org/artemis/">Apache ActiveMQ Artemis</a> project.</p>
+</div>
+<div class="paragraph">
+<p>The broker service exposes the endpoint for the stage production telemetry coming from the machineries running on the edge devices. The endpoint is exposed through the <a href="https://activemq.apache.org/components/artemis/documentation/latest/openwire.html">Openwire protocol</a>, protocol of choice for the implementation of transactional asynchronous architectures.</p>
+</div>
+<div class="paragraph">
+<p>The broker offers dedicated queues for the production telemetry coming from the machineries and creates dedicated queues for the validation response from the validation service. More in detail, the broker service creates one queue for each and every machinery service awaiting for validation responses.
+Technical details about the telemetry and the endpoints to be given in the next chapters.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="cert-manager-service-issuer"><a class="anchor" href="#cert-manager-service-issuer"></a>Cert-manager service (issuer)</h3>
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/logo/logo-cert-manager.png" alt="logo cert manager" width="10%">
+</div>
+</div>
+<div class="paragraph">
+<p>Cert-manager automates certificate management in cloud native environments and thus helped with the implementation of a dynamic certificate provisioning for edge devices</p>
+</div>
+<div class="paragraph">
+<p>Cert-manager builds on top of Kubernetes, introducing certificate authorities and certificates as first-class resource types in the Kubernetes API.</p>
+</div>
+<div class="paragraph">
+<p>This makes it possible to provide 'certificates as a service' to developers working within your Kubernetes cluster.</p>
+</div>
+<div class="paragraph">
+<p>Highlights:
+Provide easy to use tools to manage certificates.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>A standardised API for interacting with multiple certificate authorities (CAs).</p>
+</li>
+<li>
+<p>Gives security teams the confidence to allow developers to self-server certificates.</p>
+</li>
+<li>
+<p>Support for ACME (Let’s Encrypt), HashiCorp Vault, Venafi, self signed and internal certificate authorities.</p>
+</li>
+<li>
+<p>Extensible to support custom, internal or otherwise unsupported CAs.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>In our design, the issuer provides service (runtime) certificates to all the devices managed by the single factory. In order to achieve the above, the the factory performs the following actions at its bootstrap time:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>The Factory registarts itself against the production plant.</p>
+</li>
+<li>
+<p>In case of registration successful, the factory receives a unique certificate for the factory; The certificate will have the form od a Delegate CA</p>
+</li>
+<li>
+<p>The Factory asks cert manager to instantiate a Delegate certificate Issuer using the above delegate certificate authority as a root certificate.</p>
+</li>
+<li>
+<p>The factory will issue runtime certificate to the edge devices registering against the factory using the newly created issuer</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="sql-storage"><a class="anchor" href="#sql-storage"></a>SQL Storage</h3>
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/logo/logo-postgresql.png" alt="logo postgresql" width="10%">
+</div>
+</div>
+<div class="paragraph">
+<p>PostgreSQL is a powerful, open source object-relational database system with over 30 years of active development that has earned it a strong reputation for reliability, feature robustness, and performance.</p>
+</div>
+<div class="paragraph">
+<p>The relational database engine is used to store non-timeseries data like:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Machinery data</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>More about PostgreSQL can be found <a href="https://www.postgresql.org/">here</a>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="nosql-storage"><a class="anchor" href="#nosql-storage"></a>NoSQL Storage</h3>
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/logo/logo-mongodb.png" alt="logo mongodb" width="30%">
+</div>
+</div>
+<div class="paragraph">
+<p>MongoDB’s document data model naturally supports JSON and its expressive query language is simple for developers to learn and use. Functionality such as automatic failover, horizontal scaling, and the ability to assign data to a location are built-in.</p>
+</div>
+<div class="paragraph">
+<p>The nosql database service is helpful when it comes to store, query and retrieve structured data sets like the json version of the <a href="https://github.com/qiot-project/qiot-manufacturing-factory-domainmodel/blob/main/src/main/java/io/qiot/manufacturing/factory/commons/domain/productline/ProductLineDTO.java">Product Line</a> model.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="business-logic-implementation"><a class="anchor" href="#business-logic-implementation"></a>Business Logic implementation</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="facility-manager"><a class="anchor" href="#facility-manager"></a>Facility Manager</h3>
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/logo/logo-quarkus.png" alt="logo quarkus" width="10%">
+</div>
+</div>
+<div class="paragraph">
+<p>It&#8217;s implemented on top of the <a href="https://quarkus.io/">Quarkus</a> framework and runs in <a href="https://quarkus.io/guides/building-native-image">native mode</a> on a container environment.</p>
+</div>
+<div class="paragraph">
+<p>The Facility Manager service is the core service of the factory layer.</p>
+</div>
+<div class="paragraph">
+<p>It is responsible for the management of the following entities in the facility:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The factory;</p>
+</li>
+<li>
+<p>The machineries;</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The machinery service also covers a few operational functionalities like:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Device subscription (pass-through);</p>
+</li>
+<li>
+<p>Certificates distribution (pass-through);</p>
+</li>
+<li>
+<p>Factory ID provider for all the services belonging to the same layer.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>At bootstrap time, the Facility Manager subscribes to the Central subscription system on the datacenter, providing its identity info (<strong>Serial ID</strong> and <strong>Name</strong>). it will receive, in turn, a unique ID (in a format of a UUID) that each and every service running on the factory layer will use when connecting to the services running on the datacenter.</p>
+</div>
+<div class="paragraph">
+<p>The response from the Plant Manager service will also contain the certificates used for mutual authentication against services running on the datacenter.</p>
+</div>
+<div class="paragraph">
+<p>The specs of the services exposed by the Facility Manager service can be found into the dedicated section.</p>
+</div>
+<div class="paragraph">
+<p>More details can be found in the <a href="https://github.com/qiot-project/qiot-manufacturing-factory-facility-manager">dedicated repository</a>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="product-line-service"><a class="anchor" href="#product-line-service"></a>Product-Line service</h3>
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/logo/logo-quarkus.png" alt="logo quarkus" width="10%">
+</div>
+</div>
+<div class="paragraph">
+<p>It&#8217;s implemented on top of the <a href="https://quarkus.io/">Quarkus</a> framework and runs in <a href="https://quarkus.io/guides/building-native-image">native mode</a> on a container environment.</p>
+</div>
+<div class="paragraph">
+<p>The Product-line service is responsible for transforming the <a href="https://raw.githubusercontent.com/qiot-project/qiot-manufacturing-datacenter-domainmodel/main/src/main/java/io/qiot/manufacturing/datacenter/commons/domain/productline/GlobalProductLineDTO.java">Global Product-line</a> into a model that supposed to be consumed by the Machineries.</p>
+</div>
+<div class="paragraph">
+<p>The transformation phase consists of a few simple steps:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Consumes the latest product line available from the Streaming service running on the Datacenter;</p>
+</li>
+<li>
+<p>Applies <a href="https://raw.githubusercontent.com/qiot-project/qiot-manufacturing-datacenter-domainmodel/main/src/main/java/io/qiot/manufacturing/datacenter/commons/domain/productline/MarginsDTO.java">Margins</a> to the basic values contained into the product line data object;</p>
+</li>
+<li>
+<p>Stores the <a href="https://raw.githubusercontent.com/qiot-project/qiot-manufacturing-factory-domainmodel/main/src/main/java/io/qiot/manufacturing/factory/commons/domain/productline/ProductLineDTO.java">outcome</a> of the previous phase into the SQL database for future distribution.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The main goal of the above functionality is to create a product line model that, merged with the margins, extends the range of possible values for the emulation (rundom number generators) performed by the <a href="#machinery-service">Machinery service</a>. That, in turn, will generate a certain percentage of values not belonging to the original range of values.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/posts/usecase-manufacturing/diagrams/validator-productline-diagram.png" alt="validator productline diagram" width="100%">
+</div>
+</div>
+<div class="paragraph">
+<p>More details can be found in the <a href="https://github.com/qiot-project/qiot-manufacturing-factory-productline">dedicated repository</a>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="production-validator-service"><a class="anchor" href="#production-validator-service"></a>Production Validator service</h3>
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/logo/logo-quarkus.png" alt="logo quarkus" width="10%">
+</div>
+</div>
+<div class="paragraph">
+<p>It&#8217;s implemented on top of the <a href="https://quarkus.io/">Quarkus</a> framework and runs in <a href="https://quarkus.io/guides/building-native-image">native mode</a> on a container environment.</p>
+</div>
+<div class="paragraph">
+<p>The Validator service is responsible for the validation of the outcome of each and every production stage performed by the <a href="#machinery-service">Machinery service</a>.</p>
+</div>
+<div class="paragraph">
+<p>It relies on the <a href="#product-line-service">Product-Line service</a> to gather the info related to the Product-line model and communicate asynchronously with the machineries through the <a href="#broker-service">Broker service</a>.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/posts/usecase-manufacturing/diagrams/validator-service-diagram.png" alt="validator service diagram" width="100%">
+</div>
+</div>
+<div class="paragraph">
+<p>More details can be found in the <a href="https://github.com/qiot-project/qiot-manufacturing-factory-productionvalidator">dedicated repository</a>.</p>
+</div>
+</div>
+</div>
+</div>
+<h1 id="datacenter" class="sect0"><a class="anchor" href="#datacenter"></a>Datacenter</h1>
+<div class="paragraph">
+<p>The Datacenter layer of the Manufacturing use-case has been designed and implemented by the team and is made up of several services and business logic to manage, store, aggregate and retrieve data.</p>
+</div>
+<div class="sect1">
+<h2 id="main-diagram-4"><a class="anchor" href="#main-diagram-4"></a>Main Diagram</h2>
+<div class="sectionbody">
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/posts/usecase-manufacturing/architecture/datacenter.png" alt="datacenter" width="100%">
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="platform-architecture"><a class="anchor" href="#platform-architecture"></a>Platform architecture</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The infrastructure of the QIoT project must have flexible imprinting and should be easily scalable both horizontally and vertically.</p>
+</div>
+<div class="paragraph">
+<p>To fulfill the scalability requirements a Cloud-based platform is needed.</p>
+</div>
+<div class="paragraph">
+<p>A graphical representation of the basic Infrastructure Architecture:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/posts/usecase-covid-19/datacenter-v2-infrastructure.png" alt="datacenter v2 infrastructure" width="100%">
+</div>
+</div>
+<div class="paragraph">
+<p>Based on the image above, here is the sizing of the infrastructure provisioned for the Openshift Container Platform:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>OCP Control Plane (master nodes)</p>
+<div class="ulist">
+<ul>
+<li>
+<p>#Servers: 3</p>
+</li>
+<li>
+<p>CPUs: 8</p>
+</li>
+<li>
+<p>RAM: 24G</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>OCP Worker Nodes:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>#Servers: 3</p>
+</li>
+<li>
+<p>CPUs: 12</p>
+</li>
+<li>
+<p>RAM: 64GB</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Storage Server: provides storage functionality to the infrastructure to store data safely and consistently on the disk. There’s no urgent/compulsory need to add this component to the infrastructure architecture, at least at the early stage of the project, because the basic amount of storage provided by the cloud platform would definitely cover all the needs described.</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Some additional storage will be needed in case of extended lifetime and participation in the project (i.e. lots more data arriving at the Data Hub). Anyway, just making use of the storage layer from the cloud provider of choice and installing Openshift Container Storage on top of it will guarantee horizontal scalability and data consistency all over the container platform out of the box.</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Vertical scalability is guaranteed by the could platform.
+Horizontal scalability is guaranteed by Openshift by using the auto-scaling feature embedded in the container platform.</p>
+</div>
+<div class="sect2">
+<h3 id="red-hat-openshift-container-platform"><a class="anchor" href="#red-hat-openshift-container-platform"></a>Red Hat Openshift Container Platform</h3>
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/logo/Logo-Red_Hat-OpenShift-A-Standard-RGB.png" alt="Logo Red Hat OpenShift A Standard RGB" width="20%">
+</div>
+</div>
+<div class="paragraph">
+<p>Red Hat OpenShift is the hybrid cloud platform of open possibility: powerful, so you can build anything and flexible, so it works anywhere.</p>
+</div>
+<div class="paragraph">
+<p>Adopting the Openshift container platform made us save tons of hors implementing features and behaviors supposed to be home cooked, otherwise:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Native pipelines using Tekton</p>
+</li>
+<li>
+<p>One-shot installation using Helm charts</p>
+</li>
+<li>
+<p>2-day operations using Operator Framework</p>
+</li>
+<li>
+<p>Container storage</p>
+</li>
+<li>
+<p>Security and Isolation</p>
+</li>
+<li>
+<p>Automate cluster scalability</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>More about Openshift Container Platform can be found <a href="https://www.openshift.com/learn/developer">here</a>.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="software-infrastructure-components-2"><a class="anchor" href="#software-infrastructure-components-2"></a>Software infrastructure components</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="stream-service"><a class="anchor" href="#stream-service"></a>Stream service</h3>
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/logo/logo-strimzi.png" alt="logo strimzi" width="20%">
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/logo/logo-kafka.png" alt="logo kafka" width="20%">
+</div>
+</div>
+<div class="paragraph">
+<p>In the forecast of the need for receiving/handling a large number of concurrent messages, A-MQ Streams is the component of choice for streaming messages through the integration and the storage layers.</p>
+</div>
+<div class="paragraph">
+<p>An internal streaming service guarantees scalability and reliability of the message flow management within the Datacenter business logic.</p>
+</div>
+<div class="paragraph">
+<p>The Stream service topics serve a variety of functionalities and processes impacting the following workflows:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Product-line</strong>: New Global product-line are delivered to the streaming service for asyncronous consumption by the factories. This workflow requires persistence and off-set management, both provided by the A-MQ Streams product;</p>
+</li>
+<li>
+<p><strong>Telemetry</strong>: A-MQ perfectly fits into the canonical usecase of telemetry stream and management. Compared to the previous use-case implemented by the community, the team decided to go for a more structured and scalable approach based on a could-native product, rather that just relying on a communication protocol like <a href="https://mqtt.org/">MQTT protocol</a>.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The implementation choices above make it easy to fine tune the connections, the scalability, the message flow, and retention separately.</p>
+</div>
+<div class="paragraph">
+<p>This design makes it a lot easier to decouple the implementation details of the integration services responsible for offloading (consuming messages from) every topic and storing the values into the storage tier, improving horizontal scalability.</p>
+</div>
+<div class="paragraph">
+<p>More about A-MQ Streams can be found <a href="https://developers.redhat.com/blog/2019/06/06/accessing-apache-kafka-in-strimzi-part-1-introduction/">here</a>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="timeseries-storage"><a class="anchor" href="#timeseries-storage"></a>Timeseries Storage</h3>
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/logo/logo-influxdb.png" alt="logo influxdb" width="20%">
+</div>
+</div>
+<div class="paragraph">
+<p>Timeseries database engines are the technology of choice to store the telemetry coming from the IoT devices in an Edge Computing scenario.</p>
+</div>
+<div class="paragraph">
+<p>For this use-case the team has picked up Influxdb, as it guarantees scalability, reliability and a level of performances not achievable using other competitors on the market.</p>
+</div>
+<div class="paragraph">
+<p>Moreover, InfluxDB is the essential time series toolkit — dashboards, queries, tasks and agents all in one place.</p>
+</div>
+<div class="paragraph">
+<p>As well as for the previous software infrastructure components used to receive and stream data, we have decided to go for a separation by telemetry-time.</p>
+</div>
+<div class="paragraph">
+<p>The Timeseries Storage hosts the data relative to one telemetry only:</p>
+</div>
+<div class="paragraph">
+<p>More about InfluxDB can be found <a href="https://www.influxdata.com/products/influxdb/">here</a>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="sql-storage-2"><a class="anchor" href="#sql-storage-2"></a>SQL Storage</h3>
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/logo/logo-postgresql.png" alt="logo postgresql" width="10%">
+</div>
+</div>
+<div class="paragraph">
+<p>PostgreSQL is a powerful, open source object-relational database system with over 30 years of active development that has earned it a strong reputation for reliability, feature robustness, and performance.</p>
+</div>
+<div class="paragraph">
+<p>The relational database engine is used to store non-timeseries data like:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Factory-related data</p>
+</li>
+<li>
+<p>Machinery-related data</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>More about PostgreSQL can be found <a href="https://www.postgresql.org/">here</a>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="nosql-storage-2"><a class="anchor" href="#nosql-storage-2"></a>NoSQL Storage</h3>
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/logo/logo-mongodb.png" alt="logo mongodb" width="30%">
+</div>
+</div>
+<div class="paragraph">
+<p>MongoDB’s document data model naturally supports JSON and its expressive query language is simple for developers to learn and use. Functionality such as automatic failover, horizontal scaling, and the ability to assign data to a location are built-in.</p>
+</div>
+<div class="paragraph">
+<p>The nosql database service is helpful when it comes to store, query and retrieve structured data sets like the json version of the <a href="https://raw.githubusercontent.com/qiot-project/qiot-manufacturing-datacenter-domainmodel/main/src/main/java/io/qiot/manufacturing/datacenter/commons/domain/productline/GlobalProductLineDTO.java">Global Product-line</a> model.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="cert-manager-service"><a class="anchor" href="#cert-manager-service"></a>Cert-manager service</h3>
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/logo/logo-cert-manager.png" alt="logo cert manager" width="10%">
+</div>
+</div>
+<div class="paragraph">
+<p>Cert-manager automates certificate management in cloud native environments and thus helped with the implementation of a dynamic certificate provisioning for edge devices</p>
+</div>
+<div class="paragraph">
+<p>cert-manager builds on top of Kubernetes, introducing certificate authorities and certificates as first-class resource types in the Kubernetes API.</p>
+</div>
+<div class="paragraph">
+<p>This makes it possible to provide 'certificates as a service' to developers working within your Kubernetes cluster.</p>
+</div>
+<div class="paragraph">
+<p>Highlights</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Provide easy to use tools to manage certificates.</p>
+</li>
+<li>
+<p>A standardised API for interacting with multiple certificate authorities (CAs).</p>
+</li>
+<li>
+<p>Gives security teams the confidence to allow developers to self-server certificates.</p>
+</li>
+<li>
+<p>Support for ACME (Let&#8217;s Encrypt), HashiCorp Vault, Venafi, self signed and internal certificate authorities.</p>
+</li>
+<li>
+<p>Extensible to support custom, internal or otherwise unsupported CAs.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>More about out cert-manager implementation <a href="https://qiot-project.github.io/blog/qiot-cert-manager/">here</a></p>
+</div>
+<div class="paragraph">
+<p>More about Cert-Manageranager can be found <a href="https://cert-manager.io/">here</a>.</p>
+</div>
+<div class="paragraph">
+<p>Below you can find an overview of our distributed certificate authority implementation (using the Delecate CA described in the previous chapter)</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/posts/usecase-manufacturing/issuer.png" alt="issuer" width="100%">
+</div>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Enable Kubernetes Auth Engine in Vault.</p>
+</li>
+<li>
+<p>Authorize Vault SA in k8s to Token Review.</p>
+</li>
+<li>
+<p>Enable PKI engine.</p>
+</li>
+<li>
+<p>Configure PKI role name in Vault.</p>
+</li>
+<li>
+<p>Configure PKI policy in Vault.</p>
+</li>
+<li>
+<p>Authorize/Binding issuer SA to use (policy) the PKI role.</p>
+</li>
+<li>
+<p>Create Vault Issuer in app namespace with issuer SA.</p>
+</li>
+<li>
+<p>Cert Manager validates the credentials of the issuer against Vault.</p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="business-logic-implementations"><a class="anchor" href="#business-logic-implementations"></a>Business Logic implementations</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The Datacenter business logic is built on top of Quarkus framework. All the services run natively on top of the container technology and benefit from the features from the Serverless architecture.</p>
+</div>
+<div class="paragraph">
+<p>A separate discussion must be done for the Dashboard, which exposes diagrams based on the telemetry coming from the measurement stations and in implemented on top of RedHat build of Node.js</p>
+</div>
+<div class="sect2">
+<h3 id="registration-service"><a class="anchor" href="#registration-service"></a>Registration service</h3>
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/logo/logo-quarkus.png" alt="logo quarkus" width="10%">
+</div>
+</div>
+<div class="paragraph">
+<p>It&#8217;s implemented on top of the <a href="https://quarkus.io/">Quarkus</a> framework and runs in <a href="https://quarkus.io/guides/building-native-image">native mode</a> on a container environment.</p>
+</div>
+<div class="paragraph">
+<p>It&#8217;s responsible for the provisioning and maintainance of the certificates used by services to connect to the other layers of the architecture using the mutual authentication method.</p>
+</div>
+<div class="paragraph">
+<p>The main goal of the registration service is to implement a façade between the <a href="#plant-manager-service">Plant Manager service</a> and the <a href="#cert-manager-service">Cert-manager service</a>. To achive this goal and to make the access to the service limited, the service is not exposed by the router.</p>
+</div>
+<div class="paragraph">
+<p>The interaction between the registration service and the Cert-manmager service is supported by the <a href="https://developers.redhat.com/articles/2021/07/16/whats-new-fabric8-kubernetes-client-version-550#">fabric8 Kubernetes plugin</a></p>
+</div>
+<div class="paragraph">
+<p>More details can be found in the <a href="https://github.com/qiot-project/qiot-manufacturing-datacenter-registration">dedicated repository</a>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="plant-manager-service"><a class="anchor" href="#plant-manager-service"></a>Plant Manager service</h3>
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/logo/logo-quarkus.png" alt="logo quarkus" width="10%">
+</div>
+</div>
+<div class="paragraph">
+<p>It&#8217;s implemented on top of the <a href="https://quarkus.io/">Quarkus</a> framework and runs in <a href="https://quarkus.io/guides/building-native-image">native mode</a> on a container environment.</p>
+</div>
+<div class="paragraph">
+<p>It&#8217;s responsible for the management of the overall landscape:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Factories</strong> subscribe to the plant-manager and obtain a unique UUID and a trust store containing both the certificates for the connection to the datacenter and from the Machineries;</p>
+</li>
+<li>
+<p><strong>Machineries</strong> subscribe to the facility manager service which, in turn, forwards the request to the plant manager service. They Obtain a unique UUID and a trust store containing the certificates to connect to the services exposed by the Factory layer.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Landscape data are stored in the <a href="#sql-storage">SQL Storage</a> to take advantage of the CRUD operations.</p>
+</div>
+<div class="paragraph">
+<p>Moreover, the service makes use of the 2nd level cache to speed up the read operations.</p>
+</div>
+<div class="paragraph">
+<p>It exposes a rest API secured with mutual authentication. Details about the exposed endpoints are available in the <a href="#Specs">[Specs]</a> section</p>
+</div>
+<div class="paragraph">
+<p>More details can be found in the <a href="https://github.com/qiot-project/qiot-manufacturing-datacenter-plant-manager">dedicated repository</a>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="global-product-line-service"><a class="anchor" href="#global-product-line-service"></a>Global Product-line service</h3>
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/logo/logo-quarkus.png" alt="logo quarkus" width="10%">
+</div>
+</div>
+<div class="paragraph">
+<p>It&#8217;s implemented on top of the <a href="https://quarkus.io/">Quarkus</a> framework and runs in <a href="https://quarkus.io/guides/building-native-image">native mode</a> on a container environment.</p>
+</div>
+<div class="paragraph">
+<p>The Global Product-line service is responsible for managing the Product-line models at the central level. The service can either:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Generate a new random <a href="https://raw.githubusercontent.com/qiot-project/qiot-manufacturing-datacenter-domainmodel/main/src/main/java/io/qiot/manufacturing/datacenter/commons/domain/productline/GlobalProductLineDTO.java">Global Product-line</a>;</p>
+</li>
+<li>
+<p>Receive one from the GUI (not yet implemented) through REST API.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The Product-line model is validated and stored into the <a href="#sql-storage">SQL Storage</a>.</p>
+</div>
+<div class="paragraph">
+<p>More details can be found in the <a href="https://github.com/qiot-project/qiot-manufacturing-datacenter-productline">dedicated repository</a>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="event-collector-service"><a class="anchor" href="#event-collector-service"></a>Event Collector service</h3>
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/logo/logo-quarkus.png" alt="logo quarkus" width="10%">
+</div>
+</div>
+<div class="paragraph">
+<p>It&#8217;s implemented on top of the <a href="https://quarkus.io/">Quarkus</a> framework and runs in <a href="https://quarkus.io/blog/runtime-performance/">JVM mode</a> on a container environment.</p>
+</div>
+<div class="paragraph">
+<p>This service is responsible for consuming the telemetry coming from the <a href="#stream-service">Stream service</a>.The consumed paylod gets calidated, eventually decorated or adapted, and finally stored into the <a href="#timeseries-storage">Timeseries Storage</a>.</p>
+</div>
+<div class="paragraph">
+<p>The team decided to go for a pure microservice implementation, dedicating one service to each and every telemetry type. Thus, all the services belonging to the event-collector family must extend some common abstract components that can be found into the <em>Commons</em> repositories (<a href="https://github.com/qiot-project/qiot-manufacturing-datacenter-utilities/tree/main/src/main/java/io/qiot/manufacturing/datacenter/commons/service/telemetry">qiot-manufacturing-datacenter-utilities</a>) and must be implemented adhering to the microservices atomicity, scalability and isolation recommended practices. Creating additional serviecs to handle different types of telemetries is left to the audience ;-)</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Thanks to the Commons module it&#8217;s easy to extend the group of services to make them accept an additional telemetry type;</p>
+</li>
+<li>
+<p>As the frequency of incoming messages per telemetry type can vary, scaling feature affects only one service in the group;</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Due to the incompatibility of the <a href="https://github.com/influxdata/influxdb-client-java">Java Client for InfluxDB</a> with Quarkus native mode, the service is compiled using the standard java fast-jar mode.</p>
+</div>
+<div class="paragraph">
+<p>More details can be found in the <a href="https://github.com/qiot-project/qiot-manufacturing-datacenter-event-collector">dedicated repository</a>.</p>
+</div>
+</div>
+</div>
+</div>]]></content><author><name>Andrea Battaglia</name><email>abattagl@redhat.com</email></author><category term="usecase" /><summary type="html"><![CDATA[The team has been listening to the Market needs and investments for quite a few months recently. In addition to that, we tried to understand what is the main trend in the innovation space, as well as the latest and greatest in terms of new projects and customer requests.]]></summary></entry><entry><title type="html">Call for proposals 2021</title><link href="/blog/call-for-proposals-2021/" rel="alternate" type="text/html" title="Call for proposals 2021" /><published>2021-04-20T00:00:00+00:00</published><updated>2021-04-20T00:00:00+00:00</updated><id>/blog/call-for-proposals-2021</id><content type="html" xml:base="/blog/call-for-proposals-2021/"><![CDATA[<div class="paragraph">
+<p>Hi everyone!</p>
+</div>
+<div class="paragraph">
+<p>It&#8217;s time for the QIoT community to focus on a new Edge Computing use-case.</p>
+</div>
+<div class="paragraph">
+<p>We are calling you all for proposals as we believe our contribution should meet the expectations and the needs and should help addressing risks and challenges of the Edge Computing ecosystem: Subject Matter Experts, System Integrators, Customers, etc</p>
+</div>
+<div class="paragraph">
+<p>A new use-case is a great stepping-stone to modernize existing architectures and keep improving the blueprints adhering to the latest specs. To give you a few examples:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Certificate provisioning and mutual authentication</p>
+</li>
+<li>
+<p>Edge workload distribution</p>
+</li>
+<li>
+<p>Cloud-native events</p>
+</li>
+<li>
+<p>Distributed CI/CD</p>
+</li>
+<li>
+<p>Pipelines and charts</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>With some boundaries:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><span class="underline">Container Platform</span> of choice: <strong>Openshift</strong></p>
+</li>
+<li>
+<p><span class="underline">Cloud-Native framework</span> of choice: <strong>Quarkus</strong></p>
+</li>
+</ul>
+</div>
+<div class="sect1">
+<h2 id="proposal-submission-how-to"><a class="anchor" href="#proposal-submission-how-to"></a>Proposal submission: How to</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Fork</strong> the <a href="https://github.com/qiot-project/qiot-ubi-use-case-proposals">repository</a> we created to collect all the proposal submissions;</p>
+</li>
+<li>
+<p>Create a <strong>sub-folder under "2021"</strong> and name it with the name of your proposal and place all your submission content there:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Create <strong>README</strong> to argument the followings:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Vertical (e.g.: manufacturing, automotive, telco, healthcare, etc) the use-case falls into;</p>
+</li>
+<li>
+<p>Use-case;</p>
+</li>
+<li>
+<p>Technology stack;</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Add everything that could draw a clear and understandable big picture of your proposal.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Submit a PR to get your content merged;</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>We&#8217;ve set up <strong>GitHub Discussion</strong> on the <a href="https://github.com/qiot-project/qiot-ubi-use-case-proposals/discussions">repository</a> to encourage and support open discussion and debate around the submitted proposals.</p>
+</div>
+<div class="paragraph">
+<p>The best proposals will be put to the vote by public survey.</p>
+</div>
+<div class="paragraph">
+<p><span class="underline"><strong>Deadline: May 24th 2021</strong></span></p>
+</div>
+<div class="paragraph">
+<p><em>The QIoT team</em></p>
+</div>
+</div>
+</div>]]></content><author><name>Andrea Battaglia</name><email>abattagl@redhat.com</email></author><category term="announcement" /><category term="announcement" /><summary type="html"><![CDATA[Hi everyone!]]></summary></entry></feed>

@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <title>
+    Install Single Node OpenShift on Intel® 10th gen NUC - QIoT project
+    
+  </title>
+
+  <meta name="description" content="This post is an update for 4.10 / 2023, from the original blog post in 2021, which contains some minor screenshot and version updates.">
+
+  <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+  <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="/assets/vendor/bootstrap/css/bootstrap.min.css">
+
+  <link rel="stylesheet" href="/assets/vendor/fontawesome-free/css/all.min.css">
+
+  <link rel="stylesheet" href="/assets/main.css">
+  <link rel="canonical" href="/blog/sno-on-nuc10/">
+  <link rel="alternate" type="application/rss+xml" title="QIoT project" href="/feed.xml">
+
+  
+    
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-SK96X617FT"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+  
+    gtag('config', 'G-SK96X617FT');
+  </script>
+
+  
+
+</head>
+
+
+<body>
+
+  <!-- Navigation -->
+<nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="/">QIoT project</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+      Menu
+      <i class="fa fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+<!--         <li class="nav-item"> -->
+<!--           <a class="nav-link" href="/">Home</a> -->
+<!--         </li> -->
+        <li class="nav-item">
+          <a class="nav-link" href="/announcements">Announcements</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/usecases">Use Cases</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/projects">Projects</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/blog">Blog</a>
+        <li class="nav-item">
+          <a class="nav-link" href="/community">Community</a>
+        </li>
+      </ul>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  <!-- Page Header -->
+
+<header class="masthead" style="background-image: url('/assets/images/main/rh-hackfest-banners_3840x2160.png')">
+  
+    <div class="overlay"></div>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-16 col-md-10 mx-auto">
+          <div class="post-heading">
+            <h1>Install Single Node OpenShift on Intel® 10th gen NUC</h1>
+            
+            <h2 class="subheading">---</h2>
+            
+            <span class="meta">
+            
+            
+			  
+			     
+			        
+			            <img class="headshot" src="https://www.gravatar.com/avatar/272afa7e145553728bca23a16fe5b3f8">
+			        
+			            <a href="#">Posted by James Read</a>
+			    
+			    on March 01, 2023 &middot; <span class="reading-time" title="Estimated read time">
+  
+   15 mins  read </span>
+            
+            </span>
+            <br>
+            <span class="meta">
+			  
+                Contributors:
+                <br>
+                
+
+                
+                  
+			      
+			        <img class="headshot" alt="Mario Parra" src="https://www.gravatar.com/avatar/ea9a710282723ab8f6dc9c98014f6485">
+			      
+                
+                  
+			      
+			        <img class="headshot" alt="Andrea Battaglia" src="https://www.gravatar.com/avatar/58d8a28d588d957040fd5288cc208a41">
+			      
+                
+                  
+			      
+			        <img class="headshot" alt="Markus Koch" src="https://www.gravatar.com/avatar/2b63e01ac2adce629901592f63f52427">
+			      
+                
+			  
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-16 col-md-10 mx-auto">
+
+        <div id="toc" class="toc">
+<div id="toctitle">Table of Contents</div>
+<ul class="sectlevel0">
+<li><a href="#introduction">Introduction</a></li>
+<li><a href="#prerequisites">Prerequisites:</a>
+<ul class="sectlevel1">
+<li><a href="#hardware">Hardware</a></li>
+<li><a href="#single-node-openshift-sno-4-10">Single Node Openshift (SNO) 4.10+</a></li>
+<li><a href="#additional-requirements">Additional requirements:</a></li>
+<li><a href="#optional-requirements">Optional requirements</a></li>
+</ul>
+</li>
+<li><a href="#the-discovery-iso">The discovery ISO</a>
+<ul class="sectlevel1">
+<li><a href="#create-the-iso">Create the ISO</a></li>
+<li><a href="#burn-iso-to-usb-flash-drive">Burn ISO to USB flash drive</a></li>
+</ul>
+</li>
+<li><a href="#installation">Installation</a>
+<ul class="sectlevel1">
+<li><a href="#start-the-installation">Start the installation</a>
+<ul class="sectlevel2">
+<li><a href="#the-storage-page">The Storage page</a></li>
+<li><a href="#the-networking-page">The Networking page</a></li>
+<li><a href="#the-review-page">The Review page</a></li>
+<li><a href="#the-installation-process-page">The Installation process page</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#dns-required-configuration">DNS required configuration</a>
+<ul class="sectlevel1">
+<li><a href="#option-a-external-dns-highly-recommended">Option A) External DNS (Highly recommended)</a></li>
+<li><a href="#redirect-dns-for-subdomain-cluster_name-cluster_domain-to-the-nuc">Redirect DNS for subdomain <code>cluster_name.cluster_domain</code> to the NUC</a></li>
+<li><a href="#option-b-local-resolution">Option B) Local resolution:</a></li>
+</ul>
+</li>
+<li><a href="#start-using-sno-on-intel-nuc">Start using SNO on Intel® NUC</a></li>
+</ul>
+</div>
+<div class="paragraph">
+<p>This post is an update for 4.10 / 2023, from the original blog post in 2021, which contains some minor screenshot and version updates.</p>
+</div>
+<h1 id="introduction" class="sect0"><a class="anchor" href="#introduction"></a>Introduction</h1>
+<div class="paragraph">
+<p>The next guide will show how to deploy a Single Node Openshift (SNO) to a physical Intel® NUC.</p>
+</div>
+<h1 id="prerequisites" class="sect0"><a class="anchor" href="#prerequisites"></a>Prerequisites:</h1>
+<div class="paragraph">
+<p>Minimum prerequisites for the installation of single node openshift must be respected so I decided to provision a set of hardware components powerful enough to run services on the platform once it&#8217;s been installed from both the computational power and the resources availability perspective.</p>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s have a look at what it&#8217;s needed to install Single Node Openshift on a 10th gen Intel® NUC.</p>
+</div>
+<div class="sect1">
+<h2 id="hardware"><a class="anchor" href="#hardware"></a>Hardware</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Intel NUC model</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">NUC10i7FNK</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Memory capacity</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">64.00 GiB</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">CPU model name</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Intel&#174; Core&#8482; i7-10710U CPU @ 1.10GHz</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">CPU cores and clock speed</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">6 cores (12 with hyper-threaded) at 4,700 MHz</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">CPU architecture</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">x86_64</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SSD Disk</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Samsung SSD M.2 256GB</p></td>
+</tr>
+</tbody>
+</table>
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/posts/usecase-manufacturing/NUC.jpg" alt="NUC" width="100%">
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="single-node-openshift-sno-4-10"><a class="anchor" href="#single-node-openshift-sno-4-10"></a>Single Node Openshift (SNO) 4.10+</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>SNO requires the following minimum host resources:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Virtual CPU</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">8</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Virtual RAM</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">32 GB</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Storage</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">120 GB</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect1">
+<h2 id="additional-requirements"><a class="anchor" href="#additional-requirements"></a>Additional requirements:</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In order to go through the installation process, the following additioal components are required:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>And a Red Hat account, with access to <a href="https://console.redhat.com/openshift/" class="bare">https://console.redhat.com/openshift/</a></p>
+</li>
+<li>
+<p>USB flash drive &gt;= 2GB</p>
+</li>
+<li>
+<p>DHCP is required like IPI (Installer Provisioned Infrastructure) installations</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="optional-requirements"><a class="anchor" href="#optional-requirements"></a>Optional requirements</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The following are optional requirements, but highly recommended:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Generated a ssh key to connect to the node from your computer with ssh</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">$ ssh-keygen -t ed25519 -N '' -f ~/.ssh/id_rsa
+
+$ cat ~/.ssh/id_rsa.pub
+ssh-rsa AAAAB3NzaC1yc[...]</code></pre>
+</div>
+</div>
+</div>
+</div>
+<h1 id="the-discovery-iso" class="sect0"><a class="anchor" href="#the-discovery-iso"></a>The discovery ISO</h1>
+<div class="paragraph">
+<p>Deploying Openshift clusters with a discovery ISO is a functionality in Tech-Preview.</p>
+</div>
+<div class="paragraph">
+<p>The above taking into consideration that the fully SNO installation is a proof-of-concept without high availability or support.</p>
+</div>
+<div class="paragraph">
+<p>The use of the discovery ISO will help us especially in this case by not working with VMs.</p>
+</div>
+<div class="paragraph">
+<p>We will burn it to the USB memory to launch the installation process, without any interaction required until the SNO installation ends.</p>
+</div>
+<div class="sect1">
+<h2 id="create-the-iso"><a class="anchor" href="#create-the-iso"></a>Create the ISO</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>To create the discovery ISO you need to login and access  <a href="https://console.redhat.com/openshift/" class="bare">https://console.redhat.com/openshift/</a></p>
+</div>
+<div class="paragraph">
+<p>Once you are there, click on the “Create cluster” button, select <strong>Datacenter</strong>.</p>
+</div>
+<div class="paragraph">
+<p>Then under Assisted Installer, push the new <strong>Create cluster</strong> button.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/posts/sno-on-nuc10/img01.png" alt="img01" width="100%">
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Note:</strong> During testing for this hackfest, it seems that SNO 4.11 and 4.12 cause kernel panics after bootstrap. 4.10 works, and is close enough to the ARO clusters (4.11) to work. You may try other versions, or upgrades, at your leisure.</p>
+</div>
+<div class="paragraph">
+<p>You&#8217;ll be asked to fill a form with the following info:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Set the Cluster name and Base domain.</p>
+</li>
+<li>
+<p>Mark the checkbox to install single node OpenShift (SNO) and accept the warning message.</p>
+</li>
+<li>
+<p>Select the OpenShift version: <strong>4.10.52</strong></p>
+</li>
+<li>
+<p>Edit pull secret (no need to).</p>
+</li>
+</ul>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/posts/usecase-retail/sno-details.png" alt="sno details" width="100%">
+</div>
+</div>
+<div class="paragraph">
+<p>Click Next to continue to the Host discovery section:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/posts/sno-on-nuc10/img03.png" alt="img03" width="100%">
+</div>
+</div>
+<div class="paragraph">
+<p>Then click on button “Generate Discovery ISO”</p>
+</div>
+<div class="paragraph">
+<p>Select <strong>Minimal image file</strong>.</p>
+</div>
+<div class="paragraph">
+<p>Paste your public key (check <a href="#optional-requirements">Optional requirements</a> section)</p>
+</div>
+<div class="paragraph">
+<p>In case you need to add a proxy configuration for your setup, this is the time to define it.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/posts/sno-on-nuc10/img04.png" alt="img04" width="100%">
+</div>
+</div>
+<div class="paragraph">
+<p>Click on “Generate Discovery ISO” button, a temporary download link will appear</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/posts/sno-on-nuc10/img05.png" alt="img05" width="100%">
+</div>
+</div>
+<div class="paragraph">
+<p>Copy the field “Command to download the ISO” or download to your PC with button “Download Discovery ISO”</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/posts/sno-on-nuc10/img06.png" alt="img06" width="100%">
+</div>
+</div>
+<div class="paragraph">
+<p>Once the download of the Discovery ISO is complete, you are ready to burn it to the USB flash drive.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="burn-iso-to-usb-flash-drive"><a class="anchor" href="#burn-iso-to-usb-flash-drive"></a>Burn ISO to USB flash drive</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Obviously, start by connecting your USB flash drive to your computer.</p>
+</div>
+<div class="paragraph">
+<p>Fedora / RHEL:</p>
+</div>
+<div class="paragraph">
+<p>Let’s check the path of the device with “sudo fdisk -l”.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/posts/sno-on-nuc10/img07.png" alt="img07" width="100%">
+</div>
+</div>
+<div class="paragraph">
+<p>You need to identify the path of type /dev/sdN, in my case is /dev/sda if yours takes another path, replace it in the next step.</p>
+</div>
+<div class="paragraph">
+<p>Let’s burn the ISO to the USB with the command;</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>sudo dd if=discovery_image_sno01.iso of=/dev/sda status=progress</pre>
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/posts/sno-on-nuc10/img08.png" alt="img08" width="100%">
+</div>
+</div>
+</div>
+</div>
+<h1 id="installation" class="sect0"><a class="anchor" href="#installation"></a>Installation</h1>
+<div class="paragraph">
+<p>The whole installation process is performed in several phases.</p>
+</div>
+<div class="paragraph">
+<p>Each and every installation phase can be monitored and customized from the <a href="https://console.redhat.com/openshift/">remote interface</a>.</p>
+</div>
+<div class="paragraph">
+<p>This section will guide you through the installation process and will highlight the potential issues and customization you&#8217;ll be asked to apply to the SNO configuration.</p>
+</div>
+<div class="sect1">
+<h2 id="start-the-installation"><a class="anchor" href="#start-the-installation"></a>Start the installation</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Plug the USB flash drive to the Intel NUC, don’t forget to connect also the ethernet cable.</p>
+</div>
+<div class="paragraph">
+<p>You&#8217;ll also need to connect a keyboard and a monitor to perform take preliminary actions in order to make the NUC boot from the USB flash drive:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Power the NUC on;</p>
+</li>
+<li>
+<p>When the NUC logo shows on the screen, Press F10 to access the boot menu;</p>
+<div class="ulist">
+<ul>
+<li>
+<p>If you are keen to apply persistent changes to the boot menu, press F2 instead and enter the BIOS menu;</p>
+</li>
+<li>
+<p><strong>Do not apply any changes to the default BIOS performance config</strong>, just set up the Boot section accordingly;</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Select your USB flash drive from the boot menu to boot from it;</p>
+</li>
+<li>
+<p>Return to the browser at the <strong>Host Discovery</strong> page;</p>
+</li>
+<li>
+<p>After a short time the status of your host will turn into <strong>Ready</strong>.</p>
+</li>
+</ul>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/posts/usecase-retail/host-inventory-ready.png" alt="host inventory ready" width="100%">
+</div>
+</div>
+<div class="sect2">
+<h3 id="the-storage-page"><a class="anchor" href="#the-storage-page"></a>The Storage page</h3>
+<div class="paragraph">
+<p>Leave the formatting options as default, to format the SSD, but not the flash drive that you are using to install SNO! :-)</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/posts/usecase-retail/format-osdisk.png" alt="format osdisk" width="100%">
+</div>
+</div>
+<div class="paragraph">
+<p>Click Next to continue to Networking section.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="the-networking-page"><a class="anchor" href="#the-networking-page"></a>The Networking page</h3>
+<div class="paragraph">
+<p>In the networking section you&#8217;ll be asked to pick a machine network. You can probably leave everything here as default unless you need to setup anything differently. Note that you should select "OVN" as the networking standard in modern OpenShift.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/posts/usecase-retail/networking.png" alt="networking" width="100%">
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="the-review-page"><a class="anchor" href="#the-review-page"></a>The Review page</h3>
+<div class="paragraph">
+<p>In this page you can review all the info associated to your cluster.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/posts/usecase-retail/review.png" alt="review" width="100%">
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="the-installation-process-page"><a class="anchor" href="#the-installation-process-page"></a>The Installation process page</h3>
+<div class="paragraph">
+<p>This page gives you an overview of the overall installation process.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/posts/usecase-retail/installationProgress.png" alt="installationProgress" width="100%">
+</div>
+</div>
+<div class="paragraph">
+<p>The logs of the cluster and node installation can be consulted:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/posts/sno-on-nuc10/img13.png" alt="img13" width="100%">
+</div>
+</div>
+<div class="paragraph">
+<p>Once the installation process reboots, the machine will need to boot from the disk.</p>
+</div>
+<div class="paragraph">
+<p>In case the machine keeps booting from the USB flash drive. the installer will warn you about it:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/posts/sno-on-nuc10/boot-from-disk.png" alt="boot from disk" width="100%">
+</div>
+</div>
+<div class="paragraph">
+<p>Remove the USB and reboot the Host.</p>
+</div>
+<div class="paragraph">
+<p>It will take about 30 minutes to the installation process to complete. Duting that timeframe, the process will complete the installation of the SNO on the machine and will perform an update of the current version, up to the latest fix version (e.g.: 4.8.2 &#8594; 4.8.9).</p>
+</div>
+<div class="paragraph">
+<p>Once the installation process is complete you will obtain the kubeadmin password and the url to login to the console:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/posts/sno-on-nuc10/img14.png" alt="img14" width="100%">
+</div>
+</div>
+</div>
+</div>
+</div>
+<h1 id="dns-required-configuration" class="sect0"><a class="anchor" href="#dns-required-configuration"></a>DNS required configuration</h1>
+<div class="paragraph">
+<p>In order to access the SNO Web Console, you need to setup the hostname resolution for the SNO running on the NUC.</p>
+</div>
+<div class="paragraph">
+<p>Given:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">XXX.XXX.XXX.XXX = your SNO IP</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>It&#8217;s possible to pick up one of the following options:</p>
+</div>
+<div class="sect1">
+<h2 id="option-a-external-dns-highly-recommended"><a class="anchor" href="#option-a-external-dns-highly-recommended"></a>Option A) External DNS (Highly recommended)</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Use an external DNS server or local configuration to resolve the SNO hostname.</p>
+</div>
+<div class="paragraph">
+<p>Add the following records to your DNS server (recommended)</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">api.cluster_name.cluster_domain      A	XXX.XXX.XXX.XXX
+*.apps.cluster_name.cluster_domain   A	XXX.XXX.XXX.XXX</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Optional:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">cluster_name.cluster_domain	A	XXX.XXX.XXX.XXX</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="redirect-dns-for-subdomain-cluster_name-cluster_domain-to-the-nuc"><a class="anchor" href="#redirect-dns-for-subdomain-cluster_name-cluster_domain-to-the-nuc"></a>Redirect DNS for subdomain <code>cluster_name.cluster_domain</code> to the NUC</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>During the installation of Single Node Openshift  a fully functional DNS server with the required wildcard DNS is configured. So you can redirect all DNS queries for the subdomain <code>cluster_name.clusterdomain</code> to the NUC</p>
+</div>
+<div class="paragraph">
+<p>Modern Linux Systems like RHEL or Fedora use NetworkManager for Networking configuration and use dnsmasq for local DNS caching. To setup DNS on a RHEL 8 client you can create the file <code>/etc/NetworkManager/dnsmasq.d</code> with the follwoing content:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">server=/apps.cluster_name.cluster_domain/XXX.XXX.XXX.XXX
+host-record=api.cluster_name.cluster_domain,XXX.XXX.XXX.XXX</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Then power-cycle NetworkManager and you are good to go.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">$ sudo systemctl NetworkManager restart</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="option-b-local-resolution"><a class="anchor" href="#option-b-local-resolution"></a>Option B) Local resolution:</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Local resolution is limited because you cannot specify a wildcard record in your hosts file, meaning you need to set key URLs manually, like so;</p>
+</div>
+<div class="paragraph">
+<p>Update your local /etc/hosts or /etc/resolve.conf files</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">XXX.XXX.XXX.XXX	api.cluster_name.cluster_domain
+XXX.XXX.XXX.XXX	oauth-openshift.apps.cluster_name.cluster_domain
+XXX.XXX.XXX.XXX	console-openshift-console.apps.cluster_name.cluster_domain
+XXX.XXX.XXX.XXX	grafana-openshift-monitoring.apps.cluster_name.cluster_domain
+XXX.XXX.XXX.XXX	thanos-querier-openshift-monitoring.apps.cluster_name.cluster_domain
+XXX.XXX.XXX.XXX	prometheus-k8s-openshift-monitoring.apps.cluster_name.cluster_domain
+XXX.XXX.XXX.XXX	alertmanager-main-openshift-monitoring.apps.cluster_name.cluster_domain</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Optional:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">XXX.XXX.XXX.XXX	cluster_name.cluster_domain</code></pre>
+</div>
+</div>
+</div>
+</div>
+<h1 id="start-using-sno-on-intel-nuc" class="sect0"><a class="anchor" href="#start-using-sno-on-intel-nuc"></a>Start using SNO on Intel® NUC</h1>
+<div class="paragraph">
+<p>Then you can access your new Single Node Openshift at the following URL:</p>
+</div>
+<div class="paragraph">
+<p><a href="https://console-openshift-console.apps.cluster_name.cluster_domain" class="bare">https://console-openshift-console.apps.cluster_name.cluster_domain</a></p>
+</div>
+
+        <div id="share-bar">
+
+    <hr>
+
+    <h4>Share this:</h4>
+
+    <div class="share-buttons">
+        <a  href="https://www.facebook.com/sharer/sharer.php?u=/blog/sno-on-nuc10/"
+            onclick="window.open(this.href, 'pop-up', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;"
+            title="Share on Facebook" >
+            <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-2x"></i>
+                <i class="fab fa-facebook-f fa-stack-1x fa-inverse"></i>
+              </span>
+        </a>
+        <a  href="https://twitter.com/intent/tweet?text=Install Single Node OpenShift on Intel® 10th gen NUC&url=/blog/sno-on-nuc10/"
+            onclick="window.open(this.href, 'pop-up', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;"
+            title="Share on Twitter" >
+            <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-2x"></i>
+                <i class="fab fa-twitter fa-stack-1x fa-inverse"></i>
+              </span>
+        </a>
+        <a  href="http://www.reddit.com/submit?url=/blog/sno-on-nuc10/"
+            onclick="window.open(this.href, 'pop-up', 'left=20,top=20,width=900,height=500,toolbar=1,resizable=0'); return false;"
+            title="Share on Reddit" >
+            <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-2x"></i>
+                <i class="fab fa-reddit fa-stack-1x fa-inverse"></i>
+              </span>
+        </a>
+        <a  href="https://www.linkedin.com/shareArticle?mini=true&url=/blog/sno-on-nuc10/&title=Install Single Node OpenShift on Intel® 10th gen NUC&summary=&source=QIoT project"
+            onclick="window.open(this.href, 'pop-up', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;"
+            title="Share on LinkedIn" >
+            <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-2x"></i>
+                <i class="fab fa-linkedin fa-stack-1x fa-inverse"></i>
+              </span>
+        </a>
+        <a  href="mailto:?subject=Install Single Node OpenShift on Intel® 10th gen NUC&amp;body=Check out this site /blog/sno-on-nuc10/"
+            title="Share via Email" >
+            <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-2x"></i>
+                <i class="far fa-envelope fa-stack-1x fa-inverse"></i>
+              </span>
+        </a>
+    </div>
+
+</div>
+
+        <hr>
+
+<!--         <div class="clearfix"> -->
+<!--            -->
+<!--           <a class="btn btn-primary float-left" href="/blog/install-rhel9-on-Fitlet2/" data-toggle="tooltip" data-placement="top" title="Options for RHEL9 (for Edge) and containers on a Compulab Fitlet2">&larr; Previous<span class="d-none d-md-inline"> -->
+<!--               Post</span></a> -->
+<!--            -->
+<!--            -->
+<!--           <a class="btn btn-primary float-right" href="/blog/usecase-retail/" data-toggle="tooltip" data-placement="top" title="Hackfest for Retail Use Case">Next<span class="d-none d-md-inline"> -->
+<!--               Post</span> &rarr;</a> -->
+<!--            -->
+
+	  
+	  
+	  
+	  
+
+        <div class="clearfix">
+          
+          <a class="btn btn-primary float-left" href="/blog/integration-in-a-distributed-world/" data-toggle="tooltip" data-placement="top" title="Integration in a Distributed World">&larr; Previous<span class="d-none d-md-inline">
+              Post</span></a>
+          
+          
+          <a class="btn btn-primary float-right" href="/blog/rhel-on-fitlet2/" data-toggle="tooltip" data-placement="top" title="Install RHEL for Edge on Compulab Fitlet2">Next<span class="d-none d-md-inline">
+              Post</span> &rarr;</a>
+          
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+
+<hr>
+
+<footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-16 col-md-10 mx-auto">
+        <ul class="list-inline text-center">
+          
+          <li class="list-inline-item">
+            <a href="mailto:qiotproject@gmail.com">
+              <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-2x"></i>
+                <i class="far fa-envelope fa-stack-1x fa-inverse"></i>
+              </span>
+            </a>
+          </li>
+          
+          
+          <li class="list-inline-item">
+            <a href="https://twitter.com/qiotproject">
+              <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-2x"></i>
+                <i class="fab fa-twitter fa-stack-1x fa-inverse"></i>
+              </span>
+            </a>
+          </li>
+          
+          
+          
+          
+          <li class="list-inline-item">
+            <a href="https://github.com/qiot-project">
+              <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-2x"></i>
+                <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+              </span>
+            </a>
+          </li>
+          
+          
+          
+          <li class="list-inline-item">
+            <a href="https://join.slack.com/t/https://join.slack.com/t/qiotproject/shared_invite/zt-nuajdyqf-NfQL0dcfCUjFSgoBNng11A">
+              <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-2x"></i>
+                <i class="fab fa-slack fa-stack-1x fa-inverse"></i>
+              </span>
+            </a>
+          </li>
+          
+          
+          <li class="list-inline-item">
+            <a href="https://groups.google.com/u/0/g/qiotproject/qiotproject">
+              <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-2x"></i>
+                <i class="fab fa-google fa-stack-1x fa-inverse"></i>
+              </span>
+            </a>
+          </li>
+          
+          
+          <li class="list-inline-item">
+            <a href="https://calendar.google.com/event?action=TEMPLATE&tmeid=dmFxMzFlZGkxOHVubDcyYm50bjdrcTJxYThfMjAyMTAzMjVUMTYwMDAwWiBxaW90cHJvamVjdEBt&tmsrc=qiotproject%40gmail.com&scp=ALL">
+              <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-2x"></i>
+                <i class="fas fa-calendar-plus fa-stack-1x fa-inverse"></i>
+              </span>
+            </a>
+          </li>
+          
+        </ul>
+        <p class="copyright text-muted"><i class="fab fa-creative-commons"></i><i class="fab fa-creative-commons-by"></i> <a href="https://creativecommons.org/licenses/by/3.0/" target="_blank">CC by 3.0</a> | <a href="https://www.redhat.com/en/about/privacy-policy">Privacy Policy</a> | Copyright &copy;  2024</p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+  <script src="/assets/vendor/jquery/jquery.min.js"></script>
+<script src="/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="/assets/vendor/startbootstrap-clean-blog/js/clean-blog.min.js"></script>
+
+<script src="/assets/scripts.js"></script>
+
+
+
+
+</body>
+
+</html>

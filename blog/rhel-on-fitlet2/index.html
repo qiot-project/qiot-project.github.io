@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <title>
+    Install RHEL for Edge on Compulab Fitlet2 - QIoT project
+    
+  </title>
+
+  <meta name="description" content=".">
+
+  <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+  <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="/assets/vendor/bootstrap/css/bootstrap.min.css">
+
+  <link rel="stylesheet" href="/assets/vendor/fontawesome-free/css/all.min.css">
+
+  <link rel="stylesheet" href="/assets/main.css">
+  <link rel="canonical" href="/blog/rhel-on-fitlet2/">
+  <link rel="alternate" type="application/rss+xml" title="QIoT project" href="/feed.xml">
+
+  
+    
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-SK96X617FT"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+  
+    gtag('config', 'G-SK96X617FT');
+  </script>
+
+  
+
+</head>
+
+
+<body>
+
+  <!-- Navigation -->
+<nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="/">QIoT project</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+      Menu
+      <i class="fa fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+<!--         <li class="nav-item"> -->
+<!--           <a class="nav-link" href="/">Home</a> -->
+<!--         </li> -->
+        <li class="nav-item">
+          <a class="nav-link" href="/announcements">Announcements</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/usecases">Use Cases</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/projects">Projects</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/blog">Blog</a>
+        <li class="nav-item">
+          <a class="nav-link" href="/community">Community</a>
+        </li>
+      </ul>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  <!-- Page Header -->
+
+<header class="masthead" style="background-image: url('/assets/images/main/rh-hackfest-banners_3840x2160.png')">
+  
+    <div class="overlay"></div>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-16 col-md-10 mx-auto">
+          <div class="post-heading">
+            <h1>Install RHEL for Edge on Compulab Fitlet2</h1>
+            
+            <h2 class="subheading">---</h2>
+            
+            <span class="meta">
+            
+            
+			  
+			     
+			        
+			            <img class="headshot" src="https://www.gravatar.com/avatar/647dec736dd23468695ed590b4d4ce3d">
+			        
+			            <a href="#">Posted by Andreas Stolzenberger</a>
+			    
+			    on October 13, 2021 &middot; <span class="reading-time" title="Estimated read time">
+  
+   11 mins  read </span>
+            
+            </span>
+            <br>
+            <span class="meta">
+			  
+                Contributors:
+                <br>
+                
+
+                
+                  
+			      
+			        <img class="headshot" alt="Andrea Battaglia" src="https://www.gravatar.com/avatar/58d8a28d588d957040fd5288cc208a41">
+			      
+                
+			  
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-16 col-md-10 mx-auto">
+
+        <div id="toc" class="toc">
+<div id="toctitle">Table of Contents</div>
+<ul class="sectlevel0">
+<li><a href="#introduction">Introduction</a></li>
+<li><a href="#hardware">Hardware</a></li>
+<li><a href="#preparation">Preparation</a>
+<ul class="sectlevel1">
+<li><a href="#fix-system-time">Fix system time</a></li>
+<li><a href="#turn-off-secure-boot">Turn off Secure Boot</a></li>
+<li><a href="#tune-the-boot-order-priorities">Tune the Boot Order Priorities</a></li>
+</ul>
+</li>
+<li><a href="#bootable-iso">Bootable ISO</a>
+<ul class="sectlevel1">
+<li><a href="#download">Download</a></li>
+<li><a href="#create-a-bootable-usb-stick">Create a bootable USB-Stick</a>
+<ul class="sectlevel2">
+<li><a href="#on-linux">On Linux</a></li>
+<li><a href="#on-windows">On Windows</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#boot-the-fitlet-over-the-internet">Boot the Fitlet over the Internet</a></li>
+<li><a href="#get-access-to-the-fitlet2">Get Access to the Fitlet2</a></li>
+</ul>
+</div>
+<div class="paragraph">
+<p>.</p>
+</div>
+<h1 id="introduction" class="sect0"><a class="anchor" href="#introduction"></a>Introduction</h1>
+<div class="paragraph">
+<p>The next guide will show how to deploy RHEL for Edge to a physical miniature PC <a href="https://fit-iot.com/web/products/fitlet2/">Fitlet2</a> manufactured by Compulab.</p>
+</div>
+<div class="paragraph">
+<p>The solution of RHEL for Edge uses ostree to manage the packages to install on the device. Ostree is both a shared library and suite of command line tools that combines a “git-like” model for committing and downloading bootable filesystem trees, along with a layer for deploying them and managing the bootloader configuration.</p>
+</div>
+<div class="paragraph">
+<p>For this use case we are providing a web server with the kickstart file required to start the installation, and hosting the repo with the required packages for this distribution, but we also provide the how to create your own from scratch with the tool image-builder available at the standard RHEL 8 distribution.</p>
+</div>
+<h1 id="hardware" class="sect0"><a class="anchor" href="#hardware"></a>Hardware</h1>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Model name</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">fitlet2</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">CPU model name</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Intel&#174; Atom x5-E3930 [CE3930]</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Memory capacity</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">4.00 GiB</p></td>
+</tr>
+</tbody>
+</table>
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/posts/rhel-on-fitlet2/fitlet2.png" alt="fitlet2" width="100%">
+</div>
+</div>
+<h1 id="preparation" class="sect0"><a class="anchor" href="#preparation"></a>Preparation</h1>
+<div class="paragraph">
+<p>Connect a USB-Keyboard and a Monitor to the Fitlet2.</p>
+</div>
+<div class="paragraph">
+<p>Switch the Device on.</p>
+</div>
+<div class="paragraph">
+<p>It should automatically enter the BIOS.</p>
+</div>
+<div class="paragraph">
+<p>If not, press “canc” during boot to enter the BIOS.</p>
+</div>
+<div class="sect1">
+<h2 id="fix-system-time"><a class="anchor" href="#fix-system-time"></a>Fix system time</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>If necessary, adjust the Time and Date of the Machine. Use the <strong>UTC Timezone</strong> !</p>
+</div>
+<div class="paragraph">
+<p>If the BIOS clock is way off, your Web-based Kickstart will fail with an SSL-Error (see further below)</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/posts/rhel-on-fitlet2/img01.jpg" alt="img01" width="100%">
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="turn-off-secure-boot"><a class="anchor" href="#turn-off-secure-boot"></a>Turn off Secure Boot</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Switch to the <strong>"Security"</strong> tab of the Fitlet2 BIOS and select <em>"Disabled"</em> for the Secure Boot option.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/posts/rhel-on-fitlet2/img02.jpg" alt="img02" width="100%">
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="tune-the-boot-order-priorities"><a class="anchor" href="#tune-the-boot-order-priorities"></a>Tune the Boot Order Priorities</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Switch to the <strong>"Boot"</strong> tab of the Fitlet2 BIOS and Adjust the boot order to boot <em>“HDD”</em> (<strong>not</strong> SD) first and then “USB Key” and “USB CD/DVD”.</p>
+</div>
+<div class="paragraph">
+<p>After the Installation your OS will appear as First UEFI HDD.</p>
+</div>
+<div class="paragraph">
+<p>If your system does not correctly boot into RHEL gor Edge after the Installation, please come back into the system BIOS and correct the Boot Order accordingly.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/posts/rhel-on-fitlet2/img03.jpg" alt="img03" width="100%">
+</div>
+</div>
+</div>
+</div>
+<h1 id="bootable-iso" class="sect0"><a class="anchor" href="#bootable-iso"></a>Bootable ISO</h1>
+<div class="sect1">
+<h2 id="download"><a class="anchor" href="#download"></a>Download</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>You can download a Red Hat Boot ISO image from the Red Hat Customer Portal.</p>
+</div>
+<div class="paragraph">
+<p>The Red Hat Boot ISO image is used to launch the RHEL installer.</p>
+</div>
+<div class="paragraph">
+<p>The installer fetches the Kickstart file that you provide for installing RHEL for Edge images.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Open a browser and access <a href="https://access.redhat.com/downloads" class="bare">https://access.redhat.com/downloads</a>.</p>
+</li>
+<li>
+<p>Click the Red Hat Enterprise Linux 8.</p>
+</li>
+<li>
+<p>Click the button Download Now for the option "Red Hat Enterprise Linux 8.x Boot ISO" (8.4 at the time of this article).</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>For more information about downloading Boot.iso image, see <a href="https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html-single/performing_a_standard_rhel_installation/index#downloading-beta-installation-images_preparing-for-your-installation">Downloading the installation ISO image</a>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="create-a-bootable-usb-stick"><a class="anchor" href="#create-a-bootable-usb-stick"></a>Create a bootable USB-Stick</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Time to flash the downloaded ISO image on a USB drive. The minimum space required for the UDB Flash drive is 1Gb.</p>
+</div>
+<div class="paragraph">
+<p>On a side note, please keep in mind the partition resultant from the flash operation will be marked as read-only, as the ISO image we are about to flash is a DVD image.</p>
+</div>
+<div class="sect2">
+<h3 id="on-linux"><a class="anchor" href="#on-linux"></a>On Linux</h3>
+<div class="paragraph">
+<p>Let’s check the path of the device with</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">sudo fdisk -l</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You need to identify the path of type /dev/sdN, in my case is /dev/sda if yours takes another path, replace it in the next step.</p>
+</div>
+<div class="paragraph">
+<p>To start the flashing process type</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">dd if=rhel-8.4-x86_64-boot.iso of=&lt;devicename&gt; status=progress</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>as root.</p>
+</div>
+<div class="paragraph">
+<p><strong>WARNING</strong> make absolutely sure, that the given device name is in fact the USB-Stick. If you accidentally type in your root-disk, it&#8217;ll be overwritten!</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="on-windows"><a class="anchor" href="#on-windows"></a>On Windows</h3>
+<div class="paragraph">
+<p>On Windows, use the free tool <a href="https://rufus.ie/en/">Rufus</a> to create a bootable USB-Stick.</p>
+</div>
+</div>
+</div>
+</div>
+<h1 id="boot-the-fitlet-over-the-internet" class="sect0"><a class="anchor" href="#boot-the-fitlet-over-the-internet"></a>Boot the Fitlet over the Internet</h1>
+<div class="paragraph">
+<p>Connect a Keyboard and a Monitor (HDMI) to the Fitlet2 Device.</p>
+</div>
+<div class="paragraph">
+<p>Put the bootable USB-Key and a blank Micro-SD-Card into the Fitlet2.</p>
+</div>
+<div class="paragraph">
+<p>Connect a Network Cable. Setup using WiFi is not supported at this time.</p>
+</div>
+<div class="paragraph">
+<p><strong>WARNING</strong> The Micro SD-card will be overwritten by the installation process without further warning!</p>
+</div>
+<div class="paragraph">
+<p>Turn on the Fitlet2.</p>
+</div>
+<div class="paragraph">
+<p>If it does not boot from the USB-Key, enter the BIOS-Setup and check for the following settings:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Turn OFF secure Boot.</p>
+</li>
+<li>
+<p>Change the Boot order, that the USB-Stick comes first followed by "SD" and "HDD".</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Once the System boots from the USB-Stick, you&#8217;ll see the RHEL-8-Install Prompt.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>On <strong>BIOS-based systems</strong>: Press the <em>Tab</em> key and add custom boot options to the command line. You can also access the boot: prompt by pressing the <em>Esc</em> key but no required boot options are preset. In this scenario, you must always specify the Linux option before using any other boot options.</p>
+</li>
+<li>
+<p>On <strong>UEFI-based systems</strong>: Press the <em>e</em> key and add custom boot options to the command line. When ready press <em>Ctrl+X</em> to boot the modified option.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Once you&#8217;ve got access to the boot options and kernel parameters for the boot process, appent the following key-value pair to the first row:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">inst.ks=https://edge:qiotH4ckf3st@repo8.rhepds.com/edge/kick.ks</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In case you get an SSL-failure whan the installation process is trying to download the kickstart file, also append the following kernel parameter:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">inst.noverifyssl</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>WARNING</strong> Keep in mind that the system will use an US-Keyboard-Layout at this stage.
+This will point to our provided Kickstart File and the Internet based repository.</p>
+</div>
+<div class="paragraph">
+<p>If you chose to set up your own Deployment Server and use your own Kickstart-File, point to that.</p>
+</div>
+<div class="paragraph">
+<p>How you create your Own Edge Repository and make that available on an HTTP-Server is documented <a href="https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html/composing_installing_and_managing_rhel_for_edge_images/installing-rpm-ostree-images_composing-installing-managing-rhel-for-edge-images">here</a>.</p>
+</div>
+<div class="paragraph">
+<p>If your Network does not have a DHCP-Server to automatically supply an IP-Address to the Fitlet, refer to this <a href="https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html/performing_an_advanced_rhel_installation/kickstart-and-advanced-boot-options_installing-rhel-as-an-experienced-user">document</a> on how to provide a manual IP-Address, DNS and Gateway-Information for the Networked Install.</p>
+</div>
+<div class="paragraph">
+<p>The Fitlet will then run through the automated Install process and reboot at the end. Depending on your Internet-Speed, this will take a couple of minutes (the Process will Download 900 MB).</p>
+</div>
+<div class="paragraph">
+<p>Once the System reboots, you can remove the USB Stick.</p>
+</div>
+<h1 id="get-access-to-the-fitlet2" class="sect0"><a class="anchor" href="#get-access-to-the-fitlet2"></a>Get Access to the Fitlet2</h1>
+<div class="paragraph">
+<p>Once the system is up and running you can log into the local console using user root or user edge with the password <em>r3dh4t1!</em>.</p>
+</div>
+<div class="paragraph">
+<p><strong>WARNING</strong> The default Keyboard-Layout will be <em>US</em>. You can change it to your local Layout at this point. See <a href="https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html/configuring_basic_system_settings/assembly_changing-basic-environment-settings_configuring-basic-system-settings#proc_configuring-the-keyboard-layout_assembly_changing-basic-environment-settings">here</a>.</p>
+</div>
+<div class="paragraph">
+<p>Change the passwords for both users as soon as possible to something secure.</p>
+</div>
+<div class="paragraph">
+<p>Note down the IP-Address &amp; Name of the System. Again, if you do not have a DHCP-Server in your Network, you need to manually configure the Network.</p>
+</div>
+<div class="paragraph">
+<p>At this point you also can set up a WiFi-Connection on the Commandline and use it from here on after instead of the cabled Network.</p>
+</div>
+<div class="paragraph">
+<p>How to set up a static Network on the command line is documented <a href="https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html/configuring_and_managing_networking/configuring-an-ethernet-connection_configuring-and-managing-networking#configuring-a-static-ethernet-connection-using-nmcli_configuring-an-ethernet-connection">here</a>.</p>
+</div>
+<div class="paragraph">
+<p>How to set up a WiFi-Connection on the command line is documented <a href="https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html/configuring_and_managing_networking/managing-wi-fi-connections_configuring-and-managing-networking">here</a>.</p>
+</div>
+<div class="paragraph">
+<p>If you changed your Network Settings, please reboot now.</p>
+</div>
+<div class="paragraph">
+<p>Once your Fitlet2 is up and Networked, you can also SSH into the system using user <em>"root"</em> or User <em>"edge"</em>.</p>
+</div>
+<div class="paragraph">
+<p>In addition, the Web-Management-Tool Cockpit is available.</p>
+</div>
+<div class="paragraph">
+<p>Open a browser and point it to: <em>"https://&lt;fitlet IP or FQDN&gt;:9090"</em></p>
+</div>
+<div class="paragraph">
+<p>Log In as root or edge to manage the Device.</p>
+</div>
+
+        <div id="share-bar">
+
+    <hr>
+
+    <h4>Share this:</h4>
+
+    <div class="share-buttons">
+        <a  href="https://www.facebook.com/sharer/sharer.php?u=/blog/rhel-on-fitlet2/"
+            onclick="window.open(this.href, 'pop-up', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;"
+            title="Share on Facebook" >
+            <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-2x"></i>
+                <i class="fab fa-facebook-f fa-stack-1x fa-inverse"></i>
+              </span>
+        </a>
+        <a  href="https://twitter.com/intent/tweet?text=Install RHEL for Edge on Compulab Fitlet2&url=/blog/rhel-on-fitlet2/"
+            onclick="window.open(this.href, 'pop-up', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;"
+            title="Share on Twitter" >
+            <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-2x"></i>
+                <i class="fab fa-twitter fa-stack-1x fa-inverse"></i>
+              </span>
+        </a>
+        <a  href="http://www.reddit.com/submit?url=/blog/rhel-on-fitlet2/"
+            onclick="window.open(this.href, 'pop-up', 'left=20,top=20,width=900,height=500,toolbar=1,resizable=0'); return false;"
+            title="Share on Reddit" >
+            <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-2x"></i>
+                <i class="fab fa-reddit fa-stack-1x fa-inverse"></i>
+              </span>
+        </a>
+        <a  href="https://www.linkedin.com/shareArticle?mini=true&url=/blog/rhel-on-fitlet2/&title=Install RHEL for Edge on Compulab Fitlet2&summary=&source=QIoT project"
+            onclick="window.open(this.href, 'pop-up', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;"
+            title="Share on LinkedIn" >
+            <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-2x"></i>
+                <i class="fab fa-linkedin fa-stack-1x fa-inverse"></i>
+              </span>
+        </a>
+        <a  href="mailto:?subject=Install RHEL for Edge on Compulab Fitlet2&amp;body=Check out this site /blog/rhel-on-fitlet2/"
+            title="Share via Email" >
+            <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-2x"></i>
+                <i class="far fa-envelope fa-stack-1x fa-inverse"></i>
+              </span>
+        </a>
+    </div>
+
+</div>
+
+        <hr>
+
+<!--         <div class="clearfix"> -->
+<!--            -->
+<!--           <a class="btn btn-primary float-left" href="/blog/sno-on-nuc10/" data-toggle="tooltip" data-placement="top" title="Install Single Node Openshift on Intel® 10th gen NUC">&larr; Previous<span class="d-none d-md-inline"> -->
+<!--               Post</span></a> -->
+<!--            -->
+<!--            -->
+<!--           <a class="btn btn-primary float-right" href="/blog/nfs-on-sno/" data-toggle="tooltip" data-placement="top" title="Setting up NFS as a storage class on SNO">Next<span class="d-none d-md-inline"> -->
+<!--               Post</span> &rarr;</a> -->
+<!--            -->
+
+	  
+	  
+	  
+	  
+
+        <div class="clearfix">
+          
+          <a class="btn btn-primary float-left" href="/blog/sno-on-nuc10/" data-toggle="tooltip" data-placement="top" title="Install Single Node Openshift on Intel® 10th gen NUC">&larr; Previous<span class="d-none d-md-inline">
+              Post</span></a>
+          
+          
+          <a class="btn btn-primary float-right" href="/blog/nfs-on-sno/" data-toggle="tooltip" data-placement="top" title="Setting up NFS as a storage class on SNO">Next<span class="d-none d-md-inline">
+              Post</span> &rarr;</a>
+          
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+
+<hr>
+
+<footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-16 col-md-10 mx-auto">
+        <ul class="list-inline text-center">
+          
+          <li class="list-inline-item">
+            <a href="mailto:qiotproject@gmail.com">
+              <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-2x"></i>
+                <i class="far fa-envelope fa-stack-1x fa-inverse"></i>
+              </span>
+            </a>
+          </li>
+          
+          
+          <li class="list-inline-item">
+            <a href="https://twitter.com/qiotproject">
+              <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-2x"></i>
+                <i class="fab fa-twitter fa-stack-1x fa-inverse"></i>
+              </span>
+            </a>
+          </li>
+          
+          
+          
+          
+          <li class="list-inline-item">
+            <a href="https://github.com/qiot-project">
+              <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-2x"></i>
+                <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+              </span>
+            </a>
+          </li>
+          
+          
+          
+          <li class="list-inline-item">
+            <a href="https://join.slack.com/t/https://join.slack.com/t/qiotproject/shared_invite/zt-nuajdyqf-NfQL0dcfCUjFSgoBNng11A">
+              <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-2x"></i>
+                <i class="fab fa-slack fa-stack-1x fa-inverse"></i>
+              </span>
+            </a>
+          </li>
+          
+          
+          <li class="list-inline-item">
+            <a href="https://groups.google.com/u/0/g/qiotproject/qiotproject">
+              <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-2x"></i>
+                <i class="fab fa-google fa-stack-1x fa-inverse"></i>
+              </span>
+            </a>
+          </li>
+          
+          
+          <li class="list-inline-item">
+            <a href="https://calendar.google.com/event?action=TEMPLATE&tmeid=dmFxMzFlZGkxOHVubDcyYm50bjdrcTJxYThfMjAyMTAzMjVUMTYwMDAwWiBxaW90cHJvamVjdEBt&tmsrc=qiotproject%40gmail.com&scp=ALL">
+              <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-2x"></i>
+                <i class="fas fa-calendar-plus fa-stack-1x fa-inverse"></i>
+              </span>
+            </a>
+          </li>
+          
+        </ul>
+        <p class="copyright text-muted"><i class="fab fa-creative-commons"></i><i class="fab fa-creative-commons-by"></i> <a href="https://creativecommons.org/licenses/by/3.0/" target="_blank">CC by 3.0</a> | <a href="https://www.redhat.com/en/about/privacy-policy">Privacy Policy</a> | Copyright &copy;  2024</p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+  <script src="/assets/vendor/jquery/jquery.min.js"></script>
+<script src="/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="/assets/vendor/startbootstrap-clean-blog/js/clean-blog.min.js"></script>
+
+<script src="/assets/scripts.js"></script>
+
+
+
+
+</body>
+
+</html>
